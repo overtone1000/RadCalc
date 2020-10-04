@@ -1,0 +1,74 @@
+<head>
+
+<script type="text/javascript">
+
+
+function CalculateABSA(){
+
+	
+}
+
+function Calculate() {   
+  	var thymus_in = parseFloat(document.getElementById("thymus_in").value);
+    var thymus_out = parseFloat(document.getElementById("thymus_out").value);
+	var muscle_in = parseFloat(document.getElementById("muscle_in").value);
+	var muscle_out = parseFloat(document.getElementById("muscle_out").value);
+    
+    var CSR = (thymus_out/muscle_out)/(thymus_in/muscle_in);
+	var SSI_muscle = (muscle_in-muscle_out)/muscle_in*100.0;
+	var SSI_thymus = (thymus_in-thymus_out)/thymus_in*100.0;
+	
+	text = "Muscular signal intensity index is <b><font color=\"#edca4e\">" + SSI_muscle.toFixed(0) + "</font></b>.<br>";
+	text += "Thymic signal intensity index is <b><font color=\"#edca4e\">" + SSI_thymus.toFixed(0) + "</font></b>.<br>";
+	text += "Chemical shift ratio is <b><font color=\"#edca4e\">" + CSR.toFixed(3) + "</font></b>.<br>";
+    
+	document.getElementById("CalculationResult").innerHTML = text;
+}
+
+function Initialize()
+{
+	window.Calculate();
+}
+
+</script>
+
+</head>
+
+<body bgcolor="#000000" text="#ffffff">
+
+<div id="div_form">
+<form id="form_intensities" onchange="Calculate()">
+Thymic Intensity on In-Phase:
+<input id="thymus_in"  type="number" step="any" value="1" class="tb_style"/><br><br>
+Thymic Intensity on Out-of-Phase:
+<input id="thymus_out"  type="number" step="any" value="1" class="tb_style"/><br><br>
+<br>
+Paraspinal Muscular Intensity on In-Phase:
+<input id="muscle_in"  type="number" step="any" value="1" class="tb_style"/><br><br>
+Paraspinal Muscular Intensity on Out-of-Phase:
+<input id="muscle_out"  type="number" step="any" value="1" class="tb_style"/><br><br>
+<input type="submit" disabled="true" style="display:none">
+</form>
+</div>
+
+<p id="CalculationResult"></p>
+
+<br>
+<br>
+
+<div>
+Sources:
+[1] A. M. Priola et al., "Differentiation of Rebound and Lymphoid Thymic Hyperplasia from Anterior Mediastinal Tumors with Dual-Echo Chemical-Shift MR Imaging in Adulthood: Reliability of the Chemical-Shift Ratio and Signal Intensity Index," Radiology, vol. 274, no. 1, pp. 238-249, Aug. 2014.
+</div>
+
+<br>
+<br>
+
+<div>
+Disclaimer: All calculations should be confirmed by comparison to the referenced data. The author makes no claims of the accuracy or utility of the referenced data. This tool should not be used alone to guide patient care or as a substitute for clinical judgment. Reliance upon this tool is solely at the user's risk. The author assumes no liability or responsibility for damage or injury arising from any use of this tool.
+</div>
+
+<script type="text/javascript">
+window.Initialize();
+</script>
+</body>
