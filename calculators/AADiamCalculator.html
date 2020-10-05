@@ -24,6 +24,7 @@
 		<form id="form_inputstyle"  onchange="SelectForm()">
 		<input id="AgeBSARadio" checked="checked" name="inputstyle" type="radio" value="absa" class="radio_style"> Age and BSA <br>
 		<input id="AgeHeightWeightRadio" name="inputstyle" type="radio" value="ahw" class="radio_style"> Age, Height, and Weight <br> 
+		<input id="AgeDiameterRadio" name="inputstyle" type="radio" value="ahw" class="radio_style"> Age and Aortic Diameter <br> 
 		<!-- <input id="AgeDiameterRadio" name="inputstyle" type="radio" value="ad" class="radio_style"> Age and Aortic Diameter <br> -->
 		</form>
 	</div>
@@ -52,13 +53,11 @@
 		<input type="submit" disabled="true" style="display:none">
 		</form>
 		</div>
-	</div>
-	
-	<div class="mb-3">
+
 		<div id="div_ad">
 		<form id="form_ad" onchange="Update()">
 		Ascending aortic diameter:
-		<input id="aad_ad"  type="number" step="any" value="180" class="tb_style"/> cm<br>
+		<input id="aad_ad"  type="number" step="any" value="2.5" class="tb_style"/> cm<br>
 		<input type="submit" disabled="true" style="display:none">
 		</form>
 		</div>
