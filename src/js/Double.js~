@@ -23,7 +23,7 @@ class Datum
 		{
 			let input = this.diameter_inputs[d];
 			let val = parseFloat(input.value);
-			if(!Number.isNaN(val))
+			if(val!==undefined && val!==null && val!==NaN && val!="")
 			{
 				current*=val;
 				notblank=true;

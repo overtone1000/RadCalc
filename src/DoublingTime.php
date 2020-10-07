@@ -12,7 +12,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-	<script src="js/AA.js"></script>
+	<script src="js/Double.js"></script>
 	<link rel="stylesheet" href="rc.css">
   </head>
   <body>
@@ -30,15 +30,25 @@
       <th scope="col">D<sub>1</sub></th>
       <th scope="col">D<sub>2</sub></th>
       <th scope="col">D<sub>3</sub></th>
+      <th scope="col">Volume</th>
     </tr>
   </thead>
   <tbody>
-    <tr align="center" valign="middle">
+    <tr align="center">
       <th scope="row" style="vertical-align:middle">1</th>
-      <td><input type="date" class="form-control" id="Date" placeholder="Date of Exam"></td>
-      <td><input type="number" class="form-control" id="D1" placeholder="Diameter 1"></td>
-      <td><input type="number" class="form-control" id="D2" placeholder="Diameter 2"></td>
-      <td><input type="number" class="form-control" id="D3" placeholder="Diameter 3"></td>
+      <td style="width: 18%"><input type="date" class="form-control" id="Date1" placeholder="Date of Exam"></td>
+      <td style="width: 18%"><input type="number" class="form-control" id="D11" placeholder="Diameter 1"></td>
+      <td style="width: 18%"><input type="number" class="form-control" id="D12" placeholder="Diameter 2"></td>
+      <td style="width: 18%"><input type="number" class="form-control" id="D13" placeholder="Diameter 3"></td>
+      <td style="width: 18%" id="V1" style="vertical-align:middle"></td>
+    </tr>
+    <tr align="center">
+      <th scope="row" style="vertical-align:middle">2</th>
+      <td style="width: 18%"><input type="date" class="form-control" id="Date2" placeholder="Date of Exam"></td>
+      <td style="width: 18%"><input type="number" class="form-control" id="D21" placeholder="Diameter 1"></td>
+      <td style="width: 18%"><input type="number" class="form-control" id="D22" placeholder="Diameter 2"></td>
+      <td style="width: 18%"><input type="number" class="form-control" id="D23" placeholder="Diameter 3"></td>
+      <td style="width: 18%" id="V2" style="vertical-align:middle"></td>
     </tr>
   </tbody>
 </table>	
