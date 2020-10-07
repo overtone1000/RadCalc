@@ -21,8 +21,29 @@
 	<div  class="container-fluid bg-dark text-white container-full">
 
 	<div class="mt-5 mb-3">
-		<div class="row" id="input_form_area">
-		</div>
+
+<table class="table">
+  <thead>
+    <tr align="center">
+		<th scope="col">Lesion</th>      
+      <th scope="col">Date of Exam</th>
+      <th scope="col">D<sub>1</sub></th>
+      <th scope="col">D<sub>2</sub></th>
+      <th scope="col">D<sub>3</sub></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr align="center" valign="middle">
+      <th scope="row" style="vertical-align:middle">1</th>
+      <td><input type="date" class="form-control" id="Date" placeholder="Date of Exam"></td>
+      <td><input type="number" class="form-control" id="D1" placeholder="Diameter 1"></td>
+      <td><input type="number" class="form-control" id="D2" placeholder="Diameter 2"></td>
+      <td><input type="number" class="form-control" id="D3" placeholder="Diameter 3"></td>
+    </tr>
+  </tbody>
+</table>	
+	
+
 	</div>
 		
 	<div class="mt-5 mb-3" id="CalculationResult">
