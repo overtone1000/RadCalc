@@ -9,6 +9,7 @@ class Datum
 		this.volume=null;
 		this.date=null;
 		
+		this.date_input.addEventListener("change", function() {this.update();}.bind(this), false);
 		for(let d in this.diameter_inputs)
 		{
 			let input = this.diameter_inputs[d];
