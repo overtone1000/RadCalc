@@ -34,6 +34,9 @@
 		<div class="row bg-dark">
 			<div class="col d-flex justify-content-center mt-2"> <a class="btn btn-primary w-25" href="Thymus_CSS_SII.php">Thymic CSS/SII</a> </div>
 		</div>
+		<div class="row bg-dark">
+			<div class="col d-flex justify-content-center mt-2"> <a class="btn btn-primary w-25" href="DoublingTime.php">Doubling Time</a> </div>
+		</div>
 		<div class="col d-flex justify-content-center mt-2">
 			<div class="mr-1">Source code and license information available on GitHub at </div><a class="inlined" href="https://github.com/overtone1000/RadCalc"> https://github.com/overtone1000/RadCalc</a>.
 		</div>
