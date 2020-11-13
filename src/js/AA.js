@@ -140,12 +140,8 @@ function CalculateAD()
 
 	let text = "For a ";
     text = text + "<b><font color=\"#42f4eb\">" + Age.toFixed(0) + "</font></b> year old <font color=\"#42f4eb\">" + Sex + "</font>";
-    text = text + " an ascending aortic diameter of <b><font color=\"#42f4eb\">" + ADiam.toFixed(2) + "</font></b> cm<sup>2</sup>";
-<<<<<<< HEAD:src/js/AA.js
+    text = text + " an ascending aortic diameter of <b><font color=\"#42f4eb\">" + ADiam.toFixed(2) + "</font></b> cm";	
     text = text + " would be less than the 95<sup>th</sup> percentile if the patient's BSA is greater than <b><font color=\"#edca4e\">" + guesses.last.BSA.toFixed(2) + "</font></b> m<sup>2</sup>.";
-=======
-    text = text + " would be less than the 95<sup>th</sup> percentile if the patient's BSA is greater than <b><font color=\"#edca4e\">" + guesses.last.BSA.toFixed(2) + "</font></b> m<sup>2</sup>";
->>>>>>> 731d2b5747807b629c9b972a086a6e0884eea194:calculators/js/AA.js
     document.getElementById("CalculationResult").innerHTML = text;
 }
 
