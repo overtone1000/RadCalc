@@ -21,30 +21,64 @@ class Datum
 	
 	update()
 	{
-		let current=1;
-		let notblank=false;
+		let num=0;
+		let denom=0;
+		let vals = new Array();
+		let blank=true;
 		for(let d in this.diameter_inputs)
 		{
 			let input = this.diameter_inputs[d];
 			let val = parseFloat(input.value);
+			vals.push(val);
+		}
+
+		for(let val of vals)
+		{
 			if(!Number.isNaN(val))
 			{
-				current*=val;
-				notblank=true;
+				num+=val;
+				denom+=1;
+				blank=false;
 			}
 		}
-		
-		this.date=moment(this.date_input.value);
-		if(notblank)
-		{
-			this.volume=current;
-			this.volume_div.innerHTML=current;
-		}
-		else
+
+		if(blank)
 		{
 			this.volume=null;
 			this.volume_div.innerHTML="";
+
+			for(let d in this.diameter_inputs)
+			{
+				let input = this.diameter_inputs[d];
+				input.setAttribute("placeholder","Diameter " + (d+1));
+			}
+			return;
 		}
+
+		let mean_d = num/denom;
+		console.debug("Mean diameter = " + mean_d);
+
+		for(let n in vals)
+		{
+			let val = vals[n];
+			if(Number.isNaN(val))
+			{
+				vals[n]=mean_d;
+				let input = this.diameter_inputs[n];
+				input.setAttribute("placeholder",mean_d + " (calculated)");
+			}
+		}
+
+		this.volume = Math.PI/6;
+
+		for(let val of vals)
+		{
+			this.volume*=val;
+		}
+		
+		this.date=moment(this.date_input.value);
+
+		this.volume_div.innerHTML=this.volume.toFixed(2);
 		
 		results.update();
 	}
@@ -96,7 +130,8 @@ class NetResult
 				let days = temparr[1].date.diff(temparr[0].date, "days");
 				let vrat = temparr[1].volume/temparr[0].volume;
 				let doublingtime = Math.log(2)*days/Math.log(vrat);
-				subresdiv.innerHTML = "Interval " + (n+1) + " is " + days + " days. Volume ratio is " + vrat + "." + " Doubling time is " + doublingtime + " days.";
+
+				subresdiv.innerHTML = "Interval " + (n+1) + " is " + days.toFixed(0) + " days. Volume ratio is " + vrat.toFixed(2) + "." + " Doubling time is " + doublingtime.toFixed(0) + " days.";
 				this.div.appendChild(subresdiv);
 			}
 			
@@ -127,6 +162,10 @@ $(window).on("load", function()
 	results = new NetResult(
 		document.getElementById("CalculationResult")
 	);
+
+	datum1.update();
+	datum2.update();
+	
 	results.addDatum(datum1);
 	results.addDatum(datum2);
 	results.update();

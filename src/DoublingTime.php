@@ -28,27 +28,27 @@
     <tr align="center">
 		<th scope="col">Study</th>      
       <th scope="col">Date of Exam</th>
-      <th scope="col">D<sub>1</sub></th>
-      <th scope="col">D<sub>2</sub></th>
-      <th scope="col">D<sub>3</sub></th>
-      <th scope="col">Volume</th>
+      <th scope="col">D<sub>1</sub> (u)</th>
+      <th scope="col">D<sub>2</sub> (u)</th>
+      <th scope="col">D<sub>3</sub> (u)</th>
+      <th scope="col">Volume (Ellipsoid,  u<sup>3</sup>)</th>
     </tr>
   </thead>
   <tbody>
     <tr align="center">
       <th scope="row" style="vertical-align:middle">1</th>
       <td style="width: 18%"><input type="date" class="form-control" id="Date1" placeholder="Date of Exam"></td>
-      <td style="width: 18%"><input type="number" class="form-control" id="D11" placeholder="Diameter 1"></td>
-      <td style="width: 18%"><input type="number" class="form-control" id="D12" placeholder="Diameter 2"></td>
-      <td style="width: 18%"><input type="number" class="form-control" id="D13" placeholder="Diameter 3"></td>
+      <td style="width: 18%"><input type="number" step="any" class="form-control" id="D11" placeholder="Diameter 1"></td>
+      <td style="width: 18%"><input type="number" step="any" class="form-control" id="D12" placeholder="Diameter 2"></td>
+      <td style="width: 18%"><input type="number" step="any" class="form-control" id="D13" placeholder="Diameter 3"></td>
       <td style="width: 18%" id="V1" style="vertical-align:middle"></td>
     </tr>
     <tr align="center">
       <th scope="row" style="vertical-align:middle">2</th>
       <td style="width: 18%"><input type="date" class="form-control" id="Date2" placeholder="Date of Exam"></td>
-      <td style="width: 18%"><input type="number" class="form-control" id="D21" placeholder="Diameter 1"></td>
-      <td style="width: 18%"><input type="number" class="form-control" id="D22" placeholder="Diameter 2"></td>
-      <td style="width: 18%"><input type="number" class="form-control" id="D23" placeholder="Diameter 3"></td>
+      <td style="width: 18%"><input type="number" step="any" class="form-control" id="D21" placeholder="Diameter 1"></td>
+      <td style="width: 18%"><input type="number" step="any" class="form-control" id="D22" placeholder="Diameter 2"></td>
+      <td style="width: 18%"><input type="number" step="any" class="form-control" id="D23" placeholder="Diameter 3"></td>
       <td style="width: 18%" id="V2" style="vertical-align:middle"></td>
     </tr>
   </tbody>
