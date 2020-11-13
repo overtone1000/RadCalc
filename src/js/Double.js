@@ -50,7 +50,7 @@ class Datum
 			for(let d in this.diameter_inputs)
 			{
 				let input = this.diameter_inputs[d];
-				input.setAttribute("placeholder","Diameter " + (d+1));
+				input.setAttribute("placeholder","Diameter " + (parseInt(d)+1));
 			}
 			return;
 		}
