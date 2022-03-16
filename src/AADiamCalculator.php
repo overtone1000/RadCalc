@@ -39,7 +39,7 @@
 		<div id="div_absa">
 		<form id="form_absa" onchange="Update()">
 		Body surface area:
-		<input id="BSA_ABSA"  type="number" step="any" value="2.0" class="tb_style"/> m<sup>2</sup><br>
+		<input id="BSA_ABSA"  type="number" step="any" value="1.8" class="tb_style"/> m<sup>2</sup><br>
 		<input type="submit" disabled="true" style="display:none">
 		</form>
 		</div>
@@ -47,9 +47,19 @@
 		<div id="div_ahw">
 		<form id="form_ahw" onchange="Update()">
 		Height:
-		<input id="height_AHW"  type="number" step="any" value="180" class="tb_style"/> cm<br><br>
+		<input id="height_AHW"  type="number" step="any" value="180" class="tb_style"/>
+		<select id="height_units" value="cm">
+			<option value="cm">cm</option>
+			<option value="in">in</option>
+		</select>
+		<br><br>
 		Weight:
-		<input id="weight_AHW"  type="number" step="any" value="70" class="tb_style"/> kg<br>
+		<input id="weight_AHW"  type="number" step="any" value="70" class="tb_style"/>
+		<select id="weight_units" value="kg">
+			<option value="kg">kg</option>
+			<option value="lb">lb</option>
+		</select>
+		<br>
 		<input type="submit" disabled="true" style="display:none">
 		</form>
 		</div>
@@ -63,7 +73,6 @@
 		</div>
 	</div>
 		
-
 	<div class="mb-3">
 		<form id="form_sex"  onchange="Update()">
 		<input id="SexMan" name="Sex" type="radio" value="man" class="radio_style"> Man <br>
