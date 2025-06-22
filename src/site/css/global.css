@@ -1,0 +1,64 @@
+.cols
+{
+    display: flex;
+    flex-direction: column;
+} 
+
+.rows
+{
+    display: flex;
+    flex-direction: row;
+} 
+
+.main.fill_horizontal
+{
+    min-width: 100vw;
+    max-width: 100vw;
+}
+
+.main.fill_vertical
+{
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow-y:scroll;
+}
+
+.fill_horizontal
+{
+    width: 100%;
+}
+
+.fill_vertical
+{
+    height: 100%;
+}
+
+.centered
+{
+    align-items: center;
+}
+
+.space_evenly
+{
+    justify-content: space-evenly;
+}
+
+.half_width
+{
+    width:50%;
+}
+
+.grow_vertically
+{
+    flex-grow: 1;
+}
+
+.flex_shrink
+{
+    flex-shrink: 1;
+}
+
+.small_footer
+{
+    font-size: x-small
+}

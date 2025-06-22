@@ -2,28 +2,33 @@ let absa_input=false;
 let ahw_input=false;
 let ad_input=false;
 
+window.onload = ()=>{
+	(document.getElementById("AgeHeightWeightRadio") as HTMLFormElement).checked = "checked";
+	SelectForm();
+};
+
 function SelectForm(){
-	absa_input = document.getElementById("AgeBSARadio").checked;
-    ahw_input = document.getElementById("AgeHeightWeightRadio").checked;
-	ad_input = document.getElementById("AgeDiameterRadio").checked;
+	absa_input = (document.getElementById("AgeBSARadio") as HTMLFormElement).checked;
+    ahw_input = (document.getElementById("AgeHeightWeightRadio") as HTMLFormElement).checked;
+	ad_input = (document.getElementById("AgeDiameterRadio") as HTMLFormElement).checked;
 	
 	if(absa_input)
     {
-		document.getElementById("div_absa").style.display= "inline";
-		document.getElementById("div_ahw").style.display= "none" ;
-		document.getElementById("div_ad").style.display= "none" ;
+		(document.getElementById("div_absa") as HTMLDivElement).style.display= "inline";
+		(document.getElementById("div_ahw") as HTMLDivElement).style.display= "none" ;
+		(document.getElementById("div_ad") as HTMLDivElement).style.display= "none" ;
     }
     else if(ahw_input)
     {
-		document.getElementById("div_absa").style.display= "none";
-		document.getElementById("div_ahw").style.display= "inline" ;
-		document.getElementById("div_ad").style.display= "none" ;
+		(document.getElementById("div_absa") as HTMLDivElement).style.display= "none";
+		(document.getElementById("div_ahw") as HTMLDivElement).style.display= "inline" ;
+		(document.getElementById("div_ad") as HTMLDivElement).style.display= "none" ;
     }
 	else if(ad_input)
     {
-		document.getElementById("div_absa").style.display= "none";
-		document.getElementById("div_ahw").style.display= "none" ;
-		document.getElementById("div_ad").style.display= "inline" ;
+		(document.getElementById("div_absa") as HTMLDivElement).style.display= "none";
+		(document.getElementById("div_ahw") as HTMLDivElement).style.display= "none" ;
+		(document.getElementById("div_ad") as HTMLDivElement).style.display= "inline";
 	}
 	
 	Update();
@@ -31,6 +36,7 @@ function SelectForm(){
 
 function Update()
 {
+	console.log("Updating");
 	if(absa_input)
     {
 		//console.log("Updating using ABSA function.");
@@ -50,7 +56,7 @@ function Update()
 function CalculateABSA(){
 	let Age = parseFloat(document.getElementById("Age").value);
     let BSA = parseFloat(document.getElementById("BSA_ABSA").value);
-	let ismale = document.getElementById("SexMan").checked;
+	let ismale = document.getElementById("SexIsMan").checked;
 	document.getElementById("CalculationResult").innerHTML = createText(Age,BSA,ismale);
 }
 
@@ -79,7 +85,7 @@ function CalculateAHW()
 	let coef_height =0.725;
     let BSA = coef1*Math.pow(Weight,coef_weight)*Math.pow(Height,coef_height);
 	//console.log(BSA);
-	let ismale = document.getElementById("SexMan").checked;
+	let ismale = document.getElementById("SexIsMan").checked;
 	document.getElementById("CalculationResult").innerHTML = createText(Age,BSA,ismale);
 }
 
@@ -87,7 +93,7 @@ function CalculateAD()
 {
 	let Age = parseFloat(document.getElementById("Age").value);
 	let ADiam = parseFloat(document.getElementById("aad_ad").value);
-	let ismale = document.getElementById("SexMan").checked;
+	let ismale = document.getElementById("SexIsMan").checked;
 
 	let guesses = new Object();
 	guesses.left = new Object();
@@ -286,11 +292,3 @@ function createText(Age, BSA, ismale) {
 	}
     return text;
 }
-
-$(window).on("load", function()
-{
-	document.getElementById("weight_units").onchange = Update;
-	document.getElementById("height_units").onchange = Update;
-	window.SelectForm();
-	window.Update();
-});
