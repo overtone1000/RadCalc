@@ -1,7 +1,5 @@
 # RadCalc
-## A collection of web-based radiology calculators
-
-Deployment scripts are available to conveniently update a server, but the calculators are simple html/js/css. Just clone or download this repository locally and open `src/index.html` to use the calculators without a server.
+# A collection of web-based radiology calculators
 
 ## Dependencies
 - [Simple CSS](https://github.com/kevquirk/simple.css): Directly included in the `src` directory
@@ -12,7 +10,6 @@ Deployment scripts are available to conveniently update a server, but the calcul
 - A development server can be started using podman via `dev/start.sh`
 
 ## Environment
-
 The repository is prepped for development using the nix package manager. The following files allow this
 ```
 .direnv
@@ -24,4 +21,3 @@ To enable this, `direnv` VSCode extension should installed on the system, and th
 
 ## To Do
 - [ ] Create deployment scripts
-- [ ] Confirm that typescript compiler output can be opened as a simple local site as described above

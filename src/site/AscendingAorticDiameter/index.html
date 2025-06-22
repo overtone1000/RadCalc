@@ -10,18 +10,18 @@
 	<link rel="stylesheet" href="lib/simple.min.css">
 	<link rel="stylesheet" href="css/global.css">
 
-	<script src="js/AA.js"></script>
+	<script type="module" src="js/AA.js"></script>
   </head>
 	
   <body class="cols">
 
 	<!-- Main Container -->
-	<div class="main fill_vertical cols">
+	<div class="main fill_vertical cols margin">
 		<div class="rows grow_vertically space_evenly">
 			<div class="cols half_width">
 				<div class="cols">
 					<h4>Input Type</h4>
-					<form onchange="SelectForm()">
+					<form id="input_type">
 						<input id="AgeBSARadio" id="absa" checked name="input_type_radio_group" type="radio" value="absa" class="radio_style"><label for="absa">Age and BSA</label><br>
 						<input id="AgeHeightWeightRadio" id="ahw" name="input_type_radio_group" type="radio" value="ahw" class="radio_style"><label for="ahw">Age, Height, and Weight</label><br> 
 						<input id="AgeDiameterRadio" id="ahw" name="input_type_radio_group" type="radio" value="ahw" class="radio_style"><label for="ahw">Age and Aortic Diameter</label><br> 
@@ -31,7 +31,7 @@
 						<h4>Parameters</h4>
 						<div>
 							<div id="age">
-							<form id="form_age" onchange="Update()">
+							<form id="form_age">
 							Age:
 							<input id="Age" type="number" step="any" value="60"/> years<br>
 							<input type="submit" disabled="true" style="display:none">
@@ -39,7 +39,7 @@
 							</div>
 
 							<div id="div_absa">
-							<form id="form_absa" onchange="Update()">
+							<form id="form_absa">
 							Body surface area:
 							<input id="BSA_ABSA"  type="number" step="any" value="1.8"/> m<sup>2</sup><br>
 							<input type="submit" disabled="true" style="display:none">
@@ -47,19 +47,19 @@
 							</div>
 
 							<div id="div_ahw">
-							<form id="form_ahw" onchange="Update()">
+							<form id="form_ahw">
 							Height:
 							<input id="height_AHW"  type="number" step="any" value="180"/>
-							<select id="height_units" onchange="Update()" value="cm">
-								<option value="cm">cm</option>
+							<select id="height_units" value="cm">
+								<option value="cm" selected>cm</option>
 								<option value="in">in</option>
 							</select>
 							<br>
 
 							Weight:
 							<input id="weight_AHW"  type="number" step="any" value="70"/>
-							<select id="weight_units" onchange="Update()" value="kg">
-								<option value="kg">kg</option>
+							<select id="weight_units" value="kg">
+								<option value="kg" selected>kg</option>
 								<option value="lb">lb</option>
 							</select>
 							<br>
@@ -68,7 +68,7 @@
 							</div>
 
 							<div id="div_ad">
-							<form id="form_ad" onchange="Update()">
+							<form id="form_ad">
 							Ascending aortic diameter:
 							<input id="aad_ad"  type="number" step="any" value="2.5"/> cm<br>
 							<input type="submit" disabled="true" style="display:none">
@@ -77,7 +77,7 @@
 						</div>
 							
 						<div>
-							<form id="form_sex"  onchange="Update()">
+							<form id="form_sex" >
 							<input id="SexIsMan" name="Sex" type="radio" value="man" class="radio_style"> Man <br>
 							<input id="SexIsWoman" checked="checked" name="Sex" type="radio" value="woman"> Woman <br> 
 							</form>

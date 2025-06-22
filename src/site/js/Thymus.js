@@ -1,7 +1,5 @@
 "use strict";
-function CalculateABSA() {
-}
-function Calculate() {
+function Calculate_Thymus() {
     var thymus_in = parseFloat(document.getElementById("thymus_in").value);
     var thymus_out = parseFloat(document.getElementById("thymus_out").value);
     var muscle_in = parseFloat(document.getElementById("muscle_in").value);
@@ -15,5 +13,5 @@ function Calculate() {
     document.getElementById("CalculationResult").innerHTML = text;
 }
 $(window).on("load", function () {
-    window.Calculate();
+    window.Calculate_Thymus();
 });
