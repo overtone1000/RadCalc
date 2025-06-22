@@ -10,37 +10,46 @@
 	<link rel="stylesheet" href="lib/simple.min.css">
 	<link rel="stylesheet" href="css/global.css">
 
-	<script src="js/Thymus.js"></script>
+	<script type="module" src="js/Thymus.js"></script>
   </head>
-  <body>
+  <body class="cols">
 
 	<!-- Main Container -->
-	<div  class="container-fluid bg-dark text-white container-full">
-		<div id="div_form">
-		<form id="form_intensities" onchange="Calculate_Thymus()">
-		Thymic Intensity on In-Phase:
-		<input id="thymus_in"  type="number" step="any" value="1" class="tb_style"/><br><br>
-		Thymic Intensity on Out-of-Phase:
-		<input id="thymus_out"  type="number" step="any" value="1" class="tb_style"/><br><br>
-		<br>
-		Paraspinal Muscular Intensity on In-Phase:
-		<input id="muscle_in"  type="number" step="any" value="1" class="tb_style"/><br><br>
-		Paraspinal Muscular Intensity on Out-of-Phase:
-		<input id="muscle_out"  type="number" step="any" value="1" class="tb_style"/><br><br>
-		<input type="submit" disabled="true" style="display:none">
-		</form>
+	<div class="main fill_vertical cols margin">
+		<div class="rows grow_vertically space_evenly">
+			<div class="cols half_width">
+				<div class="cols">
+					<h4>Parameters</h4>
+					<form id="form_intensities" onchange="Calculate_Thymus()">
+					Thymic Intensity on In-Phase:
+					<input id="thymus_in"  type="number" step="any" value="1"/><br>
+					Thymic Intensity on Out-of-Phase:
+					<input id="thymus_out"  type="number" step="any" value="1"/><br>
+					<br>
+					Paraspinal Muscular Intensity on In-Phase:
+					<input id="muscle_in"  type="number" step="any" value="1"/><br>
+					Paraspinal Muscular Intensity on Out-of-Phase:
+					<input id="muscle_out"  type="number" step="any" value="1"/><br>
+					<input type="submit" disabled="true" style="display:none">
+					</form>
+				</div>
+			<div class="cols half_width">
+				<p id="CalculationResult"></p>
+			</div>
 		</div>
-		
-		<p id="CalculationResult"></p>
-
-		<div class="mt-5 mb-3" style="font-size:0.75rem">
-			Sources:
-			[1] A. M. Priola et al., "Differentiation of Rebound and Lymphoid Thymic Hyperplasia from Anterior Mediastinal Tumors with Dual-Echo Chemical-Shift MR Imaging in Adulthood: Reliability of the Chemical-Shift Ratio and Signal Intensity Index," Radiology, vol. 274, no. 1, pp. 238-249, Aug. 2014.
+	</div>
+	<div class="cols centered flex_shrink">
+		<div class="small_footer">
+			Sources: <br>
+			<ol>
+				<li>
+					<a href="https://pubmed.ncbi.nlm.nih.gov/25105246/">
+					A. M. Priola et al., "Differentiation of Rebound and Lymphoid Thymic Hyperplasia from Anterior Mediastinal Tumors with Dual-Echo Chemical-Shift MR Imaging in Adulthood: Reliability of the Chemical-Shift Ratio and Signal Intensity Index," Radiology, vol. 274, no. 1, pp. 238-249, Aug. 2014.
+					</a>
+				</li>
+			</ol>
 		</div>
 			
-		<div class="mb-3" style="font-size:0.75rem">
-			Disclaimer: All calculations should be confirmed by comparison to the referenced data. The author makes no claims of the accuracy or utility of the referenced data. This tool should not be used alone to guide patient care or as a substitute for clinical judgment. Reliance upon this tool is solely at the user's risk. The author assumes no liability or responsibility for damage or injury arising from any use of this tool.
-		</div>
-		</div>
+		<div>This software is made available under the <a href="license"> MIT License</a>.</div>
 	</div>
 </body>
