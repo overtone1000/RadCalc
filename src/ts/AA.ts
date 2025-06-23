@@ -1,4 +1,4 @@
-import { createText } from "./AA/text.js"; //must include .js for this to work in the browser
+import { copy, createText, createTextAD } from "./AA/text.js"; //must include .js for this to work in the browser
 import { CalculateAAo } from "./AA/AAo.js"; //must include .js for this to work in the browser
 
 let absa_input=false;
@@ -16,6 +16,8 @@ window.onload = ()=>{
 	(document.getElementById("form_ad") as HTMLFormElement).onchange=Update;
 	(document.getElementById("form_sex") as HTMLFormElement).onchange=Update;
 
+	(document.getElementById("copy-button") as HTMLFormElement).onclick=copy;
+	
 	SelectForm();
 };
 
@@ -178,18 +180,5 @@ function CalculateAD()
 		}
 	}
 
-	let Sex;
-	if(ismale)
-	{
-		Sex = "man";
-	}
-	else{
-		Sex = "woman";
-	}
-
-	let text = "For a ";
-    text = text + "<b><font color=\"#42f4eb\">" + Age.toFixed(0) + "</font></b> year old <font color=\"#42f4eb\">" + Sex + "</font>";
-    text = text + " an ascending aortic diameter of <b><font color=\"#42f4eb\">" + ADiam.toFixed(2) + "</font></b> cm";	
-    text = text + " would be less than the 95<sup>th</sup> percentile if the patient's BSA is greater than <b><font color=\"#edca4e\">" + guesses.last!.BSA.toFixed(2) + "</font></b> m<sup>2</sup>.";
-    (document.getElementById("CalculationResult") as HTMLElement).innerHTML = text;
+	createTextAD(Age, guesses.last!.BSA, ADiam, ismale);
 }

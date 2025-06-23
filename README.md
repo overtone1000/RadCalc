@@ -4,6 +4,7 @@
 ## Dependencies
 - [Simple CSS](https://github.com/kevquirk/simple.css): Directly included in the `src` directory
 - NodeJS - Installs development dependencies such is linter, prettier, and typescript compiler (see `package.json`)
+- mdi/js - Nice SVG icons. Directly included in the `src` directory.
 
 ## Development
 - Build tasks are in `.vscode/tasks.json`

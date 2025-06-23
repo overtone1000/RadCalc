@@ -70,3 +70,16 @@
     margin-top: 0px;
     margin-bottom: 10px;
 }
+
+.iconbutton
+{
+  width: 50px;
+  height: 50px;
+  margin: 0px;
+}
+
+.iconsvg
+{
+    width: 25px;
+    height: 25px;
+}
