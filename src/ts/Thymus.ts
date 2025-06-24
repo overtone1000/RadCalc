@@ -48,11 +48,11 @@ function Calculate_Thymus() {
 		(document.getElementById("copy-button") as HTMLFormElement).disabled=true;
 
 		text="Please provide ";
-		if(values_not_ready.length==1)
+		if(values_not_ready.length===1)
 		{
 			text+=values_not_ready[0]+".";
 		}
-		else if(values_not_ready.length==2)
+		else if(values_not_ready.length===2)
 		{
 			text+=values_not_ready[0]+" and "+values_not_ready[1];
 		}

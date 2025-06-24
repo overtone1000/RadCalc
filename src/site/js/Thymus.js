@@ -30,10 +30,10 @@ function Calculate_Thymus() {
     if (values_not_ready.length > 0) {
         document.getElementById("copy-button").disabled = true;
         text = "Please provide ";
-        if (values_not_ready.length == 1) {
+        if (values_not_ready.length === 1) {
             text += values_not_ready[0] + ".";
         }
-        else if (values_not_ready.length == 2) {
+        else if (values_not_ready.length === 2) {
             text += values_not_ready[0] + " and " + values_not_ready[1];
         }
         else {

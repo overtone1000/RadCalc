@@ -1,112 +1,137 @@
-"use strict";
-class Datum {
-    constructor(date_input, diameter_input1, diameter_input2, diameter_input3, volume_div) {
-        this.date_input = date_input;
-        this.diameter_inputs = [diameter_input1, diameter_input2, diameter_input3];
-        this.volume_div = volume_div;
-        this.volume = null;
-        this.date = null;
-        this.date_input.addEventListener("change", function () { this.update(); }.bind(this), false);
-        for (let d in this.diameter_inputs) {
-            let input = this.diameter_inputs[d];
-            input.addEventListener("change", function () { this.update(); }.bind(this), false);
+import { newline } from "./globals.js";
+let data;
+let text_for_copy = "";
+const ms_per_year = 1000 * 60 * 60 * 24;
+window.onload = () => {
+    document.getElementById("copy-button").onclick = copy;
+    data = [
+        {
+            date_input: document.getElementById("Date1"),
+            diameter_inputs: [
+                document.getElementById("D11"),
+                document.getElementById("D12"),
+                document.getElementById("D13")
+            ],
+            volume_div: document.getElementById("V1"),
+        },
+        {
+            date_input: document.getElementById("Date2"),
+            diameter_inputs: [
+                document.getElementById("D21"),
+                document.getElementById("D22"),
+                document.getElementById("D23")
+            ],
+            volume_div: document.getElementById("V2"),
         }
-        console.debug(this);
+    ];
+    for (const datum of data) {
+        initialize_Datum(datum);
+        update_Datum(datum);
     }
-    update() {
-        let num = 0;
-        let denom = 0;
-        let vals = new Array();
-        let blank = true;
-        for (let d in this.diameter_inputs) {
-            let input = this.diameter_inputs[d];
-            let val = parseFloat(input.value);
-            vals.push(val);
+    update_result();
+};
+function initialize_Datum(datum) {
+    let update_func = () => { update_Datum(datum); };
+    datum.date_input.addEventListener("change", update_func, false);
+    for (let di of datum.diameter_inputs) {
+        di.addEventListener("change", update_func, false);
+    }
+}
+function update_Datum(datum) {
+    let num = 0;
+    let denom = 0;
+    let vals = [];
+    let blank = true;
+    for (let input of datum.diameter_inputs) {
+        let val = parseFloat(input.value);
+        vals.push(val);
+    }
+    for (let val of vals) {
+        if (!Number.isNaN(val)) {
+            num += val;
+            denom += 1;
+            blank = false;
         }
-        for (let val of vals) {
-            if (!Number.isNaN(val)) {
-                num += val;
-                denom += 1;
-                blank = false;
-            }
+    }
+    if (blank) {
+        datum.volume = undefined;
+        datum.volume_div.innerHTML = "";
+        for (let d in datum.diameter_inputs) {
+            let input = datum.diameter_inputs[d];
+            input.setAttribute("placeholder", "Diameter " + (parseInt(d) + 1));
         }
-        if (blank) {
-            this.volume = null;
-            this.volume_div.innerHTML = "";
-            for (let d in this.diameter_inputs) {
-                let input = this.diameter_inputs[d];
-                input.setAttribute("placeholder", "Diameter " + (parseInt(d) + 1));
-            }
+        return;
+    }
+    let mean_d = num / denom;
+    for (let n in vals) {
+        let val = vals[n];
+        if (Number.isNaN(val)) {
+            vals[n] = mean_d;
+            let input = datum.diameter_inputs[n];
+            input.setAttribute("placeholder", mean_d + " (calculated estimate)");
+        }
+    }
+    datum.volume = Math.PI / 6;
+    for (let val of vals) {
+        datum.volume *= val;
+    }
+    datum.date = datum.date_input.valueAsDate;
+    datum.volume_div.innerHTML = datum.volume.toFixed(2);
+    update_result();
+}
+function update_result() {
+    const result_div = document.getElementById("CalculationResult");
+    while (result_div.lastChild) {
+        result_div.removeChild(result_div.lastChild);
+    }
+    for (const datum of data) {
+        if (!datum.volume || !datum.date) {
+            let subresdiv = document.createElement("div");
+            subresdiv.innerHTML = "Complete the table to get a result.";
+            result_div.appendChild(subresdiv);
+            document.getElementById("copy-button").disabled = true;
             return;
         }
-        let mean_d = num / denom;
-        console.debug("Mean diameter = " + mean_d);
-        for (let n in vals) {
-            let val = vals[n];
-            if (Number.isNaN(val)) {
-                vals[n] = mean_d;
-                let input = this.diameter_inputs[n];
-                input.setAttribute("placeholder", mean_d + " (calculated)");
-            }
-        }
-        this.volume = Math.PI / 6;
-        for (let val of vals) {
-            this.volume *= val;
-        }
-        this.date = moment(this.date_input.value);
-        this.volume_div.innerHTML = this.volume.toFixed(2);
-        results.update();
     }
-}
-class NetResult {
-    constructor(div) {
-        this.div = div;
-        this.data = new Array();
-    }
-    addDatum(datum) {
-        this.data.push(datum);
-    }
-    update() {
-        let temparr = new Array();
-        for (const index in this.data) {
-            let datum = this.data[index];
-            if (datum.volume !== null && datum.date !== null) {
-                temparr.push(datum);
-            }
+    data.sort(function (a, b) {
+        if (a.date < b.date) {
+            return -1;
         }
-        temparr.sort(function (a, b) {
-            console.debug(a);
-            if (a.date.isBefore(b.date)) {
-                return -1;
+        else {
+            return +1;
+        }
+        ;
+    });
+    for (let n = 0; n < data.length - 1; n++) {
+        let subresdiv = document.createElement("div");
+        let milliseconds = data[1].date.getTime() - data[0].date.getTime();
+        let days = milliseconds / ms_per_year;
+        let vrat = data[1].volume / data[0].volume;
+        let doublingtime = Math.log(2) * days / Math.log(vrat);
+        let change_description;
+        if (vrat > 1) {
+            let unit;
+            if (doublingtime === 1) {
+                unit = " day.";
             }
             else {
-                return +1;
+                unit = " days.";
             }
-            ;
-        });
-        while (this.div.firstChild) {
-            this.div.removeChild(this.div.lastChild);
+            change_description = "increased by " + ((vrat - 1) * 100).toFixed(0) + "%. Volumetric doubling time is " + doublingtime.toFixed(0) + unit;
         }
-        for (let n = 0; n < temparr.length - 1; n++) {
-            let subresdiv = document.createElement("div");
-            let days = temparr[1].date.diff(temparr[0].date, "days");
-            let vrat = temparr[1].volume / temparr[0].volume;
-            let doublingtime = Math.log(2) * days / Math.log(vrat);
-            subresdiv.innerHTML = "Interval " + (n + 1) + " is " + days.toFixed(0) + " days. Volume ratio is " + vrat.toFixed(2) + "." + " Doubling time is " + doublingtime.toFixed(0) + " days.";
-            this.div.appendChild(subresdiv);
+        else if (vrat === 1) {
+            change_description = "did not change.";
         }
+        else {
+            change_description = "decreased by " + ((1 - vrat) * 100).toFixed(0) + "%.";
+        }
+        let text = "In " + days.toFixed(0) + " days, the volume " + change_description;
+        text_for_copy += text + newline;
+        subresdiv.innerHTML += text;
+        result_div.appendChild(subresdiv);
+        document.getElementById("copy-button").disabled = false;
     }
 }
-let datum1;
-let datum2;
-let results;
-$(window).on("load", function () {
-    datum1 = new Datum(document.getElementById("Date1"), document.getElementById("D11"), document.getElementById("D12"), document.getElementById("D13"), document.getElementById("V1"));
-    datum2 = new Datum(document.getElementById("Date2"), document.getElementById("D21"), document.getElementById("D22"), document.getElementById("D23"), document.getElementById("V2"));
-    results = new NetResult(document.getElementById("CalculationResult"));
-    datum1.update();
-    datum2.update();
-    results.addDatum(datum1);
-    results.addDatum(datum2);
-    results.update();
-});
+export function copy() {
+    navigator.clipboard.writeText(text_for_copy);
+}

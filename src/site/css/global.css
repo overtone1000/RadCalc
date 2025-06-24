@@ -48,6 +48,11 @@
     width:50%;
 }
 
+.full_width
+{
+    width:100%;
+}
+
 .grow_vertically
 {
     flex-grow: 1;
@@ -82,4 +87,15 @@
 {
     width: 25px;
     height: 25px;
+}
+
+.doublingtext
+{
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.bottom_margin
+{
+    margin-bottom: 20px;
 }
