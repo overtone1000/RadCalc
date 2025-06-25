@@ -19,3 +19,9 @@ scp -r ../src/site root@$SERVER_IP:/tmp/radcalc/
 
 echo Running script
 ssh -T $SSH_DEST "bash /tmp/radcalc/onserverscript.sh"
+
+echo "Does this warrant a version update? If so..."
+echo "Iterate the version on the main page"
+echo "Update the roadmap"
+echo "Git commit"
+echo "Publish a release on github"
