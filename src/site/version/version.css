@@ -11,3 +11,25 @@
     align-content: center;
     margin-right: 20px;
 }
+
+.left_border
+{
+    border-width: 1px;
+    border-left-style: solid;
+}
+
+.left_padding
+{
+    padding-left: 10px;
+}
+
+.height100percent
+{
+    min-height: 100%;
+    overflow-y: auto;
+}
+
+.overflow
+{
+    overflow-y: auto;
+}

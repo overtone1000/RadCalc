@@ -11,40 +11,48 @@
 	<link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="version/version.css">
   </head>
-  <body class="main fill_vertical">
-    <div class="grow_vertically cols">
-      <div class="grow_vertically cols">
-        <div class="cols">
-          <h3>Version History</h3>
-          <div class="cols">
-            <div class="rows version_row">
-              <div class="version_cell">2.0</div>
-              <div class="cols">
-                <div>☑ Switch from bootstrap to <a href="https://simplecss.org/"">simple.css</a></div>
-                <div>☑ Get rid of jquery dependency</a></div>
-                <div>☑ Copy buttons for results</a></div>
+  <body class="main cols fill_vertical">
+    <div class="flex_grow height100percent cols">
+        <div class="rows flex_grow">
+          <div class="cols half_width left_padding height100percent">
+            <h3>Version History</h3>
+            <div class="flex_grow flex_shrink overflow">
+              <div class="rows version_row">
+                <div class="version_cell">2.0</div>
+                <div class="cols">
+                  <div>☑ Switch from bootstrap to <a href="https://simplecss.org/"">simple.css</a></div>
+                  <div>☑ Get rid of jquery dependency</a></div>
+                  <div>☑ Copy buttons for results</a></div>
+                </div>
               </div>
             </div>
           </div>
-          <h3>Roadmap</h3>
-          <h4>Planned</h4>
-          <ul>
-              <li>☐ <a href="https://www.sciencedirect.com/science/article/pii/S0022522317327691?pes=vor&utm_source=rsna&getft_integrator=rsna">
-                Use data requiring only height in adults that also provides risk estimate</a></li>
-              <li>☐ Volume calculator that detects three axis measurements in copied text and outputs the copied text with volumes added.</li>
-              <li>☐ Volume calculator with ellipsoid, prostate, and spleen equations.</li>
-          </ul>
-          <h4>Deferring For Now</h4>
-          <ul>
-              <li>☐ <a href="https://www.sciencedirect.com/science/article/abs/pii/000291498990430X?via%3Dihub">
-                Use better data for aortic root (especially in children)</a></li>
-              <li>☐ Complete pediatric renal length calculator</li>
-          </ul>
+          <div class="cols half_width left_border left_padding height100percent">
+            <h3>Roadmap</h3>
+            <div class="flex_grow flex_shrink overflow">
+              <h4>Planned</h4>
+              <ul>
+                  <li>☐ <a href="https://www.sciencedirect.com/science/article/pii/S0022522317327691?pes=vor&utm_source=rsna&getft_integrator=rsna">
+                    Use data requiring only height in adults that also provides risk estimate</a></li>
+                  <li>☐ Volume calculator that detects three axis measurements in copied text and outputs the copied text with volumes added.</li>
+                  <li>☐ Volume calculator with ellipsoid, prostate, and spleen equations.</li>
+              </ul>
+              <h4>Considering</h4>
+              <ul>
+                  <li>☐ Add warnings when aortic diameter is at treatment thresholds (including for those with genetic aortopathies)</li>
+                  <li>☐ Add warnings about aortic diameter hinge points</li>
+              </ul>
+              <h4>Deferring For Now</h4>
+              <ul>
+                  <li>☐ <a href="https://www.sciencedirect.com/science/article/abs/pii/000291498990430X?via%3Dihub">
+                    Use better data for aortic root (especially in children)</a></li>
+                  <li>☐ Complete pediatric renal length calculator</li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
       <div class="flex_shrink centered cols">
         <div>If you have a request or see something in the deferred list that you'd use, <a href="https://github.com/overtone1000">contact me</a>!</div>
       </div>
-    </div>
   </body>
 </html>
