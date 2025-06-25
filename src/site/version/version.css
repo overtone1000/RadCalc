@@ -1,0 +1,13 @@
+
+.version_row
+{
+    border-width: 1px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+}
+
+.version_cell
+{
+    align-content: center;
+    margin-right: 20px;
+}
