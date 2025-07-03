@@ -5,76 +5,32 @@ let absa_input=false;
 let ahw_input=false;
 let ad_input=false;
 
-window.onload = ()=>{
-	(document.getElementById("AgeHeightWeightRadio") as HTMLFormElement).checked = "checked";
-	(document.getElementById("input_type") as HTMLFormElement).onchange=SelectForm;
-	(document.getElementById("form_age") as HTMLFormElement).onchange=Update;
-	(document.getElementById("form_absa") as HTMLFormElement).onchange=Update;
-	(document.getElementById("form_ahw") as HTMLFormElement).onchange=Update;
-	(document.getElementById("height_units") as HTMLFormElement).onchange=Update;
-	(document.getElementById("weight_units") as HTMLFormElement).onchange=Update;
-	(document.getElementById("form_ad") as HTMLFormElement).onchange=Update;
-	(document.getElementById("form_sex") as HTMLFormElement).onchange=Update;
+//window.onload = ()=>{
+	//(document.getElementById("AgeHeightWeightRadio") as HTMLFormElement).checked = "checked";
+	//(document.getElementById("input_type") as HTMLFormElement).onchange=SelectForm;
+	//(document.getElementById("form_age") as HTMLFormElement).onchange=Update;
+	//(document.getElementById("form_absa") as HTMLFormElement).onchange=Update;
+	//(document.getElementById("form_ahw") as HTMLFormElement).onchange=Update;
+	//(document.getElementById("height_units") as HTMLFormElement).onchange=Update;
+	//(document.getElementById("weight_units") as HTMLFormElement).onchange=Update;
+	//(document.getElementById("form_ad") as HTMLFormElement).onchange=Update;
+	//(document.getElementById("form_sex") as HTMLFormElement).onchange=Update;
 
-	(document.getElementById("copy-button") as HTMLFormElement).onclick=copy;
+	//(document.getElementById("copy-button") as HTMLFormElement).onclick=copy;
 	
-	SelectForm();
-};
+	//SelectForm();
+//};
 
-function SelectForm(){
-	absa_input = (document.getElementById("AgeBSARadio") as HTMLFormElement).checked;
-    ahw_input = (document.getElementById("AgeHeightWeightRadio") as HTMLFormElement).checked;
-	ad_input = (document.getElementById("AgeDiameterRadio") as HTMLFormElement).checked;
-	
-	if(absa_input)
-    {
-		(document.getElementById("div_absa") as HTMLDivElement).style.display= "inline";
-		(document.getElementById("div_ahw") as HTMLDivElement).style.display= "none" ;
-		(document.getElementById("div_ad") as HTMLDivElement).style.display= "none" ;
-    }
-    else if(ahw_input)
-    {
-		(document.getElementById("div_absa") as HTMLDivElement).style.display= "none";
-		(document.getElementById("div_ahw") as HTMLDivElement).style.display= "inline" ;
-		(document.getElementById("div_ad") as HTMLDivElement).style.display= "none" ;
-    }
-	else if(ad_input)
-    {
-		(document.getElementById("div_absa") as HTMLDivElement).style.display= "none";
-		(document.getElementById("div_ahw") as HTMLDivElement).style.display= "none" ;
-		(document.getElementById("div_ad") as HTMLDivElement).style.display= "inline";
-	}
-	
-	Update();
-}
 
-function Update()
-{
-	console.log("Updating");
-	if(absa_input)
-    {
-		//console.log("Updating using ABSA function.");
-		CalculateABSA();
-    }
-    else if(ahw_input)
-    {
-		//console.log("Updating using AHW function.");
-		CalculateAHW();
-    }
-	else if(ad_input)
-    {
-		CalculateAD()
-    }
-}
 
-function CalculateABSA(){
+export function CalculateABSA(){
 	let Age = parseFloat((document.getElementById("Age") as HTMLFormElement).value);
     let BSA = parseFloat((document.getElementById("BSA_ABSA") as HTMLFormElement).value);
 	let ismale = (document.getElementById("SexIsMan") as HTMLFormElement).checked;
 	(document.getElementById("CalculationResult") as HTMLFormElement).innerHTML = createText(Age,BSA,ismale);
 }
 
-function CalculateAHW()
+export function CalculateAHW()
 {
 	let height_conversion_factor = 0;
 	let weight_conversion_factor = 0;
@@ -162,7 +118,7 @@ function iterate_guesses(guesses:Guesses)
 	console.debug(guesses.right);
 }
 
-function CalculateAD()
+export function CalculateAD()
 {
 	let Age = parseFloat((document.getElementById("Age") as HTMLFormElement).value);
 	let ADiam = parseFloat((document.getElementById("aad_ad") as HTMLFormElement).value);

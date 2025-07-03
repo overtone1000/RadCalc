@@ -5,8 +5,8 @@
 	import type { MouseEventHandler } from "svelte/elements";
 	import DexaMeasurements from "./dexa_measurements.svelte";
 	import { getSpineField, type DEXA_Measurements, type SpineField } from "./ts/dexa/basic_types";
-	import DexaComparison from "./dexa_comparison.svelte";
 	import { generate_report, report_to_clipboard, windows_newline } from "./ts/dexa/generate_report";
+	import DexaComparison from "./dexa_comparison.svelte";
     
     let last_raw_ingest:string|undefined=undefined;
 
