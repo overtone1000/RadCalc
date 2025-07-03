@@ -25,7 +25,7 @@
     let weight_units:"kg"|"lb" = $state("kg");
     let height_units:"in"|"cm" = $state("cm");
     let AAo_diameter:number|undefined = $state(undefined);
-    let sex:"male"|"female" = $state("male");
+    let sex:"man"|"woman" = $state("male");
     let result:Result|undefined = $state(undefined);
     let result_inner_html:string|undefined = $state(undefined);
 
@@ -203,8 +203,8 @@
                         
                     <div>
                         <form id="form_sex" onchange={Update}>
-                            <input id="SexIsMan" name="Sex" type="radio" value="male" class="radio_style" bind:group={sex}> Man <br>
-                            <input id="SexIsWoman" name="Sex" type="radio" value="female" bind:group={sex}> Woman <br> 
+                            <input id="SexIsMan" name="Sex" type="radio" value="man" class="radio_style" bind:group={sex}> Man <br>
+                            <input id="SexIsWoman" name="Sex" type="radio" value="woman" bind:group={sex}> Woman <br> 
                         </form>
                     </div>
                 </div>
@@ -212,15 +212,15 @@
         </div>
                 
         <div class="cols half_width">
-                <h4>Result</h4>
                 {#if result!==undefined}
+                    <h4>Result</h4>
                     <p id="CalculationResult">{@html result.html}</p>
-                {/if}
-                <button aria-label="copy" class="iconbutton" id="copy-button" onclick={copy}>
+                    <button aria-label="copy" class="iconbutton" id="copy-button" onclick={copy}>
                     <svg viewBox="0 0 24 24">
                             <path class="iconsvg" d={mdiContentCopy}/>
                     </svg>
                 </button>
+                {/if}
         </div>
     </div>
 

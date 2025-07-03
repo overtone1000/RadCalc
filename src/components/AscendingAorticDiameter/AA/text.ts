@@ -20,7 +20,7 @@ function createWarning(parameter:string, is_low:boolean)
 	return "<font color=\"#ff0000\">Caution: The patient's " + parameter + " " + low_or_high_phrase + " for the study population.</font><br>"
 }
 
-export function createText(Age:number, BSA:number, sex:"male"|"female"):Result{
+export function createText(Age:number, BSA:number, sex:"man"|"woman"):Result{
 
 	let calc = CalculateAAo(Age, BSA, sex);
 	let Sex;
@@ -36,7 +36,7 @@ export function createText(Age:number, BSA:number, sex:"male"|"female"):Result{
 	text_for_copy += "Ascending aortic diameter 95th percentile: " + calc.AA95th.toFixed(2) + " cm" + newline;
 	text_for_copy += "Sinus of Valsalva diameter 95th percentile: " + calc.Sinus95th.toFixed(2) + " cm";
 
-	if(sex==="male")
+	if(sex==="man")
 	{
 		const age_lower_bound_male = 42.9-13.6*2;
 		const age_upper_bound_male = 42.9+13.6*2;
@@ -92,7 +92,7 @@ export function createText(Age:number, BSA:number, sex:"male"|"female"):Result{
 	}
 }
 
-export function createTextAD(Age:number, BSA:number, ADiam:number, sex:"male"|"female"):Result
+export function createTextAD(Age:number, BSA:number, ADiam:number, sex:"man"|"woman"):Result
 {
 	const line1 = "For a ";
 	const line2 = ", an ascending aortic diameter of ";

@@ -1,4 +1,4 @@
-export function CalculateAAo(Age:number, BSA:number, sex:"male"|"female")
+export function CalculateAAo(Age:number, BSA:number, sex:"man"|"woman")
 {
     let alpha_AAo=0;
     let beta_AAo=0;
@@ -9,7 +9,7 @@ export function CalculateAAo(Age:number, BSA:number, sex:"male"|"female")
     let gamma_Sinus=0;
     let delta_Sinus=0;
 
-    if(sex==="male")
+    if(sex==="man")
     {
     	alpha_AAo = 1.691;
     	beta_AAo = 0.028;

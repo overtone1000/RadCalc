@@ -5,6 +5,8 @@ type Guess = {
 	AA95th:number
 };
 
+export type Sex = "man"|"woman";
+
 export type Guesses =
 {
 	left:Guess,
@@ -12,11 +14,11 @@ export type Guesses =
 	last?:Guess,
 	Age:number,
 	ADiam:number,
-	sex:"male"|"female",
+	sex:"man"|"woman",
 	err:number
 };
 
-function get_guess(Age:number, BSA:number, sex:"male"|"female"):Guess
+function get_guess(Age:number, BSA:number, sex:"man"|"woman"):Guess
 {
 	return {
 		BSA:BSA,
@@ -24,7 +26,7 @@ function get_guess(Age:number, BSA:number, sex:"male"|"female"):Guess
 	};
 }
 
-export function initialize_guesses(Age:number, ADiam:number, sex:"male"|"female"):Guesses
+export function initialize_guesses(Age:number, ADiam:number, sex:"man"|"woman"):Guesses
 {
 	let low_init_BSA=1.5;
 	let hight_init_BSA=2.0;
