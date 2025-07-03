@@ -1,0 +1,82 @@
+<script lang="ts">
+	import { mdiContentCopy } from "@mdi/js";
+
+
+</script>
+
+<div id="body_container" class="main fill_vertical fill_horizontal cols centered">
+    <div class="cols flex_grow">
+        <div class="cols centered">
+            <table>
+                <thead>
+                <tr class="centered">
+                    <th>Date of Exam</th>
+                    <th>Diameter 1 (u)</th>
+                    <th>Diameter 2 (u)</th>
+                    <th>Diameter 3 (u)</th>
+                    <th>Volume u<sup>3</sup></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="centered">
+                    <td><input type="date" id="Date1" placeholder="Date of Exam"></td>
+                    <td><input type="number" step="any" id="D11" placeholder="Diameter 1"></td>
+                    <td><input type="number" step="any" id="D12" placeholder="Diameter 2"></td>
+                    <td><input type="number" step="any" id="D13" placeholder="Diameter 3"></td>
+                    <td id="V1" style="vertical-align:middle"></td>
+                </tr>
+                <tr class="centered">
+                    <td><input type="date" id="Date2" placeholder="Date of Exam"></td>
+                    <td><input type="number" step="any" id="D21" placeholder="Diameter 1"></td>
+                    <td><input type="number" step="any" id="D22" placeholder="Diameter 2"></td>
+                    <td><input type="number" step="any" id="D23" placeholder="Diameter 3"></td>
+                    <td id="V2" style="vertical-align:middle"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="cols doublingtext">
+                <ul>
+                <li>Measurements should be orthogonal.</li>
+                <li>This calculator uses the ellipsoid formula for volume and is inaccurate for objects that do not have an approximately ellipsoid shape.</li>
+                <li>Approximately 20% of lung cancers have a doubling time > 400 days.<sup>1,2</sup></li>
+                </ul>
+                <div class="cols">
+                    <h4>Result</h4>
+                    <div class="bottom_margin" id="CalculationResult"></div>
+                    <button aria-label="copy" class="iconbutton" id="copy-button">
+                        <svg viewBox="0 0 24 24">
+                                <path class="iconsvg" d={mdiContentCopy}/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="cols centered flex_shrink">
+        <div class="small_footer">
+            Sources: <br>
+            <ol>
+                <li>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/11205667/">
+                    Hasegawa M, Sone S, Takashima S, Li F, Yang ZG, Maruyama Y, Watanabe T. Growth rate of small lung cancers detected on mass CT screening. Br J Radiol. 2000 Dec;73(876):1252-9. doi: 10.1259/bjr.73.876.11205667. PMID: 11205667.
+                    </a>
+                </li>
+        <li>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/19250697/">
+                    Honda O, Johkoh T, Sekiguchi J, Tomiyama N, Mihara N, Sumikawa H, Inoue A, Yanagawa M, Daimon T, Okumura M, Nakamura H. Doubling time of lung cancer determined using three-dimensional volumetric software: comparison of squamous cell carcinoma and adenocarcinoma. Lung Cancer. 2009 Nov;66(2):211-7. doi: 10.1016/j.lungcan.2009.01.018. Epub 2009 Feb 28. PMID: 19250697.
+                    </a>
+                </li>
+            </ol>
+        </div>
+        <div>This software is made available under the <a href="license"> MIT License</a>.</div>
+    </div>
+</div>
+
+<style>
+    @import "../global.css";
+
+    tr.centered {
+        align:center;
+    }
+</style>

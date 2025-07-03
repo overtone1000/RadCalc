@@ -1,0 +1,108 @@
+DEXA BONE DENSITY AXIAL SKELETON 1 OR MORE SITES OSTEOPOROSIS MGMT
+Date of Exam: 2025-06-20
+Time of Exam: 10:51:01
+
+Comparison:    
+
+Clinical Concern: Bone Mineral Density
+
+DIAGNOSIS:    
+
+Quality of scan:    
+
+
+Prognosticated Fracture Risk (FRAX):
+
+Pertinent risk factors:
+
+
+
+History of Fracture (Adult)
+
+
+10 Year Fracture Probability
+Major osteoporotic fracture:    
+Hip fracture:    
+
+
+RECOMMENDATIONS FOR WHEN TO TREAT:
+The National Osteoporosis Foundation recommends that FDA- approved medical therapies be considered in postmenopausal women and men age >=50 years with a: 
+
+*Hip or vertebral (clinical or morphometric) fracture
+*T-score of <= -2.5 at the spine or hip
+*T-score of -1 to -2.49 at the spine or hip and ten-year fracture probability by FRAX equal to or greater than 20% for major osteoporotic fracture or equal to or greater than 3% for hip fracture. 
+
+
+All treatment decisions require clinical judgement and consideration of individual patient factors.  Refer to the KP clinical library on osteoporosis for further information.
+
+RESULTS:
+
+Tallest height patient has ever been (patient reported):     in
+Height measured on most recent prior DEXA:     in
+Current height:     in
+
+L1
+L2 
+L3 
+L4 
+L1-2 
+L1-3 
+L1-4 
+L2-3 
+L2-4 
+L3-4 -0.30
+
+Left Total Hip
+Bone Mineral Density:    
+T-Score:    , Z-Score:    
+
+Left Femoral Neck
+Bone Mineral Density:    
+T-Score:    , Z-Score:    
+
+Right Total Hip
+Bone Mineral Density: 0.66 g/cm2
+T-Score: -2.70, Z-Score: -0.20
+
+Right Femoral Neck
+Bone Mineral Density: 0.73 g/cm2
+T-Score: -2.20, Z-Score:  0.40
+
+Left Radius
+Bone Mineral Density:      g/cm^2
+T-Score:    , Z-Score:     
+
+High bone mass = T-score > + 2 
+Normal bone mass = T-score -1 to + 2
+Low normal bone mass = T-score <-1 to -2
+Low bone mass = T-score <-2 to -2.49
+Osteoporosis = T-score <or = -2.5
+
+------------------------
+
+DXA System: GE Healthcare, Lunar iDXA, Device Serial: 210573, Software version: 18.30.006
+
+Technologist: 2272
+
+------------------------
+
+CHANGE FROM PRIOR KAISER BONE MINERAL DENSITY STUDY: 
+Spine:     ,     change
+Left Hip:    ,     change
+Right Hip:    ,     change
+Radius:    ,     change
+
+The changes reported are the apparent changes in bone mineral density (BMD) from the previous DXA scan to the current DXA scan.  Though we cannot state whether this represents a significant change between scans because the least significant change (LSC) for each specific Northwest Kaiser Permanente location cannot be calculated, CHANGES GREATER THAN OR EQUAL TO 5% ARE GENERALLY CONSIDERED SIGNIFICANT.
+
+Disclaimer: Quantitative comparison with scans from an outside institution, including Oregon Osteoporosis Center, cannot be made due to statistical variations among testing locations.
+
+GUIDELINES FOR WHEN TO REPEAT BONE DENSITY:
+For women over 65 years and men over 70 who are NOT receiving prescription osteoporosis medications, rescreening interval is determined by T-score: 
+
+* Equal to or greater than -1.4: 10 years
+*-1.5 to -1.9: 5 years
+*-2.0 to -2.4:2 years
+
+
+CONSIDERATION FOR FURTHER IMAGING:
+Per ISCD recommendations, indications for vertebral fracture assessment (VFA) with lateral thoracic and lumbar spine x-rays are a T-score between -1 to -2.49 if female patient has historical height loss of  > 4cm (1.6 inches) or a male patient has a historical height loss of >6cm (2.4 inches), and if documentation of a vertebral fracture will alter clinical management.

@@ -1,0 +1,106 @@
+<script lang="ts">
+	import { mdiContentCopy } from "@mdi/js";
+    
+
+</script>
+
+<div id="body_container" class="main fill_vertical fill_horizontal cols centered">
+    <div class="rows flex_grow fill_horizontal space_evenly">
+        <div class="cols half_width">
+            <div class="cols">
+                <h4>Input Type</h4>
+                <form id="input_type">
+                    <input id="AgeBSARadio" checked name="input_type_radio_group" type="radio" value="absa" class="radio_style"><label for="AgeBSARadio">Age and BSA</label><br>
+                    <input id="AgeHeightWeightRadio" name="input_type_radio_group" type="radio" value="ahw" class="radio_style"><label for="AgeHeightWeightRadio">Age, Height, and Weight</label><br> 
+                    <input id="AgeDiameterRadio" name="input_type_radio_group" type="radio" value="ahw" class="radio_style"><label for="AgeDiameterRadio">Age and Aortic Diameter</label><br> 
+                </form>
+
+                <div class="cols flex_grow space_evenly">
+                    <h4>Parameters</h4>
+                    <div>
+                        <div id="age">
+                        <form id="form_age">
+                        Age:
+                        <input id="Age" type="number" step="any" value="60"/> years<br>
+                        <input type="submit" disabled={true} style="display:none">
+                        </form>
+                        </div>
+
+                        <div id="div_absa">
+                        <form id="form_absa">
+                        Body surface area:
+                        <input id="BSA_ABSA"  type="number" step="any" value="1.8"/> m<sup>2</sup><br>
+                        <input type="submit" disabled={true} style="display:none">
+                        </form>
+                        </div>
+
+                        <div id="div_ahw">
+                        <form id="form_ahw">
+                        Height:
+                        <input id="height_AHW"  type="number" step="any" value="180"/>
+                        <select id="height_units" value="cm">
+                            <option value="cm" selected>cm</option>
+                            <option value="in">in</option>
+                        </select>
+                        <br>
+
+                        Weight:
+                        <input id="weight_AHW"  type="number" step="any" value="70"/>
+                        <select id="weight_units" value="kg">
+                            <option value="kg" selected>kg</option>
+                            <option value="lb">lb</option>
+                        </select>
+                        <br>
+                        <input type="submit" disabled={true} style="display:none">
+                        </form>
+                        </div>
+
+                        <div id="div_ad">
+                        <form id="form_ad">
+                        Ascending aortic diameter:
+                        <input id="aad_ad"  type="number" step="any" value="2.5"/> cm<br>
+                        <input type="submit" disabled={true} style="display:none">
+                        </form>
+                        </div>
+                    </div>
+                        
+                    <div>
+                        <form id="form_sex" >
+                        <input id="SexIsMan" name="Sex" type="radio" value="man" class="radio_style"> Man <br>
+                        <input id="SexIsWoman" checked={true} name="Sex" type="radio" value="woman"> Woman <br> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+                
+        <div class="cols half_width">
+                <h4>Result</h4>
+                <p id="CalculationResult"></p>
+                <button aria-label="copy" class="iconbutton" id="copy-button">
+                    <svg viewBox="0 0 24 24">
+                            <path class="iconsvg" d={mdiContentCopy}/>
+                    </svg>
+                </button>
+        </div>
+    </div>
+
+    <div class="cols centered flex_shrink">
+        <div class="small_footer">
+            Sources: <br>
+            <ol>
+                <li>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/19423293/">
+                    P. Biaggi, F. Matthews, J. Braun, V. Rousson, P. A. Kaufmann, and R. Jenni, "Gender, Age, and Body Surface Area are the Major Determinants of Ascending Aorta Dimensions in Subjects With Apparently Normal Echocardiograms," Journal of the American Society of Echocardiography, vol. 22, no. 6, pp. 720-725, Jun. 2009.
+                    </a>
+                </li>
+            </ol>
+        </div>
+            
+        <div>This software is made available under the <a href="license"> MIT License</a>.</div>
+    </div>
+</div>
+
+<style>
+    @import "../global.css";
+</style>

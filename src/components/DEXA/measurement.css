@@ -1,0 +1,33 @@
+    tr{
+        max-height:10px;
+    }
+
+    td{
+        max-height:10px;
+        padding:1px;
+        border-style:none;
+    }
+    td.centered{
+        text-align:center;
+    }
+    .numberbox{
+        margin-bottom:0px;
+    }
+    .iconbutton{
+        border-radius: 50%;
+        width:48px;
+        height:48px;
+        align-self: center;
+        margin:2px;
+    }
+    .iconbutton.locked{
+        border-width: 2px;
+        background-color: gray;
+    }
+    .iconsvg{
+        fill:none;
+        stroke:black;
+        stroke-width:2;
+    }
+
+    

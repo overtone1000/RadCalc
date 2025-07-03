@@ -4,29 +4,13 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "type": "typescript",
-            "tsconfig": "tsconfig.json",
-            "option": "watch",
-            "problemMatcher": [
-                "$tsc-watch"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "label": "tsc: watch - tsconfig.json"
+            "type": "npm",
+            "script": "dev",
+            "path": "src",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: dev",
+            "detail": "vite dev"
         },
-        {
-            "type": "typescript",
-            "tsconfig": "tsconfig.json",
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "label": "tsc: build - tsconfig.json"
-        }
     ]
 }
