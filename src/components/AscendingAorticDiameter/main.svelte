@@ -25,7 +25,7 @@
     let weight_units:"kg"|"lb" = $state("kg");
     let height_units:"in"|"cm" = $state("cm");
     let AAo_diameter:number|undefined = $state(undefined);
-    let sex:"man"|"woman" = $state("male");
+    let sex:"man"|"woman" = $state("man");
     let result:Result|undefined = $state(undefined);
     let result_inner_html:string|undefined = $state(undefined);
 
