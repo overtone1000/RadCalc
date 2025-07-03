@@ -1,10 +1,9 @@
 import { newline } from "../../globals.js";
 import { CalculateAAo } from "./AAo.js"; //must include .js for this to work in the browser
 
-let text_for_copy:string="";
-
-export function copy() {
-	navigator.clipboard.writeText(text_for_copy);
+export type Result={
+	html:string,
+	raw:string
 }
 
 function createWarning(parameter:string, is_low:boolean)
@@ -21,30 +20,23 @@ function createWarning(parameter:string, is_low:boolean)
 	return "<font color=\"#ff0000\">Caution: The patient's " + parameter + " " + low_or_high_phrase + " for the study population.</font><br>"
 }
 
-export function createText(Age:number, BSA:number, ismale:boolean) {
+export function createText(Age:number, BSA:number, sex:"male"|"female"):Result{
 
-	let calc = CalculateAAo(Age, BSA, ismale);
+	let calc = CalculateAAo(Age, BSA, sex);
 	let Sex;
-	if(ismale)
-	{
-		Sex = "man";
-	}
-	else{
-		Sex = "woman";
-	}
-
+	
     let text = "For a ";
-    text += "<b><font color=\"#42f4eb\">" + Age.toFixed(0) + "</font></b> year old <font color=\"#42f4eb\">" + Sex + "</font>";
+    text += "<b><font color=\"#42f4eb\">" + Age.toFixed(0) + "</font></b> year old <font color=\"#42f4eb\">" + sex + "</font>";
     text += " with a body surface area of <b><font color=\"#42f4eb\">" + BSA.toFixed(2) + "</font></b> m<sup>2</sup>,<br>";
     text += "Ascending aortic diameter 95<sup>th</sup> percentile: <b><font color=\"#edca4e\">" + calc.AA95th.toFixed(2) + "</font></b> cm<br>";
 	text += "Sinus of Valsalva diameter 95<sup>th</sup> percentile: <b><font color=\"#edca4e\">" + calc.Sinus95th.toFixed(2) + "</font></b> cm<br>";
 
-	text_for_copy = "For a " + Age.toFixed(0) + " year old " + Sex;
+	let text_for_copy = "For a " + Age.toFixed(0) + " year old " + sex;
 	text_for_copy += " with a body surface area of " + BSA.toFixed(2) + " m^2," + newline;
 	text_for_copy += "Ascending aortic diameter 95th percentile: " + calc.AA95th.toFixed(2) + " cm" + newline;
 	text_for_copy += "Sinus of Valsalva diameter 95th percentile: " + calc.Sinus95th.toFixed(2) + " cm";
 
-	if(ismale)
+	if(sex==="male")
 	{
 		const age_lower_bound_male = 42.9-13.6*2;
 		const age_upper_bound_male = 42.9+13.6*2;
@@ -94,31 +86,29 @@ export function createText(Age:number, BSA:number, ismale:boolean) {
 			text += createWarning("BSA",false);
 		}
 	}
-    return text;
+    return {
+		html:text,
+		raw:text_for_copy
+	}
 }
 
-export function createTextAD(Age:number, BSA:number, ADiam:number, ismale:boolean)
+export function createTextAD(Age:number, BSA:number, ADiam:number, sex:"male"|"female"):Result
 {
-let Sex;
-	if(ismale)
-	{
-		Sex = "man";
-	}
-	else{
-		Sex = "woman";
-	}
-
 	const line1 = "For a ";
 	const line2 = ", an ascending aortic diameter of ";
 	const line3 = " cm would be less than the ";
 	const line4 = " percentile if the patient's BSA is greater than ";
 
 	let text = line1;
-    text = text + "<b><font color=\"#42f4eb\">" + Age.toFixed(0) + "</font></b> year old <font color=\"#42f4eb\">" + Sex + "</font>";
+    text = text + "<b><font color=\"#42f4eb\">" + Age.toFixed(0) + "</font></b> year old <font color=\"#42f4eb\">" + sex + "</font>";
     text = text + line2 + "<b><font color=\"#42f4eb\">" + ADiam.toFixed(2) + "</font></b>";	
     text = text + line3 + "95<sup>th</sup>" + line4 + "<b><font color=\"#edca4e\">" + BSA.toFixed(2) + "</font></b> m<sup>2</sup>.";
-    (document.getElementById("CalculationResult") as HTMLElement).innerHTML = text;
+    
+	let text_for_copy = line1;
+	text_for_copy += Age.toFixed(0) + " year old " + sex + line2 + ADiam.toFixed(2) + line3 + "95th" + line4 + BSA.toFixed(2) + " m^2.";
 
-	text_for_copy = line1;
-	text_for_copy += Age.toFixed(0) + " year old " + Sex + line2 + ADiam.toFixed(2) + line3 + "95th" + line4 + BSA.toFixed(2) + " m.";
+	return {
+		html:text,
+		raw:text_for_copy
+	}
 }

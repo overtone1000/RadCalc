@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { mdiContentCopy } from "@mdi/js";
 	import { onMount } from "svelte";
-	import { copy } from "./AA/text";
-	import { CalculateABSA, CalculateAD, CalculateAHW } from "./AA";
 	import type { ChangeEventHandler } from "svelte/elements";
+	import { createText, createTextAD, type Result } from "./AA/text";
+	import { initialize_guesses, iterate_guesses, type Guesses } from "./AA";
 
     onMount(
         ()=> {
-            //SelectForm();
+            Update();
         }
     )
 
@@ -18,7 +18,30 @@
     };
 
     let input_mode:Input = $state(Input.AgeHeightWeight);
+    let age:number|undefined = $state(undefined);
+    let BSA:number|undefined = $state(undefined);
+    let raw_height:number|undefined = $state(undefined);
+    let raw_weight:number|undefined = $state(undefined);
+    let weight_units:"kg"|"lb" = $state("kg");
+    let height_units:"in"|"cm" = $state("cm");
+    let AAo_diameter:number|undefined = $state(undefined);
+    let sex:"male"|"female" = $state("male");
+    let result:Result|undefined = $state(undefined);
+    let result_inner_html:string|undefined = $state(undefined);
 
+    $effect(
+        ()=>{
+            if(result!==undefined)
+            {
+                result_inner_html=result.html;
+            }
+            else
+            {
+                result_inner_html=undefined;
+            }
+        }
+    );
+    
     let SelectForm:ChangeEventHandler<HTMLInputElement>=(new_input_mode:Event & { currentTarget: EventTarget & HTMLInputElement; })=>{
         input_mode = parseInt(new_input_mode.currentTarget.value) as Input;
         Update();
@@ -26,13 +49,91 @@
 
     function Update()
     {
-        console.log("Updating");
+        console.log("Updating",input_mode,age,BSA,raw_height,raw_weight,weight_units,height_units,AAo_diameter,sex);
 
         switch(input_mode)
         {
             case Input.AgeBSA:{CalculateABSA();break;}
             case Input.AgeHeightWeight:{CalculateAHW();break;}
             case Input.AgeAAoDiameter:{CalculateAD();break;}
+        }
+    }
+
+
+    function CalculateABSA(){
+        if(age!==undefined && BSA!==undefined)
+        {
+            result=createText(age,BSA,sex);   
+        }
+        else
+        {
+            result=undefined;
+        }
+    }
+
+    function CalculateAHW()
+    {
+        if(raw_height!==undefined && raw_weight !==undefined)
+        {
+            let height_conversion_factor = 0;
+            let weight_conversion_factor = 0;
+
+            switch(height_units)
+            {
+                case "cm":height_conversion_factor=1;break;
+                case "in":height_conversion_factor=2.54;break;
+            }
+
+            switch(weight_units)
+            {
+                case "kg":weight_conversion_factor=1;break;
+                case "lb":weight_conversion_factor=0.4535924;break;
+            }
+
+            const Height = raw_height*height_conversion_factor;
+            const Weight = raw_weight*weight_conversion_factor;
+            const coef1 =0.007184;
+            const coef_weight =0.425;
+            const coef_height =0.725;
+            
+            BSA = coef1*Math.pow(Weight,coef_weight)*Math.pow(Height,coef_height);
+
+            CalculateABSA();
+        }
+        else
+        {
+            result=undefined;
+        }
+    }
+
+    function CalculateAD()
+    {
+        if(age !==undefined && AAo_diameter !==undefined)
+        {
+            let guesses:Guesses = initialize_guesses(age, AAo_diameter, sex);
+            
+            let count = 0;
+            while(Math.abs(guesses.err)>0.001)
+            {
+                iterate_guesses(guesses);
+                if(count++>1000)
+                {
+                    return "Could not calculate.";
+                }
+            }
+
+            result=createTextAD(age, guesses.last!.BSA, AAo_diameter, sex);
+        }
+        else
+        {
+            result=undefined;
+        }
+    }
+
+    function copy() {
+        if(result!==undefined)
+        {
+            navigator.clipboard.writeText(result.raw);
         }
     }
 
@@ -55,7 +156,7 @@
                         <div id="age">
                         <form id="form_age" onchange={Update}>
                         Age:
-                        <input id="Age" type="number" step="any" value="60"/> years<br>
+                        <input id="Age" type="number" step="any" bind:value={age}/> years<br>
                         <input type="submit" disabled={true} style="display:none">
                         </form>
                         </div>
@@ -64,7 +165,7 @@
                             <div id="div_absa">
                             <form id="form_absa" onchange={Update}>
                             Body surface area:
-                            <input id="BSA_ABSA"  type="number" step="any" value="1.8"/> m<sup>2</sup><br>
+                            <input id="BSA_ABSA"  type="number" step="any" bind:value={BSA}/> m<sup>2</sup><br>
                             <input type="submit" disabled={true} style="display:none">
                             </form>
                             </div>
@@ -72,16 +173,16 @@
                             <div id="div_ahw">
                             <form id="form_ahw" onchange={Update}>
                             Height:
-                            <input id="height_AHW"  type="number" step="any" value="180"/>
-                            <select id="height_units" value="cm" onchange={Update}>
+                            <input id="height_AHW"  type="number" step="any" bind:value={raw_height}/>
+                            <select id="height_units" bind:value={height_units} onchange={Update}>
                                 <option value="cm" selected>cm</option>
                                 <option value="in">in</option>
                             </select>
                             <br>
 
                             Weight:
-                            <input id="weight_AHW"  type="number" step="any" value="70"/>
-                            <select id="weight_units" value="kg" onchange={Update}>
+                            <input id="weight_AHW"  type="number" step="any" bind:value={raw_weight}/>
+                            <select id="weight_units" bind:value={weight_units} onchange={Update}>
                                 <option value="kg" selected>kg</option>
                                 <option value="lb">lb</option>
                             </select>
@@ -93,7 +194,7 @@
                             <div id="div_ad">
                             <form id="form_ad" onchange={Update}>
                             Ascending aortic diameter:
-                            <input id="aad_ad"  type="number" step="any" value="2.5"/> cm<br>
+                            <input id="aad_ad"  type="number" step="any" bind:value={AAo_diameter}/> cm<br>
                             <input type="submit" disabled={true} style="display:none">
                             </form>
                             </div>
@@ -102,8 +203,8 @@
                         
                     <div>
                         <form id="form_sex" onchange={Update}>
-                        <input id="SexIsMan" name="Sex" type="radio" value="man" class="radio_style"> Man <br>
-                        <input id="SexIsWoman" checked={true} name="Sex" type="radio" value="woman"> Woman <br> 
+                            <input id="SexIsMan" name="Sex" type="radio" value="male" class="radio_style" bind:group={sex}> Man <br>
+                            <input id="SexIsWoman" name="Sex" type="radio" value="female" bind:group={sex}> Woman <br> 
                         </form>
                     </div>
                 </div>
@@ -112,7 +213,9 @@
                 
         <div class="cols half_width">
                 <h4>Result</h4>
-                <p id="CalculationResult"></p>
+                {#if result!==undefined}
+                    <p id="CalculationResult">{@html result.html}</p>
+                {/if}
                 <button aria-label="copy" class="iconbutton" id="copy-button" onclick={copy}>
                     <svg viewBox="0 0 24 24">
                             <path class="iconsvg" d={mdiContentCopy}/>
