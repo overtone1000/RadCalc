@@ -1,7 +1,24 @@
 <script lang="ts">
 	import { mdiContentCopy } from "@mdi/js";
+	import Row, { type RowProps } from "./row.svelte";
+	import { get_result, type Result } from "./Double";
 
+    function copy() {
+        if(result)
+        {
+            navigator.clipboard.writeText(result.plain);   
+        }
+    }
 
+    let datum1:RowProps=$state({date:undefined,volume:undefined});
+    let datum2:RowProps=$state({date:undefined,volume:undefined});
+
+    let result:Result=$state(undefined);
+    $effect(
+        ()=>{
+            result=get_result([datum1,datum2])            
+        }
+    );
 </script>
 
 <div id="body_container" class="main fill_vertical fill_horizontal cols centered">
@@ -18,20 +35,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="centered">
-                    <td><input type="date" id="Date1" placeholder="Date of Exam"></td>
-                    <td><input type="number" step="any" id="D11" placeholder="Diameter 1"></td>
-                    <td><input type="number" step="any" id="D12" placeholder="Diameter 2"></td>
-                    <td><input type="number" step="any" id="D13" placeholder="Diameter 3"></td>
-                    <td id="V1" style="vertical-align:middle"></td>
-                </tr>
-                <tr class="centered">
-                    <td><input type="date" id="Date2" placeholder="Date of Exam"></td>
-                    <td><input type="number" step="any" id="D21" placeholder="Diameter 1"></td>
-                    <td><input type="number" step="any" id="D22" placeholder="Diameter 2"></td>
-                    <td><input type="number" step="any" id="D23" placeholder="Diameter 3"></td>
-                    <td id="V2" style="vertical-align:middle"></td>
-                </tr>
+                <Row bind:datum={datum1}/>
+                <Row bind:datum={datum2}/>
                 </tbody>
             </table>
             <div class="cols doublingtext">
@@ -41,13 +46,15 @@
                 <li>Approximately 20% of lung cancers have a doubling time > 400 days.<sup>1,2</sup></li>
                 </ul>
                 <div class="cols">
-                    <h4>Result</h4>
-                    <div class="bottom_margin" id="CalculationResult"></div>
-                    <button aria-label="copy" class="iconbutton" id="copy-button">
-                        <svg viewBox="0 0 24 24">
-                                <path class="iconsvg" d={mdiContentCopy}/>
-                        </svg>
-                    </button>
+                    {#if result}
+                        <h4>Result</h4>
+                        <div class="bottom_margin" id="CalculationResult">{@html result.html}</div>
+                        <button aria-label="copy" class="iconbutton" id="copy-button" onclick={copy}>
+                            <svg viewBox="0 0 24 24">
+                                    <path class="iconsvg" d={mdiContentCopy}/>
+                            </svg>
+                        </button>
+                    {/if}
                 </div>
             </div>
         </div>

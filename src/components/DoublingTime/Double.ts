@@ -1,138 +1,18 @@
+import { windows_newline } from "../DEXA/ts/dexa/generate_report.js";
 import { newline } from "../globals.js";
-
-let data:[Datum,Datum];
-let text_for_copy:string="";
+import type { RowProps } from "./row.svelte";
 
 const ms_per_year=1000*60*60*24;
 
-window.onload = ()=>{
-	(document.getElementById("copy-button") as HTMLFormElement).onclick=copy;
+export type Result={html:string,plain:string}|undefined;
 
-	data = [
-		{
-			date_input:document.getElementById("Date1") as HTMLFormElement,
-			diameter_inputs:[
-				document.getElementById("D11") as HTMLFormElement,
-				document.getElementById("D12") as HTMLFormElement,
-				document.getElementById("D13") as HTMLFormElement],
-			volume_div:document.getElementById("V1") as HTMLElement,
-		},
-		{
-			date_input:document.getElementById("Date2") as HTMLFormElement,
-			diameter_inputs:[
-				document.getElementById("D21") as HTMLFormElement,
-				document.getElementById("D22") as HTMLFormElement,
-				document.getElementById("D23") as HTMLFormElement],
-			volume_div:document.getElementById("V2") as HTMLElement,
-		}
-	];
-
+export function get_result(data:RowProps[]):Result
+{
 	for(const datum of data)
 	{
-		initialize_Datum(datum);
-		update_Datum(datum);
-	}
-
-	update_result();	
-};
-
-type Datum = {
-	date_input:HTMLFormElement,
-	diameter_inputs:[HTMLFormElement,HTMLFormElement,HTMLFormElement],
-	volume_div:HTMLElement,
-	volume?:number,
-	date?:Date
-}
-
-function initialize_Datum(datum:Datum)
-{
-	let update_func = ()=>{update_Datum(datum);};
-	datum.date_input.addEventListener("change", update_func, false);
-	for(let di of datum.diameter_inputs)
-	{
-		di.addEventListener("change", update_func, false);
-	}	
-}
-
-function update_Datum(datum:Datum)
-{
-	let num=0;
-	let denom=0;
-	let vals:number[] = [];
-	let blank=true;
-
-	for(let input of datum.diameter_inputs)
-	{
-		let val = parseFloat(input.value);
-		vals.push(val);
-	}
-
-	for(let val of vals)
-	{
-		if(!Number.isNaN(val))
+		if(!datum || !datum.volume || !datum.date)
 		{
-			num+=val;
-			denom+=1;
-			blank=false;
-		}
-	}
-
-	if(blank)
-	{
-		datum.volume=undefined;
-		datum.volume_div.innerHTML="";
-
-		for(let d in datum.diameter_inputs)
-		{
-			let input = datum.diameter_inputs[d];
-			input.setAttribute("placeholder","Diameter " + (parseInt(d)+1));
-		}
-		return;
-	}
-
-	let mean_d = num/denom;
-
-	for(let n in vals)
-	{
-		let val = vals[n];
-		if(Number.isNaN(val))
-		{
-			vals[n]=mean_d;
-			let input = datum.diameter_inputs[n];
-			input.setAttribute("placeholder",mean_d + " (calculated estimate)");
-		}
-	}
-
-	datum.volume = Math.PI/6;
-
-	for(let val of vals)
-	{
-		datum.volume*=val;
-	}
-	
-	datum.date = datum.date_input.valueAsDate;
-	datum.volume_div.innerHTML=datum.volume.toFixed(2);
-	
-	update_result();
-}
-
-function update_result()
-{
-	const result_div:HTMLElement = document.getElementById("CalculationResult") as HTMLElement;
-	while(result_div.lastChild)
-	{
-		result_div.removeChild(result_div.lastChild);
-	}
-
-	for(const datum of data)
-	{
-		if(!datum.volume || !datum.date)
-		{
-			let subresdiv = document.createElement("div");
-			subresdiv.innerHTML = "Complete the table to get a result.";
-			result_div.appendChild(subresdiv);
-			(document.getElementById("copy-button") as HTMLFormElement).disabled=true;
-			return;
+			return undefined;
 		}
 	}
 
@@ -148,12 +28,17 @@ function update_result()
 			};
 		}
 	);
+
+	let dates = data.map(
+		(datum)=>{
+			return Date.parse(datum.date!);
+		}
+	);
 	
+	let retval={html:"",plain:""};
 	for(let n=0;n<data.length-1;n++)
-	{
-		let subresdiv = document.createElement("div");
-		
-		let milliseconds:number=data[1].date!.getTime()-data[0].date!.getTime();
+	{	
+		let milliseconds:number=dates[n+1]-dates[n];
 		let days = milliseconds/ms_per_year;
 		let vrat = data[1].volume!/data[0].volume!;
 		let doublingtime = Math.log(2)*days/Math.log(vrat);
@@ -176,14 +61,12 @@ function update_result()
 			change_description="decreased by " + ((1-vrat)*100).toFixed(0) + "%.";
 		}
 
-		let text = "In " + days.toFixed(0) + " days, the volume " + change_description;
-		text_for_copy += text + newline;
-		subresdiv.innerHTML += text;
-		result_div.appendChild(subresdiv);
-		(document.getElementById("copy-button") as HTMLFormElement).disabled=false;
+		let daysorday="days";
+		if(days===1){daysorday="day"}
+		let line="In " + days.toFixed(0) + " " + daysorday + ", the volume " + change_description;
+		retval.html+=line+"<br>";
+		retval.plain+=line+windows_newline;
 	}
-}
 
-export function copy() {
-	navigator.clipboard.writeText(text_for_copy);
+	return retval;
 }
