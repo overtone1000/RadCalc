@@ -1,43 +1,80 @@
 <script lang="ts">
+    type Version={
+        version:string,
+        features:string[],
+    }
+
+    let versions:Version[]=
+    [
+        {
+            version: "2.0",
+            features: [
+                '☑ Switch from bootstrap to <a href="https://simplecss.org/">simple.css</a>',
+                '☑ Get rid of jquery dependency',
+                '☑ Copy buttons for results'
+            ]
+        }
+    ];
+
+    let planned_roadmap_entries:string[]=
+    [
+        '☐ <a href="https://www.sciencedirect.com/science/article/pii/S0022522317327691?pes=vor&utm_source=rsna&getft_integrator=rsna">Use data requiring only height in adults that also provides risk estimate</a>',
+        '☐ Volume calculator that detects three axis measurements in copied text and outputs the copied text with volumes added.',
+        '☐ Volume calculator with ellipsoid, prostate, and spleen equations.',
+        '☐ Data ingestion and substitution in doubling time',
+        '☐ Multiple points for doubling time'
+    ];
+
+    let considering_roadmap_entries:string[]=
+    [
+        '☐ Add warnings when aortic diameter is at treatment thresholds (including for those with genetic aortopathies)',
+        '☐ Add warnings about aortic diameter hinge points'
+    ];
+
+    let deferring_roadmap_entires:string[]=
+    [
+        '☐ <a href="https://www.sciencedirect.com/science/article/abs/pii/000291498990430X?via%3Dihub">Use better data for aortic root (especially in children)</a>',
+        '☐ Complete pediatric renal length calculator'
+    ];
 </script>
 
 <div id="body_container" class="main fill_vertical fill_horizontal cols centered">
-    <div class="flex_grow height100percent cols">
-        <div class="rows flex_grow">
-            <div class="cols half_width left_padding height100percent">
-                <h3>Version History</h3>
+    <div class="flex_grow fill_horizontal rows">
+        <div class="cols half_width left_padding height100percent">
+            <h3>Version History</h3>
+            {#each versions as version}
                 <div class="flex_grow flex_shrink overflow">
                     <div class="rows version_row">
-                        <div class="version_cell">2.0</div>
+                        <div class="version_cell">{version.version}</div>
                         <div class="cols">
-                            <div>☑ Switch from bootstrap to <a href="https://simplecss.org/">simple.css</a></div>
-                            <div>☑ Get rid of jquery dependency</div>
-                            <div>☑ Copy buttons for results</div>
+                            {#each version.features as feature}
+                            <div>{@html feature}</div>
+                            {/each}
                         </div>
                     </div>
                 </div>
-            </div>
+            {/each}
         </div>
         <div class="cols half_width left_border left_padding height100percent">
             <h3>Roadmap</h3>
             <div class="flex_grow flex_shrink overflow">
                 <h4>Planned</h4>
                 <ul>
-                    <li>☐ <a href="https://www.sciencedirect.com/science/article/pii/S0022522317327691?pes=vor&utm_source=rsna&getft_integrator=rsna">
-                    Use data requiring only height in adults that also provides risk estimate</a></li>
-                    <li>☐ Volume calculator that detects three axis measurements in copied text and outputs the copied text with volumes added.</li>
-                    <li>☐ Volume calculator with ellipsoid, prostate, and spleen equations.</li>
+                    {#each planned_roadmap_entries as entry}
+                        <li>{@html entry}</li>
+                    {/each}
                 </ul>
                 <h4>Considering</h4>
                 <ul>
-                    <li>☐ Add warnings when aortic diameter is at treatment thresholds (including for those with genetic aortopathies)</li>
-                    <li>☐ Add warnings about aortic diameter hinge points</li>
+                    {#each considering_roadmap_entries as entry}
+                        <li>{@html entry}</li>
+                    {/each}
                 </ul>
                 <h4>Deferring For Now</h4>
                 <ul>
-                    <li>☐ <a href="https://www.sciencedirect.com/science/article/abs/pii/000291498990430X?via%3Dihub">
-                    Use better data for aortic root (especially in children)</a></li>
-                    <li>☐ Complete pediatric renal length calculator</li>
+                    {#each deferring_roadmap_entires as entry}
+                        <li>{@html entry}</li>
+                    {/each}
                 </ul>
             </div>
         </div>
