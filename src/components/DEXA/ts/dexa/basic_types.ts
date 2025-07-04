@@ -24,6 +24,7 @@ export const mandatory_string_fields = [
     "exam",
     "date",
     "time",
+    "patient_dob",
     "dexa_system",
     "device_serial",
     "software_version",

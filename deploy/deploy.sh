@@ -11,11 +11,13 @@ SSH_DEST=root@$SERVER_IP
 
 #echo Container name is $NGINX_CONTAINER_NAME
 
+ssh -T $SSH_DEST "rm -frd /tmp/radcalc && mkdir -p /tmp/radcalc"
+
 echo Uploading script
 scp -r ./onserverscript.sh root@$SERVER_IP:/tmp/radcalc/
 
 echo Uploading site
-scp -r ../src/site root@$SERVER_IP:/tmp/radcalc/
+scp -r ../build/** root@$SERVER_IP:/tmp/radcalc/
 
 echo Running script
 ssh -T $SSH_DEST "bash /tmp/radcalc/onserverscript.sh"

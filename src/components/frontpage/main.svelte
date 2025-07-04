@@ -4,7 +4,7 @@
 
 <div id="body_container" class="main fill_vertical fill_horizontal cols centered">
     <h1 id="header">
-        RadCalc <a href="/version">v2.0</a>
+        RadCalc <a href="/version">v2.1</a>
     </h1>
     <div class="cols flex_grow">
         <button onclick={()=>navigate("/AscendingAorticDiameter")}>Ascending Aortic Diameter</button>

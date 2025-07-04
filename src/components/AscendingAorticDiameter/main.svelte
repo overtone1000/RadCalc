@@ -4,6 +4,7 @@
 	import type { ChangeEventHandler } from "svelte/elements";
 	import { createText, createTextAD, type Result } from "./AA/text";
 	import { initialize_guesses, iterate_guesses, type Guesses } from "./AA";
+	import Footer from "../@commons/footer.svelte";
 
     onMount(
         ()=> {
@@ -224,20 +225,14 @@
         </div>
     </div>
 
-    <div class="cols centered flex_shrink">
-        <div class="small_footer">
-            Sources: <br>
-            <ol>
-                <li>
-                    <a href="https://pubmed.ncbi.nlm.nih.gov/19423293/">
-                    P. Biaggi, F. Matthews, J. Braun, V. Rousson, P. A. Kaufmann, and R. Jenni, "Gender, Age, and Body Surface Area are the Major Determinants of Ascending Aorta Dimensions in Subjects With Apparently Normal Echocardiograms," Journal of the American Society of Echocardiography, vol. 22, no. 6, pp. 720-725, Jun. 2009.
-                    </a>
-                </li>
-            </ol>
-        </div>
-            
-        <div>This software is made available under the <a href="license"> MIT License</a>.</div>
-    </div>
+    <Footer sources={
+        [
+            {
+            url: "https://pubmed.ncbi.nlm.nih.gov/19423293/",
+            description: 'P. Biaggi, F. Matthews, J. Braun, V. Rousson, P. A. Kaufmann, and R. Jenni, "Gender, Age, and Body Surface Area are the Major Determinants of Ascending Aorta Dimensions in Subjects With Apparently Normal Echocardiograms," Journal of the American Society of Echocardiography, vol. 22, no. 6, pp. 720-725, Jun. 2009.'
+            }
+        ]
+    }/>
 </div>
 
 <style>

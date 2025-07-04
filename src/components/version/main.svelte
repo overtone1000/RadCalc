@@ -7,6 +7,14 @@
     let versions:Version[]=
     [
         {
+            version: "2.1",
+            features: [
+                '☑ Switch to Svelte',
+                '☑ Bug fixes',
+                '☑ DEXA Report Generator',
+            ]
+        },
+        {
             version: "2.0",
             features: [
                 '☑ Switch from bootstrap to <a href="https://simplecss.org/">simple.css</a>',
@@ -22,13 +30,14 @@
         '☐ Volume calculator that detects three axis measurements in copied text and outputs the copied text with volumes added.',
         '☐ Volume calculator with ellipsoid, prostate, and spleen equations.',
         '☐ Data ingestion and substitution in doubling time',
-        '☐ Multiple points for doubling time'
+        '☐ Multiple points for doubling time',
     ];
 
     let considering_roadmap_entries:string[]=
     [
         '☐ Add warnings when aortic diameter is at treatment thresholds (including for those with genetic aortopathies)',
-        '☐ Add warnings about aortic diameter hinge points'
+        '☐ Add warnings about aortic diameter hinge points',
+        '☐ DEXA Report Generator documentation',
     ];
 
     let deferring_roadmap_entires:string[]=

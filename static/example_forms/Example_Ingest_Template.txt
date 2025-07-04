@@ -1,7 +1,7 @@
 exam:EXAM TYPE
-date:DATE OF EXAM
+date:7/4/2025
 time:TIME OF EXAM
-patient_age:40
+patient_dob:8/20/1984
 
 risk_factors:PREV FRAC,PARENT FRAC,SMOKES,STEROIDS,RA,OSTEOPOROSIS,DRINKER
 risk_of_osteoporotic_fracture:25
@@ -26,7 +26,8 @@ hip_left_total:37,38,39
 hip_left_neck:40,41,42
 hip_right_total:43,44,45
 hip_right_neck:46,47,48
-radius:49,50,51
+left_radius:49,50,51
+right_radius:52,53,54
 
 spine_trend:1000,1100
 hip_left_trend:2000,2200

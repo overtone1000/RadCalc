@@ -19,6 +19,3 @@ default.nix`
 ```
 
 To enable this, `direnv` VSCode extension should installed on the system, and the command `direnv allow` must be run in the root of the repository.
-
-## To Do
-- [ ] Create deployment scripts

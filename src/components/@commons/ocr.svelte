@@ -2,7 +2,8 @@
 	import type { MouseEventHandler } from "svelte/elements";
 	import { createWorker } from "tesseract.js";
 
-	
+	let result:string|undefined=$state(undefined);
+
     let image_ingest: MouseEventHandler<HTMLButtonElement>=(e)=>{
         console.debug(e);
         //Powerscribe copy-paste only contains text/plain, so no point in using the more powerful "read" function
@@ -22,7 +23,7 @@
     let recognize = async function (image:Blob) {
         const worker = await createWorker('eng');
         const ret = await worker.recognize(image);
-        console.log(ret.data.text);
+        result=ret.data.text;
         await worker.terminate();
     };
 
@@ -30,6 +31,11 @@
 
 <div>
         <button onclick={image_ingest}>Ingest image from clipboard</button>
+        {#if result}
+        <pre>
+            {result}
+        </pre>
+        {/if}
 </div>
 
 <style>

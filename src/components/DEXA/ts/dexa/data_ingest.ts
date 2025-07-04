@@ -16,18 +16,22 @@ export type DEXA_Ingest_Data =
     exam:string,
     date:string,
     time:string,
-    patient_age?:number,
-    frax?:{
-        risk_factors:FRAX_Risk_Factors,
-        risk_of_osteoporotic_fracture:number,
-        risk_of_hip_fracture:number,
+    patient_dob:string,
+    frax:{
+        locked:boolean,
+        risk_factors?:FRAX_Risk_Factors,
+        risk_of_osteoporotic_fracture?:number,
+        risk_of_hip_fracture?:number,
     },
     spine:Map<SpineField,DEXA_Measurements>,
     hips:{
         left: Hip,
         right: Hip
     },
-    radius?:DEXA_Measurements,
+    radii:{
+        left?: DEXA_Measurements,
+        right?: DEXA_Measurements
+    },
     dexa_system:string,
     device_serial:string,
     software_version:string,
@@ -454,7 +458,6 @@ export function ingest_data(ingest_data:string):Import_Result
         }
     }
 
-    let patient_age = get_validated_number(field_map.get("patient_age"));
     let risk_of_osteoporotic_fracture = get_validated_number(field_map.get("risk_of_osteoporotic_fracture"));
     let risk_of_hip_fracture = get_validated_number(field_map.get("risk_of_hip_fracture"));
     
@@ -463,9 +466,19 @@ export function ingest_data(ingest_data:string):Import_Result
         if(risk_of_osteoporotic_fracture!==undefined && risk_of_hip_fracture!==undefined)
         {
             frax={
+                locked:true,
                 risk_factors:risk_factors,
                 risk_of_osteoporotic_fracture:risk_of_osteoporotic_fracture,
                 risk_of_hip_fracture:risk_of_hip_fracture
+            }
+        }
+        else
+        {
+            frax={
+                locked:false,
+                risk_factors:risk_factors,
+                risk_of_osteoporotic_fracture:undefined,
+                risk_of_hip_fracture:undefined
             }
         }
     }
@@ -510,7 +523,7 @@ export function ingest_data(ingest_data:string):Import_Result
             exam:field_map.get("exam") as string,
             date:field_map.get("date") as string,
             time:field_map.get("time") as string,
-            patient_age:patient_age,
+            patient_dob:field_map.get("patient_dob") as string,
             frax:frax,
             spine:spine,
             hips:{
@@ -523,7 +536,10 @@ export function ingest_data(ingest_data:string):Import_Result
                         neck:get_DEXA_Measurements_from_raw_field(field_map.get("hip_right_neck")),
                     },
             },
-            radius:get_DEXA_Measurements_from_raw_field(field_map.get("radius")),
+            radii:{
+                left:get_DEXA_Measurements_from_raw_field(field_map.get("left_radius")),
+                right:get_DEXA_Measurements_from_raw_field(field_map.get("right_radius")),
+            },
             dexa_system:field_map.get("dexa_system") as string,
             device_serial:field_map.get("device_serial") as string,
             software_version:field_map.get("software_version") as string,

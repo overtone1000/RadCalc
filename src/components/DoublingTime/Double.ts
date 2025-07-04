@@ -47,9 +47,8 @@ export function get_result(data:RowProps[]):Result
 		if(vrat>1)
 		{
 			let unit:string;
-			if(doublingtime===1){unit=" day.";}
+			if(doublingtime.toFixed(0)==="1"){unit=" day.";}
 			else{unit=" days.";}
-
 			change_description="increased by " + ((vrat-1)*100).toFixed(0) + "%. Volumetric doubling time is " + doublingtime.toFixed(0) + unit;
 		}
 		else if(vrat===1)
@@ -61,9 +60,9 @@ export function get_result(data:RowProps[]):Result
 			change_description="decreased by " + ((1-vrat)*100).toFixed(0) + "%.";
 		}
 
-		let daysorday="days";
-		if(days===1){daysorday="day"}
-		let line="In " + days.toFixed(0) + " " + daysorday + ", the volume " + change_description;
+		let intervaldaysorday="days";
+		if(days.toFixed(0)==="1"){intervaldaysorday="day"}
+		let line="In " + days.toFixed(0) + " " + intervaldaysorday + ", the volume " + change_description;
 		retval.html+=line+"<br>";
 		retval.plain+=line+windows_newline;
 	}

@@ -1,3 +1,4 @@
+import { newline } from "../../../globals";
 import { getSpineField, type DEXA_Comparison, type DEXA_Measurements } from "./basic_types";
 import { all_possible_newlines, type DEXA_Ingest_Data } from "./data_ingest";
 import type { DEXA_Mandatory_Manual_Data } from "./manual";
@@ -11,9 +12,9 @@ function array_to_string(arr:string[]):string{
     if(arr.length>2){
         for(let n=0;n<arr.length-1;n++)
         {
-            retval+=arr[n]+",";
+            retval+=arr[n]+", ";
         }
-        retval+=" and " + arr[arr.length-1];
+        retval+="and " + arr[arr.length-1];
     }
     return retval;
 }
@@ -39,7 +40,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 console.debug(manual.comparison.date);
                 let date = new Date(manual.comparison.date);
                 console.debug(date);
-                comp_str=date.toLocaleDateString();
+                comp_str=date.getMonth()+"/"+date.getDate()+"/"+date.getFullYear();
             }
         }
         retval=retval.replace("$COMPARISON_DATE_OR_NONE$",comp_str);
@@ -132,11 +133,22 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             }
         }
 
-        if(manual.use_for_analysis.radius){site_groups.push("the radius");}
+        if(manual.use_for_analysis.left_radius && manual.use_for_analysis.right_radius)
+        {
+            site_groups.push("both radii");
+        }
+        else if(manual.use_for_analysis.left_radius){site_groups.push("the left radius");}
+        else if(manual.use_for_analysis.right_radius){site_groups.push("the right radius");}
 
         included_sites+=array_to_string(site_groups);
 
-        retval=retval.replace("$INCLUDED_SITES$",included_sites+".");
+        let full_quality_section=included_sites+".";
+
+        if(!manual.use_frax && manual.reason_for_frax_exclusion){
+            full_quality_section+=" "+manual.reason_for_frax_exclusion;
+        }
+
+        retval=retval.replace("$INCLUDED_SITES$",full_quality_section);
     }
 
     //FRAX
@@ -188,9 +200,9 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 {
                     let thismeas=ingest.measurement_template;
                     thismeas=thismeas.replace("$MEASUREMENT_NAME$",name);
-                    thismeas=thismeas.replace("$BMD$",bmd.toString());
-                    thismeas=thismeas.replace("$T_SCORE$",tscore.toString());
-                    thismeas=thismeas.replace("$Z_SCORE$",zscore.toString());
+                    thismeas=thismeas.replace("$BMD$",bmd.toFixed(3));
+                    thismeas=thismeas.replace("$T_SCORE$",tscore.toFixed(2));
+                    thismeas=thismeas.replace("$Z_SCORE$",zscore.toFixed(2));
                     measurements.push(thismeas);
                 }
             }
@@ -208,7 +220,8 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
         if(manual.use_for_analysis.left_hip_neck){trypush("Left Femoral Neck",ingest.hips.left.neck);}
         if(manual.use_for_analysis.right_hip_total){trypush("Right Total Hip",ingest.hips.right.total);}
         if(manual.use_for_analysis.right_hip_neck){trypush("Right Femoral Neck",ingest.hips.right.neck);}
-        if(manual.use_for_analysis.radius){trypush("Radius Neck",ingest.radius);}
+        if(manual.use_for_analysis.left_radius){trypush("Left Radius",ingest.radii.left);}
+        if(manual.use_for_analysis.right_radius){trypush("Right Radius",ingest.radii.right);}
 
         let allmeasurements:string="";
         for(const measurement of measurements)
@@ -242,8 +255,8 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 {
                     let thismeas=ingest.change_template;
                     thismeas=thismeas.replace("$MEASUREMENT_NAME$",name);
-                    thismeas=thismeas.replace("$BMD_CHANGE$",comp.bone_mineral_density_absolute_change.toString());
-                    thismeas=thismeas.replace("$T_SCORE_CHANGE$",comp.bone_mineral_density_percentage_change.toString());
+                    thismeas=thismeas.replace("$BMD_CHANGE$",comp.bone_mineral_density_absolute_change.toFixed(3));
+                    thismeas=thismeas.replace("$T_SCORE_CHANGE$",comp.bone_mineral_density_percentage_change.toFixed(2));
                     trends.push(thismeas);
                 }
             }
@@ -312,7 +325,8 @@ function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_
     if(manual.use_for_analysis.left_hip_neck && ingest.hips.left.neck!==undefined){measurements.push(ingest.hips.left.neck);}
     if(manual.use_for_analysis.left_hip_total && ingest.hips.left.total!==undefined){measurements.push(ingest.hips.left.total);}
 
-    if(manual.use_for_analysis.radius && ingest.radius!==undefined){measurements.push(ingest.radius);}
+    if(manual.use_for_analysis.left_radius && ingest.radii.left!==undefined){measurements.push(ingest.radii.left);}
+    if(manual.use_for_analysis.right_radius && ingest.radii.right!==undefined){measurements.push(ingest.radii.right);}
 
     let lowest_t_score=Infinity;
     for(const measurement of measurements)
@@ -357,12 +371,12 @@ function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_
 const indent="     ";
 function frax(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):string
 {
-    if(ingest.frax === undefined){return "";}
+    if(ingest.frax === undefined || !manual.use_frax){return "";}
     let retval=ingest.frax_template;
 
     let frax_risk_factors:string="";
 
-    if(ingest.frax !==undefined)
+    if(ingest.frax.risk_factors !==undefined)
     {
         for(const rf of ingest.frax.risk_factors)
         {
@@ -375,7 +389,7 @@ function frax(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):string
 
     retval=retval.replace("$RISK_FACTORS$",frax_risk_factors);
 
-    if(ingest.frax !==undefined)
+    if(ingest.frax.risk_of_osteoporotic_fracture && ingest.frax.risk_of_hip_fracture)
     {
         retval=retval.replace("$FRAX_OSTEOPOROTIC_FRACTURE$",ingest.frax.risk_of_osteoporotic_fracture.toString());
         retval=retval.replace("$FRAX_HIP_FRACTURE$",ingest.frax.risk_of_hip_fracture.toString());

@@ -2,6 +2,7 @@
 	import { mdiContentCopy } from "@mdi/js";
 	import Row, { type RowProps } from "./row.svelte";
 	import { get_result, type Result } from "./Double";
+    import Footer from "../@commons/footer.svelte";
 
     function copy() {
         if(result)
@@ -13,10 +14,9 @@
     let datum1:RowProps=$state({date:undefined,volume:undefined});
     let datum2:RowProps=$state({date:undefined,volume:undefined});
 
-    let result:Result=$state(undefined);
-    $effect(
+    let result:Result=$derived.by(
         ()=>{
-            result=get_result([datum1,datum2])            
+            return get_result([datum1,datum2]);
         }
     );
 </script>
@@ -59,25 +59,19 @@
             </div>
         </div>
     </div>
-    
-    <div class="cols centered flex_shrink">
-        <div class="small_footer">
-            Sources: <br>
-            <ol>
-                <li>
-                    <a href="https://pubmed.ncbi.nlm.nih.gov/11205667/">
-                    Hasegawa M, Sone S, Takashima S, Li F, Yang ZG, Maruyama Y, Watanabe T. Growth rate of small lung cancers detected on mass CT screening. Br J Radiol. 2000 Dec;73(876):1252-9. doi: 10.1259/bjr.73.876.11205667. PMID: 11205667.
-                    </a>
-                </li>
-        <li>
-                    <a href="https://pubmed.ncbi.nlm.nih.gov/19250697/">
-                    Honda O, Johkoh T, Sekiguchi J, Tomiyama N, Mihara N, Sumikawa H, Inoue A, Yanagawa M, Daimon T, Okumura M, Nakamura H. Doubling time of lung cancer determined using three-dimensional volumetric software: comparison of squamous cell carcinoma and adenocarcinoma. Lung Cancer. 2009 Nov;66(2):211-7. doi: 10.1016/j.lungcan.2009.01.018. Epub 2009 Feb 28. PMID: 19250697.
-                    </a>
-                </li>
-            </ol>
-        </div>
-        <div>This software is made available under the <a href="license"> MIT License</a>.</div>
-    </div>
+
+    <Footer sources={
+        [
+            {
+            url: "https://pubmed.ncbi.nlm.nih.gov/11205667/",
+            description: "Hasegawa M, Sone S, Takashima S, Li F, Yang ZG, Maruyama Y, Watanabe T. Growth rate of small lung cancers detected on mass CT screening. Br J Radiol. 2000 Dec;73(876):1252-9. doi: 10.1259/bjr.73.876.11205667. PMID: 11205667."
+            },
+            {
+            url: "https://pubmed.ncbi.nlm.nih.gov/19250697/",
+            description: "Honda O, Johkoh T, Sekiguchi J, Tomiyama N, Mihara N, Sumikawa H, Inoue A, Yanagawa M, Daimon T, Okumura M, Nakamura H. Doubling time of lung cancer determined using three-dimensional volumetric software: comparison of squamous cell carcinoma and adenocarcinoma. Lung Cancer. 2009 Nov;66(2):211-7. doi: 10.1016/j.lungcan.2009.01.018. Epub 2009 Feb 28. PMID: 19250697."
+            }
+        ]
+    }/>
 </div>
 
 <style>
