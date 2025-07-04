@@ -12,6 +12,7 @@
                 '☑ Switch to Svelte',
                 '☑ Bug fixes',
                 '☑ DEXA Report Generator',
+                '☑ AAo Bounded and Extrapolated results'
             ]
         },
         {

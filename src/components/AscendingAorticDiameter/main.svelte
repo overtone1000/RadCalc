@@ -2,7 +2,7 @@
 	import { mdiContentCopy } from "@mdi/js";
 	import { onMount } from "svelte";
 	import type { ChangeEventHandler } from "svelte/elements";
-	import { createText, createTextAD, type Result } from "./AA/text";
+	import { createText, createTextAD, type Results } from "./AA/text";
 	import { initialize_guesses, iterate_guesses, type Guesses } from "./AA";
 	import Footer from "../@commons/footer.svelte";
 
@@ -27,22 +27,8 @@
     let height_units:"in"|"cm" = $state("cm");
     let AAo_diameter:number|undefined = $state(undefined);
     let sex:"man"|"woman" = $state("man");
-    let result:Result|undefined = $state(undefined);
-    let result_inner_html:string|undefined = $state(undefined);
-
-    $effect(
-        ()=>{
-            if(result!==undefined)
-            {
-                result_inner_html=result.html;
-            }
-            else
-            {
-                result_inner_html=undefined;
-            }
-        }
-    );
-    
+    let result:Results|undefined = $state(undefined);
+        
     let SelectForm:ChangeEventHandler<HTMLInputElement>=(new_input_mode:Event & { currentTarget: EventTarget & HTMLInputElement; })=>{
         input_mode = parseInt(new_input_mode.currentTarget.value) as Input;
         Update();
@@ -131,10 +117,10 @@
         }
     }
 
-    function copy() {
+    function copy(text:string) {
         if(result!==undefined)
         {
-            navigator.clipboard.writeText(result.raw);
+            navigator.clipboard.writeText(text);
         }
     }
 
@@ -215,12 +201,33 @@
         <div class="cols half_width">
                 {#if result!==undefined}
                     <h4>Result</h4>
-                    <p id="CalculationResult">{@html result.html}</p>
-                    <button aria-label="copy" class="iconbutton" id="copy-button" onclick={copy}>
-                    <svg viewBox="0 0 24 24">
-                            <path class="iconsvg" d={mdiContentCopy}/>
-                    </svg>
-                </button>
+                    {#if result.caution!==undefined}
+                        <p>{@html result.caution}</p>
+                    {/if}
+                    {#if result.inbounds!==undefined }
+                        <p>{@html result.inbounds.html}</p>
+                        <button aria-label="copy" class="iconbutton" id="copy-button" onclick={()=>{copy(result!.inbounds!.raw)}}>
+                        <svg viewBox="0 0 24 24">
+                                <path class="iconsvg" d={mdiContentCopy}/>
+                        </svg>
+                        </button>
+                    {/if}
+                    {#if result.extrapolated!==undefined}
+                        <p>{@html result.extrapolated.html}</p>
+                        <button aria-label="copy" class="iconbutton" id="copy-button" onclick={()=>{copy(result!.extrapolated!.raw)}}>
+                        <svg viewBox="0 0 24 24">
+                                <path class="iconsvg" d={mdiContentCopy}/>
+                        </svg>
+                        </button>
+                    {/if}
+                    {#if result.atbound!==undefined}
+                        <p>{@html result.atbound.html}</p>
+                        <button aria-label="copy" class="iconbutton" id="copy-button" onclick={()=>{copy(result!.atbound!.raw)}}>
+                        <svg viewBox="0 0 24 24">
+                                <path class="iconsvg" d={mdiContentCopy}/>
+                        </svg>
+                        </button>
+                    {/if}
                 {/if}
         </div>
     </div>

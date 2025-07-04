@@ -2,13 +2,17 @@
 # A collection of web-based radiology calculators
 
 ## Dependencies
-- [Simple CSS](https://github.com/kevquirk/simple.css): Directly included in the `src` directory
-- NodeJS - Installs development dependencies such is linter, prettier, and typescript compiler (see `package.json`)
-- mdi/js - Nice SVG icons. Directly included in the `src` directory.
+NodeJS: Manages most dependences (see `package.json`). The two most important dependencies are:
+- [Svelte](https://svelte.dev/)
+- [Simple CSS](https://github.com/kevquirk/simple.css)
 
 ## Development
 - Build tasks are in `.vscode/tasks.json`
-- A development server can be started using podman via `dev/start.sh`
+- A development server can be started using the `dev` script in `package.json`.
+
+## Deployment
+- Build with the `build` script in `package.json`
+- Push the contents of the resulting `build` directory to a server.
 
 ## Environment
 The repository is prepped for development using the nix package manager. The following files allow this

@@ -1,3 +1,8 @@
+export type AAoResult = {
+	AA95th:number,
+	Sinus95th:number
+}
+
 export function CalculateAAo(Age:number, BSA:number, sex:"man"|"woman")
 {
     let alpha_AAo=0;
