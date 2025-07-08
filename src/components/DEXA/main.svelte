@@ -163,23 +163,23 @@
     let enabled_report_generation:boolean = $derived.by(
         ()=>{
             const measurement_ready=(meas:DEXA_Measurements|undefined)=>{
-                return meas!==undefined && 
+                return meas && 
                 meas.locked && 
-                meas.bone_mineral_density && 
-                meas.t_score && 
-                meas.z_score;
+                Number.isFinite(meas.bone_mineral_density) &&
+                Number.isFinite(meas.t_score) && 
+                Number.isFinite(meas.z_score);
             };
 
             const comparison_ready=(comp:DEXA_Comparison|undefined)=>{
-                return comp!==undefined &&
+                return comp &&
                 comp.locked &&
-                comp.bone_mineral_density_absolute_change &&
-                comp.bone_mineral_density_percentage_change;
+                Number.isFinite(comp.bone_mineral_density_absolute_change) &&
+                Number.isFinite(comp.bone_mineral_density_percentage_change);
             };
 
             if(ingest!==undefined)
             {
-                if(current_spine_measurement!==undefined)
+                if(selected_spinefield)
                 {
                     if(!measurement_ready(current_spine_measurement)){return false;}
                 }
