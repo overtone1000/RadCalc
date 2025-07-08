@@ -14,7 +14,7 @@
 
     let ingest:DEXA_Ingest_Data|undefined=$state(undefined);
     let mandatory:DEXA_Mandatory_Manual_Data=$state(empty_mandatory());
-    let debug_mode:boolean=$state(true);
+    let debug_mode:boolean=$state(false);
 
     let other_frax_reason:string=$state("");
 
