@@ -1,6 +1,7 @@
 import { type SpineField } from "./basic_types";
 import type { DEXA_Ingest_Data } from "./data_ingest";
 
+export type FRAX = "The hips could not be evaluated, which precludes FRAX risk assessment."|"The patient is younger than 40 years of age, which precludes FRAX risk assessment."|string|undefined;
 export type DEXA_Mandatory_Manual_Data =
 {
     age:number,
@@ -34,7 +35,7 @@ export type DEXA_Mandatory_Manual_Data =
         radius:boolean,
     },
     use_frax:boolean,
-    reason_for_frax_exclusion:"The hips could not be evaluated, which precludes FRAX risk assessment."|"The patient is younger than 40 years of age, which precludes FRAX risk assessment."|undefined;
+    reason_for_frax_exclusion:FRAX
 };
 
 export function empty_mandatory():DEXA_Mandatory_Manual_Data {

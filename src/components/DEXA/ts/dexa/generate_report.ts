@@ -40,7 +40,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 console.debug(manual.comparison.date);
                 let date = new Date(manual.comparison.date);
                 console.debug(date);
-                comp_str=date.getMonth()+"/"+date.getDate()+"/"+date.getFullYear();
+                comp_str=(date.getMonth()+1)+"/"+(date.getDate()+1)+"/"+date.getFullYear();
             }
         }
         retval=retval.replace("$COMPARISON_DATE_OR_NONE$",comp_str);

@@ -14,7 +14,9 @@
 
     let ingest:DEXA_Ingest_Data|undefined=$state(undefined);
     let mandatory:DEXA_Mandatory_Manual_Data=$state(empty_mandatory());
-    let debug_mode:boolean=$state(false);
+    let debug_mode:boolean=$state(true);
+
+    let other_frax_reason:string=$state("");
 
     //Only for debugging
     onMount(()=> {
@@ -340,6 +342,7 @@
                                     <label>Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
                                 </div>
                             </div>
+                            {#if mandatory.use_for_comparison.spine || mandatory.use_for_comparison.left_hip || mandatory.use_for_comparison.right_hip || mandatory.use_for_comparison.radius}
                             <table>
                                 <thead>
                                     <tr>
@@ -356,6 +359,7 @@
                                     <DexaComparison used={mandatory.use_for_comparison.radius} name="Radius" bind:comparison={ingest.trend.radius}/>
                                 </tbody>
                             </table>
+                            {/if}
                         </div>
                     </div>
                 {/if}
@@ -364,12 +368,20 @@
                     <div class="flexrow flexgrow padleft">
                         <label>Include in report: <input type="checkbox" bind:checked={mandatory.use_frax}></label>
                         <div class="flexrow justify_space_around flexgrow">
-                        {#if mandatory.use_frax}
+                        {#if mandatory.use_frax }
                             <Lock name="frax" bind:locked={ingest.frax.locked}/>
                             <label> Risk (hip): <input type="number" bind:value={ingest.frax.risk_of_hip_fracture} class="numberbox" disabled={ingest.frax.locked}/>%</label>
                             <label> Risk (osteoporotic): <input type="number" bind:value={ingest.frax.risk_of_osteoporotic_fracture} class="numberbox" disabled={ingest.frax.locked}/>%</label>
                         {:else}
-                            <label> Reason for FRAX exclusion: <input type="text" bind:value={mandatory.reason_for_frax_exclusion}></label>
+                            <div class="flexcol"> 
+                                <div>Reason for FRAX exclusion</div>
+                                <label>No hips<input type="radio" name="no_frax_reason" value={"The hips could not be evaluated, which precludes FRAX risk assessment."} bind:group={mandatory.reason_for_frax_exclusion}></label>
+                                <label>Less than 40 years old<input type="radio" name="no_frax_reason" value={"The patient is younger than 40 years of age, which precludes FRAX risk assessment."} bind:group={mandatory.reason_for_frax_exclusion}></label>
+                                <div class="flexrow">
+                                    <label>Other<input type="radio" name="no_frax_reason" value={other_frax_reason} bind:group={mandatory.reason_for_frax_exclusion}></label>
+                                    <input type="text" bind:value={other_frax_reason}/>
+                                </div>
+                            </div>
                         {/if}
                         </div>
                     </div>
