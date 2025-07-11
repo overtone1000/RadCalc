@@ -95,12 +95,14 @@ const millis_per_year=365.25*24*60*60*1000;
 export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Data{
     let retval:DEXA_Mandatory_Manual_Data = empty_mandatory();
 
-    for(const key of ingest.spine.keys())
+    for(const [key,value] of ingest.spine)
     {
-        if(key.includes("1")){retval.use_for_analysis.L1=true;}
-        if(key.includes("2")){retval.use_for_analysis.L2=true;}
-        if(key.includes("3")){retval.use_for_analysis.L3=true;}
-        if(key.includes("4")){retval.use_for_analysis.L4=true;}
+        if(value.locked){
+            if(key.includes("1")){retval.use_for_analysis.L1=true;}
+            if(key.includes("2")){retval.use_for_analysis.L2=true;}
+            if(key.includes("3")){retval.use_for_analysis.L3=true;}
+            if(key.includes("4")){retval.use_for_analysis.L4=true;}
+        }
     }
 
     //For hips and radii, initial lock state from ingest determines whether they should be used
@@ -124,10 +126,12 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
     console.debug("Calculated age is " + retval.age + " years.");
     if(retval.age<40)
     {
+        //If age<40, guess that this is the reason for no FRAX.
         retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.LessThan40YearsOld,other_text:""}
-    }
-    else if(!(ingest.hips.left.neck || ingest.hips.right.neck))
+    }    
+    else if(!(ingest.hips.left.neck.locked || ingest.hips.right.neck.locked))
     {
+        //If neither hip is locked, hips may not have been analyzed, so guess that this is the reason for no FRAX.
         retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.HipsNotEvaluated,other_text:""}
     }
 
