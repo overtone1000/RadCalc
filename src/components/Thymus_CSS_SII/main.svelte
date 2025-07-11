@@ -86,13 +86,36 @@
 				let SSI_muscle = (muscle_in-muscle_out)/muscle_in*100.0;
 				let SSI_thymus = (thymus_in-thymus_out)/thymus_in*100.0;
 
-				retval.html = line1 + "<b><font color=\"#edca4e\">" + SSI_muscle.toFixed(0) + "</font></b>.<br>";
-				retval.html += line2 + "<b><font color=\"#edca4e\">" + SSI_thymus.toFixed(0) + "</font></b>.<br>";
+				const line4 = "Thymic SII less than 8.92% is 100% sensitive and 100% specific for tumor.";
+				const line5 = "SII mean and standard deviation for the thymic hyperplasia group: 46.29% ± 18.41";
+				const line6 = "SII mean and standard deviation for the tumor group: −0.06% ± 4.89";
+				const line7 = "CSR less than 0.849 is 100% sensitive and 96.7% specific for tumor.";
+				const line8 = "CSR mean and standard deviation for the thymic hyperplasia group: 0.545 ± 0.162";
+				const line9 = "CSR mean and standard deviation for the tumor group: 1.045 ± 0.094";
+				//Muscle SSI isn't useful, so just exclude it.
+				//retval.html = line1 + "<b><font color=\"#edca4e\">" + SSI_muscle.toFixed(0) + "%</font></b>.<br>";
+				retval.html = line2 + "<b><font color=\"#edca4e\">" + SSI_thymus.toFixed(0) + "%</font></b>.<br>";
 				retval.html += line3 + "<b><font color=\"#edca4e\">" + CSR.toFixed(3) + "</font></b>.<br>";
+				retval.html += "<br>";
+				retval.html += line4 + "<br>";
+				retval.html += line5 + "<br>";
+				retval.html += line6 + "<br>";
+				retval.html += "<br>";
+				retval.html += line7 + "<br>";
+				retval.html += line8 + "<br>";
+				retval.html += line9 + "<br>";
 
-				retval.text_for_copy = line1 + SSI_muscle.toFixed(0) + "." + windows_newline;
-				retval.text_for_copy += line2 + SSI_thymus.toFixed(0) + "." + windows_newline;
-				retval.text_for_copy += line3 + CSR.toFixed(3) + ".";
+				//retval.text_for_copy = line1 + SSI_muscle.toFixed(0) + "%." + windows_newline;
+				retval.text_for_copy = line2 + SSI_thymus.toFixed(0) + "%." + windows_newline;
+				retval.text_for_copy += line3 + CSR.toFixed(3) + "." + windows_newline;
+				retval.text_for_copy += windows_newline;
+				retval.text_for_copy += line4 + windows_newline;
+				retval.text_for_copy += line5 + windows_newline;
+				retval.text_for_copy += line6 + windows_newline;
+				retval.text_for_copy += windows_newline;
+				retval.text_for_copy += line7 + windows_newline;
+				retval.text_for_copy += line8 + windows_newline;
+				retval.text_for_copy += line9 + windows_newline;
 			}
 			return retval;
 		}
