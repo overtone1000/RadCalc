@@ -94,11 +94,18 @@ function get_DEXA_Measurements_from_raw_field(field_value:string|undefined):DEXA
     }
     else {
         let retval:DEXA_Measurements = {
-            locked: true,
+            locked: false,
             bone_mineral_density: finite_number_or_undefined(subfields[0]),
             t_score: finite_number_or_undefined(subfields[1]),
             z_score: finite_number_or_undefined(subfields[2])
         };
+
+        if(retval.bone_mineral_density !== undefined &&
+            retval.t_score !== undefined &&
+            retval.z_score !== undefined)
+            {
+                retval.locked=true;
+            }
 
         return retval;
     }
@@ -121,10 +128,16 @@ function get_DEXA_Comparison_from_raw_field(field_value:string|undefined):DEXA_C
     }
     else {
         let retval:DEXA_Comparison = {
-            locked:true,
+            locked:false,
             bone_mineral_density_absolute_change: finite_number_or_undefined(subfields[0]),
             bone_mineral_density_percentage_change: finite_number_or_undefined(subfields[1])
         };
+
+        if(retval.bone_mineral_density_absolute_change !== undefined &&
+            retval.bone_mineral_density_percentage_change !== undefined)
+            {
+                retval.locked=true;
+            }
 
         return retval;
     }
