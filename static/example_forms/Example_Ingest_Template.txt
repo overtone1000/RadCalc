@@ -22,8 +22,8 @@ L124:25,26,27
 L134:28,29,30
 L234:31,32,33
 L1234:34,35,36
-hip_left_total:37,38,39
-hip_left_neck:40,41,42
+hip_left_total:
+hip_left_neck:
 hip_right_total:43,44,45
 hip_right_neck:46,47,48
 left_radius:49,50,51

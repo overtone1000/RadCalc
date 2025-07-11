@@ -34,6 +34,7 @@
         '☐ Multiple points for doubling time',
         '☐ DEXA warning (highlight row?) if FRAX not included for no good reason',
         '☐ DEXA warning (highlight input?) for missing values that stop report generation (heights, measurements, etc)',
+        '☐ Disable FRAX exclusions for patient age and hips if they are obviously invalid based in ingest and manually input data',
     ];
 
     let considering_roadmap_entries:string[]=
