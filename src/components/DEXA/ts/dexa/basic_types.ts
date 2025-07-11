@@ -91,8 +91,8 @@ export const DEXA_trend_fields = [
 
 export type Hip = 
 {
-    total?:DEXA_Measurements,
-    neck?:DEXA_Measurements
+    total:DEXA_Measurements,
+    neck:DEXA_Measurements
 }
 
 export type FRAX_Risk_Factors = string[];

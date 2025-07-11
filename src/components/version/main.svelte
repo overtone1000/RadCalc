@@ -32,6 +32,8 @@
         '☐ Volume calculator with ellipsoid, prostate, and spleen equations.',
         '☐ Data ingestion and substitution in doubling time',
         '☐ Multiple points for doubling time',
+        '☐ DEXA warning (highlight row?) if FRAX not included for no good reason',
+        '☐ DEXA warning (highlight input?) for missing values that stop report generation (heights, measurements, etc)',
     ];
 
     let considering_roadmap_entries:string[]=

@@ -1,7 +1,7 @@
 import { newline } from "../../../globals";
 import { getSpineField, type DEXA_Comparison, type DEXA_Measurements } from "./basic_types";
 import { all_possible_newlines, type DEXA_Ingest_Data } from "./data_ingest";
-import type { DEXA_Mandatory_Manual_Data } from "./manual";
+import { getFRAXExclusionReasonText, type DEXA_Mandatory_Manual_Data } from "./manual";
 
 export const windows_newline="\r\n";
 
@@ -144,8 +144,8 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 
         let full_quality_section=included_sites+".";
 
-        if(!manual.use_frax && manual.reason_for_frax_exclusion){
-            full_quality_section+=" "+manual.reason_for_frax_exclusion;
+        if(!manual.use_frax){           
+            full_quality_section+=" "+getFRAXExclusionReasonText(manual.reason_for_frax_exclusion);
         }
 
         retval=retval.replace("$INCLUDED_SITES$",full_quality_section);

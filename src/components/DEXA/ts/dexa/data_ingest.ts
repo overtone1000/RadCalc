@@ -29,8 +29,8 @@ export type DEXA_Ingest_Data =
         right: Hip
     },
     radii:{
-        left?: DEXA_Measurements,
-        right?: DEXA_Measurements
+        left: DEXA_Measurements,
+        right: DEXA_Measurements
     },
     dexa_system:string,
     device_serial:string,
@@ -66,59 +66,67 @@ function import_error(message:string):Import_Result
     }
 }
 
-function valid_values_or_undefined(retval:DEXA_Measurements|DEXA_Comparison)
+function finite_number_or_undefined(input:string):number|undefined
 {
-    for(let [key, value] of Object.entries(retval))
+    let parsed=parseFloat(input);
+    if(Number.isFinite(parsed))
     {
-        if(Number.isNaN(value))
-        {
-            return undefined;
-        }
+        return parsed;
     }
-
-    return retval;
+    else
+    {
+        return undefined;
+    }
 }
 
-function get_DEXA_Measurements_from_raw_field(field_value:string|undefined):DEXA_Measurements|undefined
+function get_DEXA_Measurements_from_raw_field(field_value:string|undefined):DEXA_Measurements
 {
-    if(field_value===undefined){return undefined;}
+    const empty:DEXA_Measurements={
+        locked: false
+    };
+    
+    if(field_value===undefined){return empty;}
     let subfields = field_value.split(",");
     if(subfields.length!==3){
         {
-            return undefined;
+            return empty;
         }
     }
     else {
         let retval:DEXA_Measurements = {
             locked: true,
-            bone_mineral_density: parseFloat(subfields[0]),
-            t_score: parseFloat(subfields[1]),
-            z_score: parseFloat(subfields[2])
+            bone_mineral_density: finite_number_or_undefined(subfields[0]),
+            t_score: finite_number_or_undefined(subfields[1]),
+            z_score: finite_number_or_undefined(subfields[2])
         };
 
-        return valid_values_or_undefined(retval) as DEXA_Measurements;
+        return retval;
     }
 }
 
-function get_DEXA_Comparison_from_raw_field(field_value:string|undefined):DEXA_Comparison|undefined
+function get_DEXA_Comparison_from_raw_field(field_value:string|undefined):DEXA_Comparison
 {
+    const empty:DEXA_Comparison={
+        locked: false
+    };
+
     if(field_value===undefined){
-        return undefined;
+        return empty;
     }
     let subfields = field_value.split(",");
     if(subfields.length!==2){
     {
-        return undefined;
+        return empty;
     }
     }
     else {
         let retval:DEXA_Comparison = {
             locked:true,
-            bone_mineral_density_absolute_change: parseFloat(subfields[0]),
-            bone_mineral_density_percentage_change: parseFloat(subfields[1])
+            bone_mineral_density_absolute_change: finite_number_or_undefined(subfields[0]),
+            bone_mineral_density_percentage_change: finite_number_or_undefined(subfields[1])
         };
 
-        return valid_values_or_undefined(retval) as DEXA_Comparison;
+        return retval;
     }
 }
 

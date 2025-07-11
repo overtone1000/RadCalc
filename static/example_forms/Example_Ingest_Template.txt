@@ -29,10 +29,10 @@ hip_right_neck:46,47,48
 left_radius:49,50,51
 right_radius:52,53,54
 
-spine_trend:1000,1100
-hip_left_trend:2000,2200
-hip_right_trend:3000,3300
-radius_trend:4000,4400
+spine_trend:
+hip_left_trend:
+hip_right_trend:
+radius_trend:
 
 dexa_system:dexa sys
 device_serial:dexa dev serial

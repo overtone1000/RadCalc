@@ -1,7 +1,22 @@
 import { type SpineField } from "./basic_types";
 import type { DEXA_Ingest_Data } from "./data_ingest";
 
-export type FRAX = "The hips could not be evaluated, which precludes FRAX risk assessment."|"The patient is younger than 40 years of age, which precludes FRAX risk assessment."|string|undefined;
+export enum FRAXExclusionReason {
+    LessThan40YearsOld,
+    HipsNotEvaluated,
+    Other
+}
+
+export function getFRAXExclusionReasonText(reason:{reason:FRAXExclusionReason,other_text:string})
+{
+    switch(reason.reason)
+    {
+        case FRAXExclusionReason.LessThan40YearsOld:return "The patient is younger than 40 years of age, which precludes FRAX risk assessment.";
+        case FRAXExclusionReason.HipsNotEvaluated:return "The hips could not be evaluated, which precludes FRAX risk assessment.";
+        case FRAXExclusionReason.Other:return reason.other_text;
+    }
+}
+
 export type DEXA_Mandatory_Manual_Data =
 {
     age:number,
@@ -35,7 +50,10 @@ export type DEXA_Mandatory_Manual_Data =
         radius:boolean,
     },
     use_frax:boolean,
-    reason_for_frax_exclusion:FRAX
+    reason_for_frax_exclusion:{
+        reason:FRAXExclusionReason,
+        other_text:string
+    }
 };
 
 export function empty_mandatory():DEXA_Mandatory_Manual_Data {
@@ -68,7 +86,7 @@ export function empty_mandatory():DEXA_Mandatory_Manual_Data {
             date:undefined
         },
         use_frax:true,
-        reason_for_frax_exclusion:undefined
+        reason_for_frax_exclusion:{reason:FRAXExclusionReason.Other,other_text:""}
     };
     return retval;
 };
@@ -85,43 +103,33 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
         if(key.includes("4")){retval.use_for_analysis.L4=true;}
     }
 
-    if(ingest.hips)
+    //For hips and radii, initial lock state from ingest determines whether they should be used
+    if(ingest.hips.left.neck.locked){retval.use_for_analysis.left_hip_neck=true;}
+    if(ingest.hips.left.total.locked){retval.use_for_analysis.left_hip_total=true;}
+    if(ingest.hips.right.neck.locked){retval.use_for_analysis.right_hip_neck=true;}
+    if(ingest.hips.right.total.locked){retval.use_for_analysis.right_hip_total=true;}
+    if(ingest.radii.right.locked){retval.use_for_analysis.right_radius=true;}
+    if(ingest.radii.left.locked){retval.use_for_analysis.left_radius=true;}
+
+    if(ingest.frax.risk_of_hip_fracture!==undefined && ingest.frax.risk_of_osteoporotic_fracture!==undefined)
     {
-        if(ingest.hips.left)
-        {
-            if(ingest.hips.left.neck){retval.use_for_analysis.left_hip_neck=true;}
-            if(ingest.hips.left.total){retval.use_for_analysis.left_hip_total=true;}
-        }
-        if(ingest.hips.right)
-        {
-            if(ingest.hips.right.neck){retval.use_for_analysis.right_hip_neck=true;}
-            if(ingest.hips.right.total){retval.use_for_analysis.right_hip_total=true;}
-        }
+        retval.use_frax=true;
+    }
+    else
+    {
+        retval.use_frax=false;
     }
 
     retval.age=((new Date(ingest.date)).getTime()-(new Date(ingest.patient_dob)).getTime())/millis_per_year;
     console.debug("Calculated age is " + retval.age + " years.");
     if(retval.age<40)
     {
-        retval.use_frax=false;
-        retval.reason_for_frax_exclusion="The patient is younger than 40 years of age, which precludes FRAX risk assessment.";
+        retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.LessThan40YearsOld,other_text:""}
     }
     else if(!(ingest.hips.left.neck || ingest.hips.right.neck))
     {
-        retval.use_frax=false;
-        retval.reason_for_frax_exclusion="The hips could not be evaluated, which precludes FRAX risk assessment."
+        retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.HipsNotEvaluated,other_text:""}
     }
-
-    if(ingest.radii.left)
-    {
-        retval.use_for_analysis.left_radius=true;
-    }
-
-    if(ingest.radii.right)
-    {
-        retval.use_for_analysis.right_radius=true;
-    }
-
 
     if(ingest.trend)
     {

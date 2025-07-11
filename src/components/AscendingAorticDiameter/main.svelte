@@ -27,6 +27,7 @@
     let height_units:"in"|"cm" = $state("cm");
     let AAo_diameter:number|undefined = $state(undefined);
     let sex:"man"|"woman" = $state("man");
+
     let result:Results|undefined = $state(undefined);
         
     let SelectForm:ChangeEventHandler<HTMLInputElement>=(new_input_mode:Event & { currentTarget: EventTarget & HTMLInputElement; })=>{

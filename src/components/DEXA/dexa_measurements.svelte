@@ -5,7 +5,7 @@
     type Props = {
         used:boolean,
         name:string,
-        measurements:DEXA_Measurements | undefined;
+        measurements:DEXA_Measurements;
     };
     let { 
         used = $bindable(),

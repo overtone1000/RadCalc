@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ingest_data, type DEXA_Ingest_Data } from "./ts/dexa/data_ingest";
-	import { empty_mandatory, init_mandatory, type DEXA_Mandatory_Manual_Data } from "./ts/dexa/manual";
+	import { empty_mandatory, FRAXExclusionReason, init_mandatory, type DEXA_Mandatory_Manual_Data } from "./ts/dexa/manual";
 	import { onMount } from "svelte";
 	import type { MouseEventHandler } from "svelte/elements";
 	import DexaMeasurements from "./dexa_measurements.svelte";
@@ -14,7 +14,8 @@
 
     let ingest:DEXA_Ingest_Data|undefined=$state(undefined);
     let mandatory:DEXA_Mandatory_Manual_Data=$state(empty_mandatory());
-    let debug_mode:boolean=$state(false);
+    
+    const debug_mode:boolean=true && import.meta.env.DEV; //if in development mode, put in debug.
 
     let other_frax_reason:string=$state("");
 
@@ -27,7 +28,6 @@
                     (result)=>{
                         handle_raw_ingest(result);
                         mandatory.comparison.date="2025-06-10";
-                        debug_mode=true;
                     }
                 );
             }
@@ -216,10 +216,16 @@
                 }
 
                 if(mandatory.use_frax){
-                    if(!ingest.frax.locked || !ingest.frax.risk_of_hip_fracture || !ingest.frax.risk_of_osteoporotic_fracture){return false;}
+                    if(!ingest.frax.locked || 
+                    !Number.isFinite(ingest.frax.risk_of_hip_fracture) || 
+                    !Number.isFinite(ingest.frax.risk_of_osteoporotic_fracture)){
+                        return false;
+                    }
                 }
                 else{
-                    if(mandatory.reason_for_frax_exclusion===undefined){return false;}
+                    if(mandatory.reason_for_frax_exclusion.reason===FRAXExclusionReason.Other
+                        && mandatory.reason_for_frax_exclusion.other_text===""                    
+                    ){return false;}
                 }
 
                 return true;
@@ -229,6 +235,8 @@
                 return false;
             }
         }
+
+        
     )
 </script>
 
@@ -320,8 +328,8 @@
                                     <DexaMeasurements used={mandatory.use_for_analysis.left_hip_neck} name="Left Femoral Neck" bind:measurements={ingest.hips.left.neck}/>
                                     <DexaMeasurements used={mandatory.use_for_analysis.right_hip_total} name="Right Hip" bind:measurements={ingest.hips.right.total}/>
                                     <DexaMeasurements used={mandatory.use_for_analysis.right_hip_neck} name="Right Femoral Neck" bind:measurements={ingest.hips.right.neck}/>
-                                    <DexaMeasurements used={mandatory.use_for_analysis.left_radius} name="Radius" bind:measurements={ingest.radii.left}/>
-                                    <DexaMeasurements used={mandatory.use_for_analysis.right_radius} name="Radius" bind:measurements={ingest.radii.right}/>
+                                    <DexaMeasurements used={mandatory.use_for_analysis.left_radius} name="Left Radius" bind:measurements={ingest.radii.left}/>
+                                    <DexaMeasurements used={mandatory.use_for_analysis.right_radius} name="Right Radius" bind:measurements={ingest.radii.right}/>
                                 </tbody>
                             </table>
                         </div>
@@ -375,11 +383,11 @@
                         {:else}
                             <div class="flexcol"> 
                                 <div>Reason for FRAX exclusion</div>
-                                <label>No hips<input type="radio" name="no_frax_reason" value={"The hips could not be evaluated, which precludes FRAX risk assessment."} bind:group={mandatory.reason_for_frax_exclusion}></label>
-                                <label>Less than 40 years old<input type="radio" name="no_frax_reason" value={"The patient is younger than 40 years of age, which precludes FRAX risk assessment."} bind:group={mandatory.reason_for_frax_exclusion}></label>
+                                <label>No hips<input type="radio" name="no_frax_reason" value={FRAXExclusionReason.HipsNotEvaluated} bind:group={mandatory.reason_for_frax_exclusion.reason}></label>
+                                <label>Less than 40 years old<input type="radio" name="no_frax_reason" value={FRAXExclusionReason.LessThan40YearsOld} bind:group={mandatory.reason_for_frax_exclusion.reason}></label>
                                 <div class="flexrow">
-                                    <label>Other<input type="radio" name="no_frax_reason" value={other_frax_reason} bind:group={mandatory.reason_for_frax_exclusion}></label>
-                                    <input type="text" bind:value={other_frax_reason}/>
+                                    <label>Other<input type="radio" name="no_frax_reason" value={FRAXExclusionReason.Other} bind:group={mandatory.reason_for_frax_exclusion.reason}></label>
+                                    <input type="text" bind:value={mandatory.reason_for_frax_exclusion.other_text}/>
                                 </div>
                             </div>
                         {/if}
