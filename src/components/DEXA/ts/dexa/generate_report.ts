@@ -190,7 +190,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 
         const trypush=(name:string, meas:DEXA_Measurements|undefined)=>
         {
-            if(meas)
+            if(meas!==undefined)
             {
                 let bmd=meas.bone_mineral_density;
                 let tscore=meas.t_score;
@@ -389,7 +389,10 @@ function frax(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):string
 
     retval=retval.replace("$RISK_FACTORS$",frax_risk_factors);
 
-    if(ingest.frax.risk_of_osteoporotic_fracture && ingest.frax.risk_of_hip_fracture)
+    if(ingest.frax.risk_of_osteoporotic_fracture!==undefined 
+        && ingest.frax.risk_of_osteoporotic_fracture!==null 
+        && ingest.frax.risk_of_hip_fracture!==undefined
+        && ingest.frax.risk_of_hip_fracture!==null)
     {
         retval=retval.replace("$FRAX_OSTEOPOROTIC_FRACTURE$",ingest.frax.risk_of_osteoporotic_fracture.toString());
         retval=retval.replace("$FRAX_HIP_FRACTURE$",ingest.frax.risk_of_hip_fracture.toString());
