@@ -179,7 +179,7 @@
             {
                 if(mandatory.reported_tallest_height.exists && (mandatory.reported_tallest_height.feet===null || mandatory.reported_tallest_height.inches===null)){return false;}
                 if(mandatory.height_in_inches.exists && mandatory.height_in_inches.height_in_inches===null){return false;}
-                if(mandatory.comparison.height_in_inches.exists && mandatory.comparison.height_in_inches.height_in_inches===null){return false;}
+                if(mandatory.comparison.exists && mandatory.comparison.height_in_inches.exists && mandatory.comparison.height_in_inches.height_in_inches===null){return false;}
 
                 if(selected_spinefield)
                 {
