@@ -17,8 +17,6 @@
     
     const debug_mode:boolean=true && import.meta.env.DEV; //if in development mode, put in debug.
 
-    let other_frax_reason:string=$state("");
-
     //Only for debugging
     onMount(()=> {
         if(debug_mode){
@@ -27,7 +25,7 @@
                 result.text().then(
                     (result)=>{
                         handle_raw_ingest(result);
-                        mandatory.comparison.date="2025-06-10";
+                        mandatory.comparison.date="1999-06-10";
                     }
                 );
             }
@@ -179,6 +177,10 @@
 
             if(ingest!==undefined)
             {
+                if(mandatory.reported_tallest_height.exists && (mandatory.reported_tallest_height.feet===null || mandatory.reported_tallest_height.inches===null)){return false;}
+                if(mandatory.height_in_inches.exists && mandatory.height_in_inches.height_in_inches===null){return false;}
+                if(mandatory.comparison.height_in_inches.exists && mandatory.comparison.height_in_inches.height_in_inches===null){return false;}
+
                 if(selected_spinefield)
                 {
                     if(!measurement_ready(current_spine_measurement)){return false;}
@@ -200,6 +202,19 @@
                 }
                 if(mandatory.use_for_analysis.right_radius){
                     if(!measurement_ready(ingest.radii.right)){return false;}
+                }
+
+                if(
+                    selected_spinefield === undefined &&
+                    !mandatory.use_for_analysis.left_hip_total &&
+                    !mandatory.use_for_analysis.left_hip_neck &&
+                    !mandatory.use_for_analysis.right_hip_total &&
+                    !mandatory.use_for_analysis.right_hip_neck &&
+                    !mandatory.use_for_analysis.left_radius &&
+                    !mandatory.use_for_analysis.right_radius
+                )
+                {
+                    return false;
                 }
 
                 if(mandatory.use_for_comparison.spine){
@@ -265,22 +280,22 @@
                     <div class="flexcol flexgrow">
                         <div class="flexcol align_items_end align_self_center">
                             <div class="flexrow">
-                                <div>Reported tallest height: </div>
-                                <input type="number" step="1" class="numberbox left_margin" bind:value={mandatory.reported_tallest_height.feet}>
+                                <label>Reported tallest height: <input type="checkbox" tabindex=-1 bind:checked={mandatory.reported_tallest_height.exists}></label>
+                                <input type="number" step="1" class="numberbox left_margin" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.feet}>
                                 <div class="left_margin"> ft </div>
-                                <input type="number" step="0.1" class="numberbox left_margin" bind:value={mandatory.reported_tallest_height.inches}>
+                                <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.inches}>
                                 <div class="left_margin"> in </div>
                             </div>
                             {#if mandatory.comparison.exists}
                                 <div class="flexrow">
-                                    <div>Height on prior exam: </div>
-                                    <input type="number" step="0.1" class="numberbox left_margin" bind:value={mandatory.comparison.recorded_height_inches}>
+                                    <label>Height on prior exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.comparison.height_in_inches.exists}></label>
+                                    <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.comparison.height_in_inches.exists} bind:value={mandatory.comparison.height_in_inches.height_in_inches}>
                                     <div class="left_margin"> in </div>
                                 </div>
                             {/if}
                             <div class="flexrow">
-                                <div>Height on current exam: </div>
-                                <input type="number" step="0.1" class="numberbox left_margin" bind:value={mandatory.recorded_height_inches}>
+                                <label>Height on current exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.height_in_inches.exists}></label>
+                                <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.height_in_inches.exists} bind:value={mandatory.height_in_inches.height_in_inches}>
                                 <div class="left_margin"> in </div>
                             </div>
                         </div>

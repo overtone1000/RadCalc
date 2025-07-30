@@ -5,6 +5,36 @@ import { getFRAXExclusionReasonText, type DEXA_Mandatory_Manual_Data } from "./m
 
 export const windows_newline="\r\n";
 
+const substitutions=
+{
+    exam:"$EXAM$",
+    exam_date:"$EXAM_DATE$",
+    exam_time:"$EXAM_TIME$",
+    included_sites:"$INCLUDED_SITES$",
+    frax:"$FRAX$",
+    reported_max_height:"$REPORTED_MAX_HEIGHT$",
+    prior_height:"$PRIOR_HEIGHT$",
+    prior_height_value:"$HEIGHT_ON_PRIOR$",
+    current_height:"$CURRENT_HEIGHT$",
+    measurement_name:"$MEASUREMENT_NAME$",
+    bmd:"$BMD$",
+    t_score:"$T_SCORE$",
+    z_score:"$Z_SCORE$",
+    all_measurements:"$MEASUREMENTS$",
+    system:"$DXA_SYSTEM$",
+    system_serial:"$DXA_SERIAL$",
+    software_version:"$DXA_SOFTWARE_VERSION$",
+    tech_id:"$DXA_TECH_ID$",
+    bmd_change:"$BMD_CHANGE$",
+    tscore_change:"$T_SCORE_CHANGE$",
+    trend:"$TRENDS$",
+    trend_section:"$TREND_SECTION$",
+    outside_disclaimer:"$OUTSIDE_DISCLAIMER$",
+    risk_factors:"$RISK_FACTORS$",
+    frax_osteoporotic_fracture:"$FRAX_OSTEOPOROTIC_FRACTURE$",
+    frax_hip_fracture:"$FRAX_HIP_FRACTURE$"
+}
+
 function array_to_string(arr:string[]):string{
     let retval="";
     if(arr.length===1){retval+=arr[0];}
@@ -23,9 +53,9 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 {
     let retval=ingest.report_template;
 
-    retval=retval.replace("$EXAM$",ingest.exam);
-    retval=retval.replace("$EXAM_DATE$",ingest.date);
-    retval=retval.replace("$EXAM_TIME$",ingest.time);
+    retval=retval.replace(substitutions.exam,ingest.exam);
+    retval=retval.replace(substitutions.exam_date,ingest.date);
+    retval=retval.replace(substitutions.exam_time,ingest.time);
 
     //Comparison
     {
@@ -148,40 +178,48 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             full_quality_section+=" "+getFRAXExclusionReasonText(manual.reason_for_frax_exclusion);
         }
 
-        retval=retval.replace("$INCLUDED_SITES$",full_quality_section);
+        retval=retval.replace(substitutions.included_sites,full_quality_section);
     }
 
     //FRAX
-    retval=retval.replace("$FRAX$",frax(ingest,manual))
+    retval=retval.replace(substitutions.frax,frax(ingest,manual))
 
     //Height
     {
         let reported_tallest_height:string = "Not reported by the patient.";
-        if(manual.reported_tallest_height.feet!==undefined && manual.reported_tallest_height.inches!==undefined)
+        if(manual.reported_tallest_height.exists)
         {
-            reported_tallest_height=(manual.reported_tallest_height.feet*12+manual.reported_tallest_height.inches).toString() + " in";
+            if(manual.reported_tallest_height.feet!==null && manual.reported_tallest_height.inches!==null)
+            {
+                reported_tallest_height=(manual.reported_tallest_height.feet*12+manual.reported_tallest_height.inches).toString() + " in";
+            }
         }
-        retval=retval.replace("$REPORTED_MAX_HEIGHT$",reported_tallest_height.toString())
+        retval=retval.replace(substitutions.reported_max_height,reported_tallest_height.toString())
 
         let prior_height:string="";
         if(manual.comparison.exists)
         {
             let height = "Not recorded.";
-            if(manual.comparison.recorded_height_inches !== undefined)
+            if(manual.comparison.height_in_inches.exists)
             {
-                height = manual.comparison.recorded_height_inches.toString() + " in";
-                
+                if(manual.comparison.height_in_inches.height_in_inches !== null)
+                {
+                    height = manual.comparison.height_in_inches.height_in_inches.toString() + " in";
+                }
             }
-            prior_height=ingest.height_on_prior_template.replace("$PRIOR_HEIGHT$",height);
+            prior_height=ingest.height_on_prior_template.replace(substitutions.prior_height,height);
         }
-        retval=retval.replace("$HEIGHT_ON_PRIOR$",prior_height)
+        retval=retval.replace(substitutions.prior_height_value,prior_height)
 
         let current_height:string = "Not recorded.";
-        if(manual.recorded_height_inches!==undefined)
+        if(manual.height_in_inches.exists)
         {
-            current_height=manual.recorded_height_inches.toString() + " in";
+            if(manual.height_in_inches.height_in_inches !== null)
+            {
+                current_height=manual.height_in_inches.height_in_inches.toString() + " in";
+            }
         }
-        retval=retval.replace("$CURRENT_HEIGHT$",current_height)
+        retval=retval.replace(substitutions.current_height,current_height)
     }
 
     //Measurements
@@ -199,10 +237,10 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 if(bmd!==undefined && tscore !==undefined && zscore !==undefined)
                 {
                     let thismeas=ingest.measurement_template;
-                    thismeas=thismeas.replace("$MEASUREMENT_NAME$",name);
-                    thismeas=thismeas.replace("$BMD$",bmd.toFixed(3));
-                    thismeas=thismeas.replace("$T_SCORE$",tscore.toFixed(2));
-                    thismeas=thismeas.replace("$Z_SCORE$",zscore.toFixed(2));
+                    thismeas=thismeas.replace(substitutions.measurement_name,name);
+                    thismeas=thismeas.replace(substitutions.bmd,bmd.toFixed(3));
+                    thismeas=thismeas.replace(substitutions.t_score,tscore.toFixed(2));
+                    thismeas=thismeas.replace(substitutions.z_score,zscore.toFixed(2));
                     measurements.push(thismeas);
                 }
             }
@@ -229,15 +267,15 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             allmeasurements+=measurement;
         }
 
-        retval=retval.replace("$MEASUREMENTS$",allmeasurements);
+        retval=retval.replace(substitutions.all_measurements,allmeasurements);
     }
 
     //Technical
     {
-        retval=retval.replace("$DXA_SYSTEM$",ingest.dexa_system);
-        retval=retval.replace("$DXA_SERIAL$",ingest.device_serial);
-        retval=retval.replace("$DXA_SOFTWARE_VERSION$",ingest.software_version);
-        retval=retval.replace("$DXA_TECH_ID$",ingest.technologist_id);
+        retval=retval.replace(substitutions.system,ingest.dexa_system);
+        retval=retval.replace(substitutions.system_serial,ingest.device_serial);
+        retval=retval.replace(substitutions.software_version,ingest.software_version);
+        retval=retval.replace(substitutions.tech_id,ingest.technologist_id);
     }
 
     //Trends
@@ -254,9 +292,9 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 )
                 {
                     let thismeas=ingest.change_template;
-                    thismeas=thismeas.replace("$MEASUREMENT_NAME$",name);
-                    thismeas=thismeas.replace("$BMD_CHANGE$",comp.bone_mineral_density_absolute_change.toFixed(3));
-                    thismeas=thismeas.replace("$T_SCORE_CHANGE$",comp.bone_mineral_density_percentage_change.toFixed(2));
+                    thismeas=thismeas.replace(substitutions.measurement_name,name);
+                    thismeas=thismeas.replace(substitutions.bmd_change,comp.bone_mineral_density_absolute_change.toFixed(3));
+                    thismeas=thismeas.replace(substitutions.tscore_change,comp.bone_mineral_density_percentage_change.toFixed(2));
                     trends.push(thismeas);
                 }
             }
@@ -276,12 +314,12 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 }
 
                 section=ingest.trend_template;
-                section=section.replace("$TRENDS$",allcomps);
+                section=section.replace(substitutions.trend,allcomps);
             }     
 
         }
         
-        retval=retval.replace("$TREND_SECTION$",section);
+        retval=retval.replace(substitutions.trend_section,section);
     }
 
     //Outside disclaimer
@@ -293,7 +331,25 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             str=ingest.outside_comparison_disclaimer;
         }
 
-        retval=retval.replace("$OUTSIDE_DISCLAIMER$",str);
+        retval=retval.replace(substitutions.outside_disclaimer,str);
+    }
+
+    //Check for missed substitution
+    {
+        let missed_substitutions:string[]=[];
+        for(const substr of Object.values(substitutions))
+        {
+            if(retval.indexOf(substr)>0)
+            {
+                missed_substitutions.push(substr);
+            }
+        }
+
+        if(missed_substitutions.length>0)
+        {
+            retval="";
+            alert("Report generation failed. The following substitutions could not be made: " + missed_substitutions.toString());
+        }
     }
 
     return retval;   
@@ -387,15 +443,15 @@ function frax(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):string
 
     if(frax_risk_factors===""){frax_risk_factors=indent+"None";}
 
-    retval=retval.replace("$RISK_FACTORS$",frax_risk_factors);
+    retval=retval.replace(substitutions.risk_factors,frax_risk_factors);
 
     if(ingest.frax.risk_of_osteoporotic_fracture!==undefined 
         && ingest.frax.risk_of_osteoporotic_fracture!==null 
         && ingest.frax.risk_of_hip_fracture!==undefined
         && ingest.frax.risk_of_hip_fracture!==null)
     {
-        retval=retval.replace("$FRAX_OSTEOPOROTIC_FRACTURE$",ingest.frax.risk_of_osteoporotic_fracture.toString());
-        retval=retval.replace("$FRAX_HIP_FRACTURE$",ingest.frax.risk_of_hip_fracture.toString());
+        retval=retval.replace(substitutions.frax_osteoporotic_fracture,ingest.frax.risk_of_osteoporotic_fracture.toString());
+        retval=retval.replace(substitutions.frax_hip_fracture,ingest.frax.risk_of_hip_fracture.toString());
     }
 
     return retval;

@@ -89,7 +89,7 @@
 				const line4 = "Thymic SII less than 8.92% is 100% sensitive and 100% specific for tumor.";
 				const line5 = "SII mean and standard deviation for the thymic hyperplasia group: 46.29% ± 18.41";
 				const line6 = "SII mean and standard deviation for the tumor group: −0.06% ± 4.89";
-				const line7 = "CSR less than 0.849 is 100% sensitive and 96.7% specific for tumor.";
+				const line7 = "CSR greater than 0.849 is 100% sensitive and 96.7% specific for tumor.";
 				const line8 = "CSR mean and standard deviation for the thymic hyperplasia group: 0.545 ± 0.162";
 				const line9 = "CSR mean and standard deviation for the tumor group: 1.045 ± 0.094";
 				//Muscle SSI isn't useful, so just exclude it.

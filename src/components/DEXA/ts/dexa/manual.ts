@@ -17,19 +17,25 @@ export function getFRAXExclusionReasonText(reason:{reason:FRAXExclusionReason,ot
     }
 }
 
+type HeightInInches = {
+    exists:boolean,
+    height_in_inches:number|null,
+};
+
 export type DEXA_Mandatory_Manual_Data =
 {
     age:number,
     reported_tallest_height:{
-        feet?:number,
-        inches?:number
+        exists:boolean,
+        feet:number|null,
+        inches:number|null
     },
-    recorded_height_inches?:number,
+    height_in_inches:HeightInInches
     comparison:{
         exists:boolean,
         date?:string,
         outside_comparison?:boolean,
-        recorded_height_inches?:number,   
+        height_in_inches:HeightInInches 
     },
     use_for_analysis:{
         L1:boolean,
@@ -78,12 +84,21 @@ export function empty_mandatory():DEXA_Mandatory_Manual_Data {
             radius:false,
         },
         reported_tallest_height:{
-            feet:undefined,
-            inches:undefined
+            exists:true,
+            feet:null,
+            inches:null
+        },
+        height_in_inches:{
+            exists:true,
+            height_in_inches:null
         },
         comparison:{
             exists:false,
-            date:undefined
+            date:undefined,
+            height_in_inches:{
+                exists:true,
+                height_in_inches:null
+            }
         },
         use_frax:true,
         reason_for_frax_exclusion:{reason:FRAXExclusionReason.Other,other_text:""}
@@ -164,10 +179,7 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
 
     if(retval.use_for_comparison.spine || retval.use_for_comparison.left_hip || retval.use_for_comparison.right_hip || retval.use_for_comparison.radius)
     {
-        retval.comparison={
-            exists:true,
-            date:undefined
-        }
+        retval.comparison.exists=true;
     }
 
     return retval;

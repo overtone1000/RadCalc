@@ -29,7 +29,7 @@ hip_right_neck:,,
 left_radius:,,ingest.frax.risk_of_hip_fracture!==undefined
 right_radius:52,53,54
 
-spine_trend:
+spine_trend:1,0.5
 hip_left_trend:
 hip_right_trend:
 radius_trend:
