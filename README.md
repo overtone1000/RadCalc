@@ -26,7 +26,7 @@ To enable this, `direnv` VSCode extension should installed on the system, and th
 
 # To Do
 - [ ] DEXA trend erroneously considered nonexistant if values are 0
-- [ ] FRAX upper age limit
+- [x] FRAX upper age limit
 - [ ] Trend should just input prior BMD and calculate changes
 - [ ] Graph heights for quick sanity check
 - [ ] Graph T-scores for quick diagnostic overview
