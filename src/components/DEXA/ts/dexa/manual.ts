@@ -158,26 +158,26 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
 
     if(ingest.trend)
     {
-        if(ingest.trend.spine.bone_mineral_density_absolute_change ||
-            ingest.trend.spine.bone_mineral_density_percentage_change
+        if(ingest.trend.spine.bone_mineral_density_absolute_change !== undefined ||
+            ingest.trend.spine.bone_mineral_density_percentage_change !== undefined
         ){
             retval.use_for_comparison.spine=true;
         }
 
-        if(ingest.trend.left_hip.bone_mineral_density_absolute_change ||
-            ingest.trend.left_hip.bone_mineral_density_percentage_change
+        if(ingest.trend.left_hip.bone_mineral_density_absolute_change !== undefined  ||
+            ingest.trend.left_hip.bone_mineral_density_percentage_change !== undefined 
         ){
             retval.use_for_comparison.left_hip=true;
         }
 
-        if(ingest.trend.right_hip.bone_mineral_density_absolute_change ||
-            ingest.trend.right_hip.bone_mineral_density_percentage_change
+        if(ingest.trend.right_hip.bone_mineral_density_absolute_change !== undefined  ||
+            ingest.trend.right_hip.bone_mineral_density_percentage_change !== undefined 
         ){
             retval.use_for_comparison.right_hip=true;
         }
 
-        if(ingest.trend.radius.bone_mineral_density_absolute_change ||
-            ingest.trend.radius.bone_mineral_density_percentage_change
+        if(ingest.trend.radius.bone_mineral_density_absolute_change !== undefined  ||
+            ingest.trend.radius.bone_mineral_density_percentage_change !== undefined 
         ){
             retval.use_for_comparison.radius=true;
         }
