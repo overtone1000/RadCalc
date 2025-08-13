@@ -30,6 +30,7 @@ To enable this, `direnv` VSCode extension should installed on the system, and th
 - [ ] Trend should just input prior BMD and calculate changes
     - This may be more complication than it's worth. If a change is supplied, then the comparison needs to be aware of the current value to calculate the prior value and the % change. This results in some tricky state dependencies especially if the user does things like change with spine levels are used, change BMD values, or change the absolute BMD value for the prior in this trend.
     - It may be more reasonable to have alternative inputs. Prepopulated fields can just show the populated values. When the user wants to enter an empty field, the alternative input could just be BMDs. Would probably need a toggle.
+- [ ] Quick technique modifiers (i.e. spine osteophyte)
 - [ ] Graph heights for quick sanity check
 - [ ] Graph T-scores for quick diagnostic overview
 - [ ] Graph trends for quick diagnostic overview
