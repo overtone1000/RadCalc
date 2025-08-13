@@ -23,3 +23,11 @@ default.nix`
 ```
 
 To enable this, `direnv` VSCode extension should installed on the system, and the command `direnv allow` must be run in the root of the repository.
+
+# To Do
+- [ ] DEXA trend erroneously considered nonexistant if values are 0
+- [ ] FRAX upper age limit
+- [ ] Trend should just input prior BMD and calculate changes
+- [ ] Graph heights for quick sanity check
+- [ ] Graph T-scores for quick diagnostic overview
+- [ ] Graph trends for quick diagnostic overview

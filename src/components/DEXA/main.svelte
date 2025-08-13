@@ -400,6 +400,7 @@
                                 <div>Reason for FRAX exclusion</div>
                                 <label>No hips<input type="radio" name="no_frax_reason" value={FRAXExclusionReason.HipsNotEvaluated} bind:group={mandatory.reason_for_frax_exclusion.reason}></label>
                                 <label>Less than 40 years old<input type="radio" name="no_frax_reason" value={FRAXExclusionReason.LessThan40YearsOld} bind:group={mandatory.reason_for_frax_exclusion.reason}></label>
+                                <label>More than 90 years old<input type="radio" name="no_frax_reason" value={FRAXExclusionReason.MoreThan90YearsOld} bind:group={mandatory.reason_for_frax_exclusion.reason}></label>
                                 <div class="flexrow">
                                     <label>Other<input type="radio" name="no_frax_reason" value={FRAXExclusionReason.Other} bind:group={mandatory.reason_for_frax_exclusion.reason}></label>
                                     <input type="text" bind:value={mandatory.reason_for_frax_exclusion.other_text}/>

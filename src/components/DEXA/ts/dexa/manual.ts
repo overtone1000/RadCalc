@@ -3,6 +3,7 @@ import type { DEXA_Ingest_Data } from "./data_ingest";
 
 export enum FRAXExclusionReason {
     LessThan40YearsOld,
+    MoreThan90YearsOld,
     HipsNotEvaluated,
     Other
 }
@@ -12,6 +13,7 @@ export function getFRAXExclusionReasonText(reason:{reason:FRAXExclusionReason,ot
     switch(reason.reason)
     {
         case FRAXExclusionReason.LessThan40YearsOld:return "The patient is younger than 40 years of age, which precludes FRAX risk assessment.";
+        case FRAXExclusionReason.MoreThan90YearsOld:return "The patient is older than 90 years of age, which precludes FRAX risk assessment.";
         case FRAXExclusionReason.HipsNotEvaluated:return "The hips could not be evaluated, which precludes FRAX risk assessment.";
         case FRAXExclusionReason.Other:return reason.other_text;
     }
@@ -142,12 +144,16 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
     if(retval.age<40)
     {
         //If age<40, guess that this is the reason for no FRAX.
-        retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.LessThan40YearsOld,other_text:""}
-    }    
+        retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.LessThan40YearsOld,other_text:""};
+    }
+    else if(retval.age>90)
+    {
+        retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.MoreThan90YearsOld,other_text:""};
+    }
     else if(!(ingest.hips.left.neck.locked || ingest.hips.right.neck.locked))
     {
         //If neither hip is locked, hips may not have been analyzed, so guess that this is the reason for no FRAX.
-        retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.HipsNotEvaluated,other_text:""}
+        retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.HipsNotEvaluated,other_text:""};
     }
 
     if(ingest.trend)

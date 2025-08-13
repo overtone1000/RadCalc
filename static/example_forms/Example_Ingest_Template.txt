@@ -1,7 +1,7 @@
 exam:EXAM TYPE
 date:7/4/2025
 time:TIME OF EXAM
-patient_dob:8/20/1984
+patient_dob:8/20/1900
 
 risk_factors:PREV FRAC,PARENT FRAC,SMOKES,STEROIDS,RA,OSTEOPOROSIS,DRINKER
 risk_of_osteoporotic_fracture:10
