@@ -43,6 +43,10 @@ export type DEXA_Ingest_Data =
         radius:DEXA_Comparison
     },
     diagnoses:Diagnosis[],
+    technical_comments:{
+        spine_osteophyte_technique_section:string,
+        spine_osteophyte_result_section:string
+    },
     height_on_prior_template:string,
     measurement_template:string,
     frax_template:string,
@@ -281,6 +285,12 @@ function parse_diagnoses(raw_diagnoses:string):Diagnosis[]|{error:string}
     return retval;
 }
 
+const technical_comment_spine_osteophyte_technique_section_start_delineator="technical_comment_spine_osteophyte_technique_section_start_b746e6de6b8e0ec8ef096d3e6bb37270"
+const technical_comment_spine_osteophyte_technique_section_end_delineator="technical_comment_spine_osteophyte_technique_section_end_b746e6de6b8e0ec8ef096d3e6bb37270"
+
+const technical_comment_spine_osteophyte_result_section_start_delineator="technical_comment_spine_osteophyte_result_section_start_b746e6de6b8e0ec8ef096d3e6bb37270"
+const technical_comment_spine_osteophyte_result_section_end_delineator="technical_comment_spine_osteophyte_result_section_end_b746e6de6b8e0ec8ef096d3e6bb37270"
+
 const height_on_prior_temp_start_delineator="height_on_prior_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270";
 const height_on_prior_temp_end_delineator="height_on_prior_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270";
 
@@ -363,6 +373,40 @@ export function ingest_data(ingest_data:string):Import_Result
         else
         {
             outside_comparison_disclaimer=splice.result;
+            ingest_data=splice.remaining;
+        }
+    }
+
+    let spine_osteophyte_technique_section:string;
+    {
+        let splice = get_section_between(ingest_data,
+            technical_comment_spine_osteophyte_technique_section_start_delineator,
+            technical_comment_spine_osteophyte_technique_section_end_delineator);
+
+        if(splice.error!==undefined)
+        {
+            return import_error(splice.error);
+        }
+        else
+        {
+            spine_osteophyte_technique_section=splice.result;
+            ingest_data=splice.remaining;
+        }
+    }
+    
+    let spine_osteophyte_result_section:string;
+    {
+        let splice = get_section_between(ingest_data,
+            technical_comment_spine_osteophyte_result_section_start_delineator,
+            technical_comment_spine_osteophyte_result_section_end_delineator);
+
+        if(splice.error!==undefined)
+        {
+            return import_error(splice.error);
+        }
+        else
+        {
+            spine_osteophyte_result_section=splice.result;
             ingest_data=splice.remaining;
         }
     }
@@ -568,6 +612,10 @@ export function ingest_data(ingest_data:string):Import_Result
             trend:trend,
             height_on_prior_template,
             outside_comparison_disclaimer,
+            technical_comments:{
+                spine_osteophyte_technique_section,
+                spine_osteophyte_result_section
+            },
             measurement_template,
             frax_template,
             report_template,

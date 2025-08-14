@@ -39,6 +39,17 @@ device_serial:dexa dev serial
 software_version:software version 43q92875
 technologist_id:tech id
 
+
+technical_comment_spine_osteophyte_technique_section_start_b746e6de6b8e0ec8ef096d3e6bb37270
+Spinal bone mineral density is likely overestimated due to degenerative osteophytosis.
+technical_comment_spine_osteophyte_technique_section_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+technical_comment_spine_osteophyte_result_section_start_b746e6de6b8e0ec8ef096d3e6bb37270
+
+    These results are likely elevated due to degenerative osteophytosis.
+technical_comment_spine_osteophyte_result_section_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+
 diagnoses_start_b746e6de6b8e0ec8ef096d3e6bb37270
 High bone mass:(2,Infinity]
 Normal bone mass:[-1,2]
@@ -72,7 +83,7 @@ frax_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
 meas_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270
 $MEASUREMENT_NAME$
     Bone Mineral Density: $BMD$
-    T-Score: $T_SCORE$, Z-Score: $Z_SCORE$
+    T-Score: $T_SCORE$, Z-Score: $Z_SCORE$$RESULT_COMMENTS$
 
 meas_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
 
@@ -99,6 +110,7 @@ Clinical Concern: Bone Mineral Density
 DIAGNOSIS: $DIAGNOSIS$
 
 Quality of scan: $INCLUDED_SITES$
+$TECHNICAL_COMMENTS$
 
 $FRAX$RECOMMENDATIONS FOR WHEN TO TREAT:
 The National Osteoporosis Foundation recommends that FDA- approved medical therapies be considered in postmenopausal women and men age >=50 years with a: 

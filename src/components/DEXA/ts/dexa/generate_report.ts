@@ -11,6 +11,8 @@ const substitutions=
     exam_date:"$EXAM_DATE$",
     exam_time:"$EXAM_TIME$",
     included_sites:"$INCLUDED_SITES$",
+    technical_comments:"$TECHNICAL_COMMENTS$",
+    result_comments:"$RESULT_COMMENTS$",
     frax:"$FRAX$",
     reported_max_height:"$REPORTED_MAX_HEIGHT$",
     prior_height:"$PRIOR_HEIGHT$",
@@ -181,6 +183,16 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
         retval=retval.replace(substitutions.included_sites,full_quality_section);
     }
 
+    //Technical Comments
+    {
+        let comment="";
+        if(manual.technical_comments.spine_osteophyte)
+        {
+            comment=ingest.technical_comments.spine_osteophyte_technique_section
+        }
+        retval=retval.replace(substitutions.technical_comments,comment)
+    }
+
     //FRAX
     retval=retval.replace(substitutions.frax,frax(ingest,manual))
 
@@ -226,7 +238,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
     {
         let measurements:string[]=[];
 
-        const trypush=(name:string, meas:DEXA_Measurements|undefined)=>
+        const trypush=(name:string, meas:DEXA_Measurements|undefined, comment?:string)=>
         {
             if(meas!==undefined)
             {
@@ -241,6 +253,13 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                     thismeas=thismeas.replace(substitutions.bmd,bmd.toFixed(3));
                     thismeas=thismeas.replace(substitutions.t_score,tscore.toFixed(2));
                     thismeas=thismeas.replace(substitutions.z_score,zscore.toFixed(2));
+
+                    if(comment===undefined)
+                    {
+                        comment="";
+                    }
+                    thismeas=thismeas.replace(substitutions.result_comments,comment);
+
                     measurements.push(thismeas);
                 }
             }
@@ -253,7 +272,14 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             manual.use_for_analysis.L4,
         );
 
-        if(spinefield!==undefined){trypush("Spine",ingest.spine.get(spinefield));}
+        if(spinefield!==undefined){
+            let comment=undefined;
+            if(manual.technical_comments.spine_osteophyte)
+            {
+                comment=ingest.technical_comments.spine_osteophyte_result_section
+            }
+            trypush("Spine",ingest.spine.get(spinefield),comment);
+        }
         if(manual.use_for_analysis.left_hip_total){trypush("Left Total Hip",ingest.hips.left.total);}
         if(manual.use_for_analysis.left_hip_neck){trypush("Left Femoral Neck",ingest.hips.left.neck);}
         if(manual.use_for_analysis.right_hip_total){trypush("Right Total Hip",ingest.hips.right.total);}

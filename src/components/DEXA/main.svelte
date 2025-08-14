@@ -301,6 +301,13 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="flexrow full-width bottom_border">
+                    <div class="rotated">Tech</div>
+                    <div class="flexrow flexgrow justify_space_around">
+                        <label>Spine Osteophyte <input type="checkbox" bind:checked={mandatory.technical_comments.spine_osteophyte}></label>
+                    </div>
+                </div>
                 
                 <div class="flexrow full-width bottom_border">
                     <div class="rotated">Results</div>

@@ -1,4 +1,3 @@
-import { type SpineField } from "./basic_types";
 import type { DEXA_Ingest_Data } from "./data_ingest";
 
 export enum FRAXExclusionReason {
@@ -61,6 +60,9 @@ export type DEXA_Mandatory_Manual_Data =
     reason_for_frax_exclusion:{
         reason:FRAXExclusionReason,
         other_text:string
+    },
+    technical_comments:{
+        spine_osteophyte:boolean
     }
 };
 
@@ -103,7 +105,10 @@ export function empty_mandatory():DEXA_Mandatory_Manual_Data {
             }
         },
         use_frax:true,
-        reason_for_frax_exclusion:{reason:FRAXExclusionReason.Other,other_text:""}
+        reason_for_frax_exclusion:{reason:FRAXExclusionReason.Other,other_text:""},
+        technical_comments:{
+            spine_osteophyte:false
+        }
     };
     return retval;
 };
