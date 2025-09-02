@@ -5,10 +5,17 @@ export type Bound={
     inclusive:boolean
 }
 
-export type Diagnosis={
+export type DiagnosisWithRange={
     name:string,
     lower_bound:Bound,
     upper_bound:Bound
+}
+
+export type AlternativeDiagnosisRanges={
+    male_lower_age_boundary:number,
+    female_lower_age_boundary:number,
+    female_premenopausal_assumption_age:number,
+    female_postmenopausal_assumption_age:number
 }
 
 export type DEXA_Ingest_Data =
@@ -17,6 +24,7 @@ export type DEXA_Ingest_Data =
     date:string,
     time:string,
     patient_dob:string,
+    patient_sex:"M"|"F",
     frax:{
         locked:boolean,
         risk_factors?:FRAX_Risk_Factors,
@@ -42,7 +50,9 @@ export type DEXA_Ingest_Data =
         right_hip:DEXA_Comparison,
         radius:DEXA_Comparison
     },
-    diagnoses:Diagnosis[],
+    diagnoses:DiagnosisWithRange[],
+    alternative_diagnosis_ranges:AlternativeDiagnosisRanges,
+    alternative_diagnoses:DiagnosisWithRange[],
     technical_comments:{
         spine_osteophyte_technique_section:string,
         spine_osteophyte_result_section:string
@@ -203,10 +213,10 @@ function process_field_map(raw_string:string):Map<string,string>
     return field_map;
 }
 
-function parse_diagnoses(raw_diagnoses:string):Diagnosis[]|{error:string}
+function parse_diagnoses(raw_diagnoses:string):DiagnosisWithRange[]|{error:string}
 {
     let field_map=process_field_map(raw_diagnoses);
-    let retval:Diagnosis[]=[];
+    let retval:DiagnosisWithRange[]=[];
     for(const [key,value] of field_map)
     {
         const err={error:"Malformed diagnosis: " + key + ", " + value};
@@ -265,7 +275,7 @@ function parse_diagnoses(raw_diagnoses:string):Diagnosis[]|{error:string}
     }
 
     retval.sort(
-        (a:Diagnosis,b:Diagnosis)=>{
+        (a:DiagnosisWithRange,b:DiagnosisWithRange)=>{
             let lb_diff=a.lower_bound.value-b.lower_bound.value;
             if(lb_diff!==0){return lb_diff;}
             let ub_diff=a.upper_bound.value-b.upper_bound.value;
@@ -297,6 +307,12 @@ const height_on_prior_temp_end_delineator="height_on_prior_temp_end_b746e6de6b8e
 const diagnoses_start_delineator="diagnoses_start_b746e6de6b8e0ec8ef096d3e6bb37270";
 const diagnoses_end_delineator="diagnoses_end_b746e6de6b8e0ec8ef096d3e6bb37270";
 
+const alternative_diagnosis_ranges_start_delineator="alternative_diagnosis_ranges_start_b746e6de6b8e0ec8ef096d3e6bb37270";
+const alternative_diagnosis_ranges_end_delineator="alternative_diagnosis_ranges_end_b746e6de6b8e0ec8ef096d3e6bb37270";
+
+const alternative_diagnoses_start_delineator="alternative_diagnoses_start_b746e6de6b8e0ec8ef096d3e6bb37270";
+const alternative_diagnoses_end_delineator="alternative_diagnose_end_b746e6de6b8e0ec8ef096d3e6bb37270";
+
 const outside_comparison_disclaimer_start_delineator="outside_comp_disc_start_b746e6de6b8e0ec8ef096d3e6bb37270";
 const outside_comparison_disclaimer_end_delineator="outside_comp_disc_end_b746e6de6b8e0ec8ef096d3e6bb37270";
 
@@ -317,7 +333,7 @@ const report_end_delineator="report_end_b746e6de6b8e0ec8ef096d3e6bb37270";
 
 export function ingest_data(ingest_data:string):Import_Result
 {
-    let diagnoses:Diagnosis[];
+    let diagnoses:DiagnosisWithRange[];
     {
         let splice = get_section_between(ingest_data,
             diagnoses_start_delineator,
@@ -339,7 +355,60 @@ export function ingest_data(ingest_data:string):Import_Result
             }
             else
             {
-                diagnoses=(parsed_diagnoses as Diagnosis[]);
+                diagnoses=(parsed_diagnoses as DiagnosisWithRange[]);
+            }
+        }
+    }
+
+    let alternative_diagnosis_ranges:AlternativeDiagnosisRanges;
+    {
+        let splice = get_section_between(ingest_data,
+            alternative_diagnosis_ranges_start_delineator,
+            alternative_diagnosis_ranges_end_delineator);
+
+        if(splice.error!==undefined)
+        {
+            return import_error(splice.error);
+        }
+        else
+        {
+            let raw_alternative_diagnosis_ranges=splice.result;
+            ingest_data=splice.remaining;
+
+            let parsed_alternative_diagnosis_ranges=process_field_map(raw_alternative_diagnosis_ranges);
+
+            alternative_diagnosis_ranges={
+                male_lower_age_boundary: parseFloat(parsed_alternative_diagnosis_ranges.get("male_lower_age_boundary") as string),
+                female_lower_age_boundary: parseFloat(parsed_alternative_diagnosis_ranges.get("female_lower_age_boundary") as string),
+                female_premenopausal_assumption_age: parseFloat(parsed_alternative_diagnosis_ranges.get("female_premenopausal_assumption_age") as string),
+                female_postmenopausal_assumption_age: parseFloat(parsed_alternative_diagnosis_ranges.get("female_postmenopausal_assumption_age") as string)
+            }
+        }
+    }
+
+    let alternative_diagnoses:DiagnosisWithRange[];
+    {
+        let splice = get_section_between(ingest_data,
+            alternative_diagnoses_start_delineator,
+            alternative_diagnoses_end_delineator);
+
+        if(splice.error!==undefined)
+        {
+            return import_error(splice.error);
+        }
+        else
+        {
+            let raw_alternative_diagnoses=splice.result;
+            ingest_data=splice.remaining;
+
+            let parsed_alternative_diagnoses=parse_diagnoses(raw_alternative_diagnoses);
+            if(Object.keys(parsed_alternative_diagnoses).includes("error"))
+            {
+                return import_error((parsed_alternative_diagnoses as {error:string}).error);
+            }
+            else
+            {
+                alternative_diagnoses=(parsed_alternative_diagnoses as DiagnosisWithRange[]);
             }
         }
     }
@@ -579,7 +648,7 @@ export function ingest_data(ingest_data:string):Import_Result
         if(left_hip!==undefined){trend.left_hip=left_hip;}
         if(right_hip!==undefined){trend.right_hip=right_hip;}
         if(radius!==undefined){trend.radius=radius;}
-    }   
+    }
 
     //Should be validated, so cast types for mandatory members.
     return {
@@ -589,6 +658,7 @@ export function ingest_data(ingest_data:string):Import_Result
             date:field_map.get("date") as string,
             time:field_map.get("time") as string,
             patient_dob:field_map.get("patient_dob") as string,
+            patient_sex:field_map.get("patient_sex") as ("M"|"F"),
             frax:frax,
             spine:spine,
             hips:{
@@ -621,7 +691,9 @@ export function ingest_data(ingest_data:string):Import_Result
             report_template,
             change_template,
             trend_template,
-            diagnoses
+            diagnoses,
+            alternative_diagnosis_ranges,
+            alternative_diagnoses
         }
     };
 }

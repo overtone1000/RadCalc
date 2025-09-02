@@ -1,7 +1,8 @@
 exam:EXAM TYPE
 date:7/4/2025
 time:TIME OF EXAM
-patient_dob:8/20/1900
+patient_dob:8/20/1990
+patient_sex:F
 
 risk_factors:PREV FRAC,PARENT FRAC,SMOKES,STEROIDS,RA,OSTEOPOROSIS,DRINKER
 risk_of_osteoporotic_fracture:10
@@ -17,7 +18,7 @@ L14:
 L23:0,0,0
 L24:
 L34:
-L123:22,23,24
+L123:0.9,1,1
 L124:
 L134:
 L234:
@@ -27,7 +28,7 @@ hip_left_neck:,,
 hip_right_total:,,
 hip_right_neck:,,
 left_radius:,,ingest.frax.risk_of_hip_fracture!==undefined
-right_radius:52,53,54
+right_radius:0.9,1,1
 
 spine_trend:1,0.5
 hip_left_trend:0,0
@@ -57,6 +58,19 @@ Low normal bone mass:[-2,-1)
 Low bone mass:(-2.5,-2)
 Osteoporosis:[-Infinity,-2.5]
 diagnoses_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+alternative_diagnosis_ranges_start_b746e6de6b8e0ec8ef096d3e6bb37270
+male_lower_age_boundary:50
+female_lower_age_boundary:18
+female_premenopausal_assumption_age:40
+female_postmenopausal_assumption_age:65
+alternative_diagnosis_ranges_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+alternative_diagnoses_start_b746e6de6b8e0ec8ef096d3e6bb37270
+High bone mass:(2,Infinity]
+Bone mineral density within expected range for age:(-2,2]
+Bone mineral density below the expected range for age:[-Infinity,-2]
+alternative_diagnose_end_b746e6de6b8e0ec8ef096d3e6bb37270
 
 height_on_prior_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270
 Height measured on most recent prior DEXA: $PRIOR_HEIGHT$

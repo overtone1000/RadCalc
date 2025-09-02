@@ -129,20 +129,29 @@
         }
     )
 
-    let html_report=$derived.by
-    (
-        ()=>{
-            if(ingest!==undefined)
-            {
-                console.debug("Generating report.");
-                return windows_newline+generate_report(ingest,mandatory);   //Need newline because of how pre works. Just a formatting thing.
-            }
-            else
-            {
-                return undefined;   
-            }
+    let genereate_html_report = () => {
+        if(ingest!==undefined)
+        {
+            console.debug("Generating report.");
+            return windows_newline+generate_report(ingest,mandatory);   //Need newline because of how pre works. Just a formatting thing.
         }
-    );
+        else
+        {
+            return undefined;   
+        }
+    };
+
+    let html_report=$derived(genereate_html_report());
+
+    let generate_report_button_action = () => {
+        if(ingest!==undefined)
+        {
+            let report=generate_report(ingest,mandatory);
+            report_to_clipboard(report);
+
+            if(debug_mode){html_report=genereate_html_report();}
+        }
+    };
 
     let today = $state((new Date()));
     let yesterday_string = $derived.by(
@@ -156,6 +165,18 @@
             return yesterday.getFullYear()+"-"+month+"-"+day;
         }
     );
+
+    let sex_to_string = () => {
+        if(ingest!==undefined){
+            if(ingest.patient_sex=="M")
+            {
+                return "male"
+            }
+            else{
+                return "female"
+            }
+        }
+    }
 
 
     let enabled_report_generation:boolean = $derived.by(
@@ -243,6 +264,11 @@
                     ){return false;}
                 }
 
+                if(mandatory.post_menopausal.display && mandatory.post_menopausal.value===null)
+                {
+                    return false;
+                }
+
                 return true;
             }
             else
@@ -276,28 +302,37 @@
                 </div>
 
                 <div class="flexrow full-width  bottom_border">
-                    <div class="rotated">Height</div>
-                    <div class="flexcol flexgrow">
-                        <div class="flexcol align_items_end align_self_center">
-                            <div class="flexrow">
-                                <label>Reported tallest height: <input type="checkbox" tabindex=-1 bind:checked={mandatory.reported_tallest_height.exists}></label>
-                                <input type="number" step="1" class="numberbox left_margin" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.feet}>
-                                <div class="left_margin"> ft </div>
-                                <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.inches}>
-                                <div class="left_margin"> in </div>
-                            </div>
-                            {#if mandatory.comparison.exists}
+                    <div class="rotated">Patient</div>
+                    <div class="flexrow full-width">
+                        <div class="flexcol flexgrow">
+                            <div class="flexcol align_items_end align_self_center">
                                 <div class="flexrow">
-                                    <label>Height on prior exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.comparison.height_in_inches.exists}></label>
-                                    <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.comparison.height_in_inches.exists} bind:value={mandatory.comparison.height_in_inches.height_in_inches}>
+                                    <label>Reported tallest height: <input type="checkbox" tabindex=-1 bind:checked={mandatory.reported_tallest_height.exists}></label>
+                                    <input type="number" step="1" class="numberbox left_margin" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.feet}>
+                                    <div class="left_margin"> ft </div>
+                                    <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.inches}>
                                     <div class="left_margin"> in </div>
                                 </div>
-                            {/if}
-                            <div class="flexrow">
-                                <label>Height on current exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.height_in_inches.exists}></label>
-                                <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.height_in_inches.exists} bind:value={mandatory.height_in_inches.height_in_inches}>
-                                <div class="left_margin"> in </div>
+                                {#if mandatory.comparison.exists}
+                                    <div class="flexrow">
+                                        <label>Height on prior exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.comparison.height_in_inches.exists}></label>
+                                        <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.comparison.height_in_inches.exists} bind:value={mandatory.comparison.height_in_inches.height_in_inches}>
+                                        <div class="left_margin"> in </div>
+                                    </div>
+                                {/if}
+                                <div class="flexrow">
+                                    <label>Height on current exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.height_in_inches.exists}></label>
+                                    <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.height_in_inches.exists} bind:value={mandatory.height_in_inches.height_in_inches}>
+                                    <div class="left_margin"> in </div>
+                                </div>
                             </div>
+                        </div>
+                        <div class="flexcol flexgrow">
+                            {Math.trunc(mandatory.age)} year old {sex_to_string()}
+                            {#if mandatory.post_menopausal.display}
+                                    <label>Premenopausal <input type="radio" value={"pre"} bind:group={mandatory.post_menopausal.value}></label>
+                                    <label>Postmenopausal <input type="radio" value={"post"} bind:group={mandatory.post_menopausal.value}></label>
+                            {/if}
                         </div>
                     </div>
                 </div>
@@ -417,7 +452,7 @@
                         </div>
                     </div>
                 </div>
-                <button disabled={!enabled_report_generation} onclick={()=>{if(ingest!==undefined){report_to_clipboard(generate_report(ingest,mandatory))}}}>Generate Report</button>
+                <button disabled={!enabled_report_generation} onclick={()=>{if(ingest!==undefined){generate_report_button_action()}}}>Generate Report</button>
             {/if}
         </div>
         {#if debug_mode}

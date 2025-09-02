@@ -1,7 +1,7 @@
 import { newline } from "../../../globals";
-import { getSpineField, type DEXA_Comparison, type DEXA_Measurements } from "./basic_types";
-import { all_possible_newlines, type DEXA_Ingest_Data } from "./data_ingest";
-import { getFRAXExclusionReasonText, type DEXA_Mandatory_Manual_Data } from "./manual";
+import { getSpineField, type DEXA_Comparison, type DEXA_Measurements, type Diagnosis } from "./basic_types";
+import { all_possible_newlines, type DEXA_Ingest_Data, type DiagnosisWithRange } from "./data_ingest";
+import { getFRAXExclusionReasonText, UseAlternativeDiagnosis, type DEXA_Mandatory_Manual_Data } from "./manual";
 
 export const windows_newline="\r\n";
 
@@ -246,7 +246,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 let tscore=meas.t_score;
                 let zscore=meas.z_score;
 
-                if(bmd!==undefined && tscore !==undefined && zscore !==undefined)
+                if(bmd!==undefined && tscore !==undefined && zscore !==undefined && bmd!==null && tscore !== null && zscore !== null)
                 {
                     let thismeas=ingest.measurement_template;
                     thismeas=thismeas.replace(substitutions.measurement_name,name);
@@ -410,35 +410,55 @@ function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_
     if(manual.use_for_analysis.left_radius && ingest.radii.left!==undefined){measurements.push(ingest.radii.left);}
     if(manual.use_for_analysis.right_radius && ingest.radii.right!==undefined){measurements.push(ingest.radii.right);}
 
-    let lowest_t_score=Infinity;
-    for(const measurement of measurements)
+    let lowest_score:number=Infinity;
+    let diagnoses:DiagnosisWithRange[];
+    if(UseAlternativeDiagnosis(ingest,manual))
     {
-        if(measurement.t_score!==undefined && lowest_t_score>measurement.t_score)
+        console.debug("Using alternative diagnosis.");
+        diagnoses=ingest.alternative_diagnoses;
+
+        for(const measurement of measurements)
         {
-            lowest_t_score=measurement.t_score;
+            if(measurement.z_score!==undefined && lowest_score>measurement.z_score)
+            {
+                lowest_score=measurement.z_score;
+            }
+        }
+    }
+    else
+    {
+        console.debug("Using primary diagnosis.");
+        diagnoses=ingest.diagnoses;
+
+        for(const measurement of measurements)
+        {
+            if(measurement.t_score!==undefined && lowest_score>measurement.t_score)
+            {
+                lowest_score=measurement.t_score;
+            }
         }
     }
 
-    for(const diagnosis of ingest.diagnoses)
+    for(const diagnosis of diagnoses)
     {
         let inside_lower_bound:boolean=false;
         if(diagnosis.lower_bound.inclusive)
         {
-            if(lowest_t_score>=diagnosis.lower_bound.value){inside_lower_bound=true;}
+            if(lowest_score>=diagnosis.lower_bound.value){inside_lower_bound=true;}
         }
         else
         {
-            if(lowest_t_score>diagnosis.lower_bound.value){inside_lower_bound=true;}
+            if(lowest_score>diagnosis.lower_bound.value){inside_lower_bound=true;}
         }
 
         let inside_upper_bound:boolean=false;
         if(diagnosis.upper_bound.inclusive)
         {
-            if(lowest_t_score<=diagnosis.upper_bound.value){inside_upper_bound=true;}
+            if(lowest_score<=diagnosis.upper_bound.value){inside_upper_bound=true;}
         }
         else
         {
-            if(lowest_t_score<diagnosis.upper_bound.value){inside_upper_bound=true;}
+            if(lowest_score<diagnosis.upper_bound.value){inside_upper_bound=true;}
         }
 
         if(inside_lower_bound && inside_upper_bound)

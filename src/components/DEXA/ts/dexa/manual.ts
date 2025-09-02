@@ -23,9 +23,25 @@ type HeightInInches = {
     height_in_inches:number|null,
 };
 
+export function UseAlternativeDiagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data)
+{
+    if(ingest.patient_sex==="M")
+    {
+        return manual.age<ingest.alternative_diagnosis_ranges.male_lower_age_boundary;
+    }
+    else
+    {
+        return manual.age<ingest.alternative_diagnosis_ranges.female_lower_age_boundary || manual.post_menopausal.value==="pre";
+    }
+}
+
 export type DEXA_Mandatory_Manual_Data =
 {
     age:number,
+    post_menopausal:{
+        display:boolean,
+        value:"pre"|"post"|null
+    }
     reported_tallest_height:{
         exists:boolean,
         feet:number|null,
@@ -69,6 +85,10 @@ export type DEXA_Mandatory_Manual_Data =
 export function empty_mandatory():DEXA_Mandatory_Manual_Data {
     let retval:DEXA_Mandatory_Manual_Data = {
         age: 0,
+        post_menopausal:{
+            display:true,
+            value:null
+        },
         use_for_analysis:{
             L1:false,
             L2:false,
@@ -159,6 +179,23 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
     {
         //If neither hip is locked, hips may not have been analyzed, so guess that this is the reason for no FRAX.
         retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.HipsNotEvaluated,other_text:""};
+    }
+
+    if(ingest.patient_sex=="M")
+    {
+        retval.post_menopausal.display=false;
+    }
+    else
+    {
+        retval.post_menopausal.display=true;
+        if(retval.age>=ingest.alternative_diagnosis_ranges.female_postmenopausal_assumption_age)
+        {
+            retval.post_menopausal.value="post";
+        }
+        else if(retval.age<ingest.alternative_diagnosis_ranges.female_premenopausal_assumption_age)
+        {
+            retval.post_menopausal.value="pre";
+        }
     }
 
     if(ingest.trend)
