@@ -9,6 +9,7 @@
 	import DexaComparison from "./dexa_comparison.svelte";
 	import Footer from "../@commons/footer.svelte";
     import Lock from "./lock.svelte";
+	import HeightGraph from "./height_plot.svelte";
     
     let last_raw_ingest:string|undefined=undefined;
 
@@ -26,6 +27,10 @@
                     (result)=>{
                         handle_raw_ingest(result);
                         mandatory.comparison.date="1999-06-10";
+                        mandatory.comparison.height_in_inches.height_in_inches=63;
+                        mandatory.height_in_inches.height_in_inches=62;
+                        mandatory.reported_tallest_height.feet=5;
+                        mandatory.reported_tallest_height.inches=4;
                     }
                 );
             }
@@ -327,12 +332,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flexcol flexgrow">
+                        <div class="flexcol flexgrow flexshrink">
                             {Math.trunc(mandatory.age)} year old {sex_to_string()}
                             {#if mandatory.post_menopausal.display}
                                     <label>Premenopausal <input type="radio" value={"pre"} bind:group={mandatory.post_menopausal.value}></label>
                                     <label>Postmenopausal <input type="radio" value={"post"} bind:group={mandatory.post_menopausal.value}></label>
                             {/if}
+                        </div>
+                        <div class="flexcol flexgrow flexshrink">
+                            <HeightGraph ingest={ingest} mandatory={mandatory}/>
                         </div>
                     </div>
                 </div>

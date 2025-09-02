@@ -18,7 +18,7 @@ export function getFRAXExclusionReasonText(reason:{reason:FRAXExclusionReason,ot
     }
 }
 
-type HeightInInches = {
+export type HeightInInches = {
     exists:boolean,
     height_in_inches:number|null,
 };
