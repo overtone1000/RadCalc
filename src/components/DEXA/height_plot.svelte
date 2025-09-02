@@ -106,7 +106,7 @@
                 height: 200,
                 width: 100,
                 //aspectRatio: 1,
-                color: {legend: true},
+                //color: {legend: true},
                 marks: [
                     Plot.frame(),
                     Plot.rect([maxheight], {x1:"left_date",x2:"right_date",y1:"bottom_height", y2:"top_height",stroke:"color",fill:"red"}),
