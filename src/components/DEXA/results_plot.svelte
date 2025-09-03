@@ -95,24 +95,50 @@
 
     const bar_colors=
     [
-        "#801700" //dark red
+        "#801700", //dark red
+        "#804B00", //dark orange
+        "#807E00", //dark yellow
+        "#558000", //dark green
+        "#004480", //dark blue
     ]
 
     let plot = $derived.by(
         ()=>{
-            let bars:{x1:string,x2:string,y1:number,y2:number}[] = [];
+            let bars:{x1:string,x2:string,y1:number,y2:number,color:string}[] = [];
             if(calculations.diagnosis !== undefined)
             {
+                let lowest=Infinity;
+                let highest=-Infinity;
+
+                for(const member of calculations.data)
+                {
+                    if(highest<member.score){highest=member.score;}
+                    if(lowest>member.score){lowest=member.score;}
+                }
+
                 for(const member of calculations.diagnosis?.diagnostic_ranges)
                 {
+                    let color_index = bars.length;
+
+                    let y1=member.lower_bound.value;
+                    let y2=member.upper_bound.value;
+
+                    if(y1>highest){y1=highest;}
+                    if(y2>highest){y2=highest;}
+                    if(y1<lowest){y1=lowest;}
+                    if(y2<lowest){y2=lowest;}
+
                     bars.push({
                         x1:calculations.xticks[0],
                         x2:calculations.xticks[calculations.xticks.length-1],
-                        y1:member.lower_bound.value,
-                        y2:member.upper_bound.value
+                        y1,
+                        y2,
+                        color:bar_colors[color_index]
                     });
                 }
             }
+
+            console.debug("bars",bars);
 
             let width=900;
             let inset=-(width/(calculations.xticks.length))/2.0;
@@ -132,7 +158,7 @@
                     x: {domain:calculations.xticks},
                     marks: [
                         Plot.frame(),
-                        Plot.rect(bars,{x1:"x1", x2:"x2", y1:"y1", y2:"y2", fill:"#801700", insetLeft: inset, insetRight: inset-1}),
+                        Plot.rect(bars,{x1:"x1", x2:"x2", y1:"y1", y2:"y2", fill:"color", insetLeft: inset, insetRight: inset-1}),
                         Plot.dot(calculations.data, {x:"label", y:"score", stroke:"color", fill:"color"}),
                         Plot.axisX({label:"", anchor: "bottom", tickRotate:-45}),
                         Plot.axisY({label:"", labelArrow:"none"}),
