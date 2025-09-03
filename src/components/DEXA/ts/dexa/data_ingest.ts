@@ -93,10 +93,10 @@ function finite_number_or_undefined(input:string):number|undefined
     }
 }
 
-function get_DEXA_Measurements_from_raw_field(field_value:string|undefined):DEXA_Measurements
+function get_DEXA_Measurements_from_raw_field(field_value:string|undefined, label:string):DEXA_Measurements
 {
     const empty:DEXA_Measurements={
-        locked: false
+        locked: false,
     };
     
     if(field_value===undefined){return empty;}
@@ -622,10 +622,18 @@ export function ingest_data(ingest_data:string):Import_Result
         for(const field of SpineFields)
         {
             let value = field_map.get(field);
-            let meas = get_DEXA_Measurements_from_raw_field(value);
+            let meas = get_DEXA_Measurements_from_raw_field(value, field);
             if(meas!==undefined)
             {
                 spine.set(field,meas);
+            }
+            else
+            {
+                let empty={
+                    locked:false,
+                    label:field
+                };
+                spine.set(field,empty);
             }
         }
     }
@@ -663,17 +671,17 @@ export function ingest_data(ingest_data:string):Import_Result
             spine:spine,
             hips:{
                 left:{
-                        total:get_DEXA_Measurements_from_raw_field(field_map.get("hip_left_total")),
-                        neck:get_DEXA_Measurements_from_raw_field(field_map.get("hip_left_neck")),
+                        total:get_DEXA_Measurements_from_raw_field(field_map.get("hip_left_total"), "Left Total Hip"),
+                        neck:get_DEXA_Measurements_from_raw_field(field_map.get("hip_left_neck"), "Left Femoral Neck"),
                     },
                 right:{
-                        total:get_DEXA_Measurements_from_raw_field(field_map.get("hip_right_total")),
-                        neck:get_DEXA_Measurements_from_raw_field(field_map.get("hip_right_neck")),
+                        total:get_DEXA_Measurements_from_raw_field(field_map.get("hip_right_total"), "Right Total Hip"),
+                        neck:get_DEXA_Measurements_from_raw_field(field_map.get("hip_right_neck"), "Right Femoral Neck"),
                     },
             },
             radii:{
-                left:get_DEXA_Measurements_from_raw_field(field_map.get("left_radius")),
-                right:get_DEXA_Measurements_from_raw_field(field_map.get("right_radius")),
+                left:get_DEXA_Measurements_from_raw_field(field_map.get("left_radius"),"Left Radius"),
+                right:get_DEXA_Measurements_from_raw_field(field_map.get("right_radius"), "Right Radius"),
             },
             dexa_system:field_map.get("dexa_system") as string,
             device_serial:field_map.get("device_serial") as string,

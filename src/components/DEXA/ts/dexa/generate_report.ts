@@ -87,7 +87,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
         }
         else
         {
-            retval=retval.replace("$DIAGNOSIS$",diagnosis.name);
+            retval=retval.replace("$DIAGNOSIS$",diagnosis.selected_diagnosis.name);
         }
     }
 
@@ -381,7 +381,15 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
     return retval;   
 }
 
-function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data)
+export type SelectedDiagnosisResult={
+    using_alternative_diagnosis:boolean,
+    measurements:DEXA_Measurements[],
+    selected_diagnosis:DiagnosisWithRange,
+    diagnostic_ranges:DiagnosisWithRange[],
+    lowest_score:number
+};
+
+export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):SelectedDiagnosisResult | undefined
 {
     let measurements:DEXA_Measurements[]=[];
 
@@ -412,7 +420,8 @@ function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_
 
     let lowest_score:number=Infinity;
     let diagnoses:DiagnosisWithRange[];
-    if(UseAlternativeDiagnosis(ingest,manual))
+    let using_alternative_diagnosis=UseAlternativeDiagnosis(ingest,manual);
+    if(using_alternative_diagnosis)
     {
         console.debug("Using alternative diagnosis.");
         diagnoses=ingest.alternative_diagnoses;
@@ -463,7 +472,13 @@ function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_
 
         if(inside_lower_bound && inside_upper_bound)
         {
-            return diagnosis;
+            return {
+                selected_diagnosis:diagnosis,
+                measurements,
+                using_alternative_diagnosis,
+                diagnostic_ranges:diagnoses,
+                lowest_score
+            };
         }
     }
 

@@ -96,7 +96,22 @@
 
             return retval;
         }
-    );   
+    );
+    let ticks = $derived.by(
+        ()=>{
+            let retval=[];
+            for(const datum of data)
+            {
+                retval.push(datum.date);
+            }
+            retval.sort();
+            console.debug(retval);
+            return retval;
+        }
+    );
+    let tick_format = (date:Date)=>{
+        return date.getFullYear().toString();
+    }
 
     let plot = $derived(
         Plot.plot(
@@ -105,6 +120,10 @@
                 inset: 0,
                 height: 200,
                 width: 100,
+                marginRight:20,
+                marginTop:10,
+                marginBottom:30,
+                marginLeft:40,
                 //aspectRatio: 1,
                 //color: {legend: true},
                 marks: [
@@ -112,6 +131,9 @@
                     Plot.rect([maxheight], {x1:"left_date",x2:"right_date",y1:"bottom_height", y2:"top_height",stroke:"color",fill:"red"}),
                     Plot.rect([maxheight], {x1:"left_date",x2:"right_date",y1:"bottom_height", y2:"height",stroke:"color",fill:"color"}),
                     Plot.dot(data, {x: "date", y: "height", stroke:"aqua",fill:"color"}),
+                    Plot.axisX({ticks:ticks, tickFormat:tick_format, anchor: "bottom"}),
+                    Plot.axisY({}),
+                    Plot.axisY({ticks:[maxheight.height], anchor:"right", tickFormat:(i)=>{return "max";}, tickRotate:60})
                     //Plot.text(["hi"]),
                     //Plot.ruleX([0]),
                     //Plot.ruleY([0]),
@@ -121,10 +143,13 @@
     );
 </script>
 
-<div>
+<div class="style">
     <ManagedPlot plot={plot}/>
 </div>
 
 <style>
-    
+    .style{
+        padding:2px;
+        margin-right:2px;
+    }
 </style>

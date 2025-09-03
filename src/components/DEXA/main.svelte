@@ -9,7 +9,8 @@
 	import DexaComparison from "./dexa_comparison.svelte";
 	import Footer from "../@commons/footer.svelte";
     import Lock from "./lock.svelte";
-	import HeightGraph from "./height_plot.svelte";
+	import HeightPlot from "./height_plot.svelte";
+	import ResultsPlot from "./results_plot.svelte";
     
     let last_raw_ingest:string|undefined=undefined;
 
@@ -98,6 +99,7 @@
                     let meas:DEXA_Measurements|undefined = ingest.spine.get(spinefield);
                     if(meas===undefined)
                     {
+                        console.debug("Setting spine field.");
                         meas = {
                             locked: false,
                             bone_mineral_density: undefined,
@@ -339,9 +341,7 @@
                                     <label>Postmenopausal <input type="radio" value={"post"} bind:group={mandatory.post_menopausal.value}></label>
                             {/if}
                         </div>
-                        <div class="flexcol flexgrow flexshrink">
-                            <HeightGraph ingest={ingest} mandatory={mandatory}/>
-                        </div>
+                        <HeightPlot ingest={ingest} mandatory={mandatory}/>
                     </div>
                 </div>
 
@@ -397,6 +397,9 @@
                                     <DexaMeasurements used={mandatory.use_for_analysis.right_radius} name="Right Radius" bind:measurements={ingest.radii.right}/>
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="align-self-centered">
+                            <ResultsPlot ingest={ingest} mandatory={mandatory}/>
                         </div>
                     </div>
                 </div>
@@ -503,8 +506,8 @@
     .leftcol
     {
         height: 100%;
-        min-width: 875px;
-        max-width: 875px;
+        min-width: 1100px;
+        max-width: 1100px;
         overflow-y: auto;
     }
     .main
