@@ -69,9 +69,9 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             }
             else
             {
-                console.debug(manual.comparison.date);
+                //console.debug(manual.comparison.date);
                 let date = new Date(manual.comparison.date);
-                console.debug(date);
+                //console.debug(date);
                 comp_str=(date.getMonth()+1)+"/"+(date.getDate()+1)+"/"+date.getFullYear();
             }
         }
@@ -423,7 +423,7 @@ export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_
     let using_alternative_diagnosis=UseAlternativeDiagnosis(ingest,manual);
     if(using_alternative_diagnosis)
     {
-        console.debug("Using alternative diagnosis.");
+        //console.debug("Using alternative diagnosis.");
         diagnoses=ingest.alternative_diagnoses;
 
         for(const measurement of measurements)
@@ -436,7 +436,7 @@ export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_
     }
     else
     {
-        console.debug("Using primary diagnosis.");
+        //console.debug("Using primary diagnosis.");
         diagnoses=ingest.diagnoses;
 
         for(const measurement of measurements)

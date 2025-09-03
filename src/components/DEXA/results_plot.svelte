@@ -53,6 +53,7 @@
 
     let calculations=$derived.by(
         ()=>{
+            //console.debug("Recalculating.");
             let selected_diagnosis=select_diagnosis(props.ingest,props.mandatory);
 
 
@@ -104,6 +105,7 @@
 
     let plot = $derived.by(
         ()=>{
+            //console.debug("Replotting.");
             let bars:{x1:string,x2:string,y1:number,y2:number,color:string}[] = [];
             if(calculations.diagnosis !== undefined)
             {

@@ -1,3 +1,4 @@
+import { SvelteMap } from "svelte/reactivity";
 import { empty_comparison, mandatory_string_fields, SpineFields, type DEXA_Comparison, type DEXA_Measurements, type FRAX_Risk_Factors, type Hip, type SpineField } from "./basic_types";
 
 export type Bound={
@@ -31,7 +32,7 @@ export type DEXA_Ingest_Data =
         risk_of_osteoporotic_fracture?:number,
         risk_of_hip_fracture?:number,
     },
-    spine:Map<SpineField,DEXA_Measurements>,
+    spine:SvelteMap<SpineField,DEXA_Measurements>, //Needs to be this type for appropriate reactivity of result plot
     hips:{
         left: Hip,
         right: Hip
@@ -617,7 +618,7 @@ export function ingest_data(ingest_data:string):Import_Result
         }
     }
 
-    let spine=new Map<SpineField,DEXA_Measurements>();
+    let spine=new SvelteMap<SpineField,DEXA_Measurements>();
     {
         for(const field of SpineFields)
         {
