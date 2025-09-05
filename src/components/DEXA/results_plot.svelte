@@ -6,6 +6,7 @@
 	import { mdiRelativeScale } from "@mdi/js";
 	import { select_diagnosis, type SelectedDiagnosisResult } from "./ts/dexa/generate_report";
 	import type { DEXA_Measurements, Diagnosis } from "./ts/dexa/basic_types";
+	import DexaMeasurements from "./dexa_measurements.svelte";
 
     type Props = {
         ingest:DEXA_Ingest_Data,
@@ -14,15 +15,18 @@
 
     let props:Props=$props();
 
-    type Datum = {label:String,score:number,color:string};
+    type Datum = {score:number,x_bin:string,color:string};
 
     type Calculations = {
         diagnosis?:SelectedDiagnosisResult,
-        data:Datum[],
-        xticks:string[]
+        data:Datum[]
     }
     
-    const measurements_to_datum = (meas:DEXA_Measurements, label:string, selected_diagnosis:SelectedDiagnosisResult) => {
+
+    const used_xbin="Used";
+    const unused_xbin="Unused";
+
+    const measurements_to_datum = (meas:DEXA_Measurements, selected_diagnosis:SelectedDiagnosisResult, used:boolean) => {
         let val;
         if(selected_diagnosis.using_alternative_diagnosis)
         {
@@ -32,18 +36,27 @@
         {
             val=meas.t_score;
         }
+        let x_bin:string;
+        if(used)
+        {
+            x_bin=used_xbin;
+        }
+        else
+        {
+            x_bin=unused_xbin;
+        }
         if(val!==undefined)
         {
 
             let color:string="white";
-            if(val===selected_diagnosis.lowest_score)
+            if(used && val===selected_diagnosis.lowest_score)
             {
                 color="red";
             }
             return {
-                label,
                 score:val,
-                color:color
+                color:color,
+                x_bin
             }
         }
         else{
@@ -59,32 +72,27 @@
 
             let retval:Calculations={
                 diagnosis:selected_diagnosis,
-                data:[],
-                xticks:[]
+                data:[]
             };
 
             if(selected_diagnosis !== undefined)
             { 
-                let measurements:[DEXA_Measurements,string][]=[];
-                for(const member of props.ingest.spine.entries())
-                {
-                    measurements.push([member[1],member[0]]);
-                }
-                measurements.push([props.ingest.hips.left.neck, "L Fem"]);
-                measurements.push([props.ingest.hips.left.total, "L Hip"]);
-                measurements.push([props.ingest.hips.right.neck, "R Fem"]);
-                measurements.push([props.ingest.hips.right.total, "R Hip"]);
-                measurements.push([props.ingest.radii.left, "L Rad"]);
-                measurements.push([props.ingest.radii.right, "R Rad"]);
-
-                for(const member of measurements)
-                {
-                    let datum = measurements_to_datum(member[0],member[1],selected_diagnosis);
+                
+                const process = (member:DEXA_Measurements,used:boolean)=>{
+                    let datum = measurements_to_datum(member,selected_diagnosis,used);
                     if(datum !== undefined)
                     {
                         retval.data.push(datum);
-                        retval.xticks.push(datum.label);
                     }
+                };
+
+                for(const member of selected_diagnosis.used_measurements)
+                {
+                    process(member,true);
+                }
+                for(const member of selected_diagnosis.unused_measurements)
+                {
+                    process(member,false);
                 }
             }
 
@@ -102,6 +110,10 @@
         "#558000", //dark green
         "#004480", //dark blue
     ]
+
+    const width=80;
+    const domain=[used_xbin,unused_xbin];
+    const inset=-(width/domain.length)/4;
 
     let plot = $derived.by(
         ()=>{
@@ -131,8 +143,8 @@
                     if(y2<lowest){y2=lowest;}
 
                     bars.push({
-                        x1:calculations.xticks[0],
-                        x2:calculations.xticks[calculations.xticks.length-1],
+                        x1:used_xbin,
+                        x2:unused_xbin,
                         y1,
                         y2,
                         color:bar_colors[color_index]
@@ -142,28 +154,29 @@
 
             console.debug("bars",bars);
 
-            let width=900;
-            let inset=-(width/(calculations.xticks.length))/2.0;
+            let y_axis_label:string;
+            if(calculations.diagnosis?.using_alternative_diagnosis){y_axis_label="Z-score";}else{y_axis_label = "T-score";}
             
             return Plot.plot(
                 {
                     grid: true,
                     inset: 0,
-                    height: 150,
+                    height: 300,
                     width: width,
-                    marginRight:10,
-                    marginTop:10,
+                    marginRight:20,
+                    marginTop:20,
                     marginBottom:40,
                     marginLeft:20,
                     //aspectRatio: 1,
                     //color: {legend: true},
-                    x: {domain:calculations.xticks},
+                    x: {domain:domain},
                     marks: [
                         Plot.frame(),
-                        Plot.rect(bars,{x1:"x1", x2:"x2", y1:"y1", y2:"y2", fill:"color", insetLeft: inset, insetRight: inset-1}),
-                        Plot.dot(calculations.data, {x:"label", y:"score", stroke:"color", fill:"color"}),
+                        Plot.rect(bars,{x1:"x1", x2:"x2", y1:"y1", y2:"y2", fill:"color", insetLeft: inset, insetRight: inset}),
+                        Plot.dot(calculations.data, {x:"x_bin", y:"score", stroke:"color", fill:"color"}),
                         Plot.axisX({label:"", anchor: "bottom", tickRotate:-45}),
-                        Plot.axisY({label:"", labelArrow:"none"}),
+                        Plot.axisY({label:y_axis_label, labelArrow:"none"}),
+                        Plot.text("Diagnosis: DEATH")
                         //Plot.rect([maxheight], {x1:"left_date",x2:"right_date",y1:"bottom_height", y2:"top_height",stroke:"color",fill:"red"}),
                         //Plot.rect([maxheight], {x1:"left_date",x2:"right_date",y1:"bottom_height", y2:"height",stroke:"color",fill:"color"}),
                         //Plot.dot(data, {x: "date", y: "height", stroke:"aqua",fill:"color"}),
@@ -180,13 +193,8 @@
 <div class="outer">
     <ManagedPlot plot={plot}/>
     {#if calculations.diagnosis !== undefined && calculations.diagnosis.selected_diagnosis !== undefined}
-    <div class="inner">
-        <div>Diagnosis: {calculations.diagnosis.selected_diagnosis.name}</div>
-        {#if calculations.diagnosis.using_alternative_diagnosis}
-        <div>Alternative diagnositc scheme (Z-score)</div>
-        {:else}
-        <div>Primary diagnostic scheme (T-score)</div>
-        {/if}
+    <div class="inner" style="width:{width}px;">
+        <div>{calculations.diagnosis.selected_diagnosis.name}</div>
     </div>
     {/if}
 </div>
@@ -202,5 +210,8 @@
         display:flex;
         flex-direction: row;
         justify-content: space-around;
+        flex-shrink: true;
+        font-size: x-small;
+        word-wrap: normal;
     }
 </style>

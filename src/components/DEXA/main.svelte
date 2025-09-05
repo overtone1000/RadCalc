@@ -398,10 +398,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="align-self-centered">
-                            <ResultsPlot ingest={ingest} mandatory={mandatory}/>
-                        </div>
                     </div>
+                    <ResultsPlot ingest={ingest} mandatory={mandatory}/>
                 </div>
 
                 {#if mandatory.comparison.exists && !mandatory.comparison.outside_comparison}
@@ -506,8 +504,8 @@
     .leftcol
     {
         height: 100%;
-        min-width: 1100px;
-        max-width: 1100px;
+        min-width: 1000px;
+        max-width: 1000px;
         overflow-y: auto;
     }
     .main

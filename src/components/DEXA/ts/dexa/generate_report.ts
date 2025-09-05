@@ -383,7 +383,8 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 
 export type SelectedDiagnosisResult={
     using_alternative_diagnosis:boolean,
-    measurements:DEXA_Measurements[],
+    used_measurements:DEXA_Measurements[],
+    unused_measurements:DEXA_Measurements[],
     selected_diagnosis:DiagnosisWithRange,
     diagnostic_ranges:DiagnosisWithRange[],
     lowest_score:number
@@ -391,32 +392,56 @@ export type SelectedDiagnosisResult={
 
 export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):SelectedDiagnosisResult | undefined
 {
-    let measurements:DEXA_Measurements[]=[];
-
-    let spinefield = getSpineField(
-        manual.use_for_analysis.L1,
-        manual.use_for_analysis.L2,
-        manual.use_for_analysis.L3,
-        manual.use_for_analysis.L4,
-    );
-
-    if(spinefield!==undefined)
+    let used_measurements:DEXA_Measurements[]=[];
+    let unused_measurements:DEXA_Measurements[]=[];
     {
-        let spine_measurements=ingest.spine.get(spinefield);
-        if(spine_measurements!==undefined)
+        let spinefield = getSpineField(
+            manual.use_for_analysis.L1,
+            manual.use_for_analysis.L2,
+            manual.use_for_analysis.L3,
+            manual.use_for_analysis.L4,
+        );
+
+        if(spinefield!==undefined)
         {
-            measurements.push(spine_measurements);
-        }        
+            let spine_measurements=ingest.spine.get(spinefield);
+            if(spine_measurements!==undefined)
+            {
+                used_measurements.push(spine_measurements);
+            }        
+        }
+
+        ingest.spine.forEach(
+            (value,key)=>{
+                if(key !== spinefield)
+                {
+                    unused_measurements.push(value);
+                }
+            }
+        );
+
+        const process_measurements = (use_for_analysis:boolean, measurement:DEXA_Measurements|undefined) => {
+            if(measurement!==undefined)
+            {
+                if(use_for_analysis){
+                    used_measurements.push(measurement)
+                }
+                else
+                {
+                    unused_measurements.push(measurement);
+                }
+            }
+        }
+
+        process_measurements(manual.use_for_analysis.right_hip_neck, ingest.hips.right.neck);
+        process_measurements(manual.use_for_analysis.right_hip_total, ingest.hips.right.total);
+        
+        process_measurements(manual.use_for_analysis.left_hip_neck, ingest.hips.left.neck);
+        process_measurements(manual.use_for_analysis.left_hip_total, ingest.hips.left.total);
+
+        process_measurements(manual.use_for_analysis.left_radius, ingest.radii.left);
+        process_measurements(manual.use_for_analysis.right_radius, ingest.radii.right);
     }
-
-    if(manual.use_for_analysis.right_hip_neck && ingest.hips.right.neck!==undefined){measurements.push(ingest.hips.right.neck);}
-    if(manual.use_for_analysis.right_hip_total && ingest.hips.right.total!==undefined){measurements.push(ingest.hips.right.total);}
-    
-    if(manual.use_for_analysis.left_hip_neck && ingest.hips.left.neck!==undefined){measurements.push(ingest.hips.left.neck);}
-    if(manual.use_for_analysis.left_hip_total && ingest.hips.left.total!==undefined){measurements.push(ingest.hips.left.total);}
-
-    if(manual.use_for_analysis.left_radius && ingest.radii.left!==undefined){measurements.push(ingest.radii.left);}
-    if(manual.use_for_analysis.right_radius && ingest.radii.right!==undefined){measurements.push(ingest.radii.right);}
 
     let lowest_score:number=Infinity;
     let diagnoses:DiagnosisWithRange[];
@@ -426,7 +451,7 @@ export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_
         //console.debug("Using alternative diagnosis.");
         diagnoses=ingest.alternative_diagnoses;
 
-        for(const measurement of measurements)
+        for(const measurement of used_measurements)
         {
             if(measurement.z_score!==undefined && lowest_score>measurement.z_score)
             {
@@ -439,7 +464,7 @@ export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_
         //console.debug("Using primary diagnosis.");
         diagnoses=ingest.diagnoses;
 
-        for(const measurement of measurements)
+        for(const measurement of used_measurements)
         {
             if(measurement.t_score!==undefined && lowest_score>measurement.t_score)
             {
@@ -474,7 +499,8 @@ export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_
         {
             return {
                 selected_diagnosis:diagnosis,
-                measurements,
+                used_measurements,
+                unused_measurements,
                 using_alternative_diagnosis,
                 diagnostic_ranges:diagnoses,
                 lowest_score
