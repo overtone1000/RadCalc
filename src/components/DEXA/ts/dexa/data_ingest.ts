@@ -49,7 +49,8 @@ export type DEXA_Ingest_Data =
         spine:DEXA_Comparison,
         left_hip:DEXA_Comparison,
         right_hip:DEXA_Comparison,
-        radius:DEXA_Comparison
+        left_radius:DEXA_Comparison,
+        right_radius:DEXA_Comparison
     },
     diagnoses:DiagnosisWithRange[],
     alternative_diagnosis_ranges:AlternativeDiagnosisRanges,
@@ -62,6 +63,24 @@ export type DEXA_Ingest_Data =
     measurement_template:string,
     frax_template:string,
     outside_comparison_disclaimer:string,
+    labels:{
+        measurements:{
+            spine:string,
+            left_total_hip:string,
+            left_femoral_neck:string,
+            right_total_hip:string,
+            right_femoral_neck:string,
+            left_radius:string,
+            right_radius:string
+        },
+        changes:{
+            spine:string,
+            left_total_hip:string,
+            right_total_hip:string,
+            left_radius:string,
+            right_radius:string
+        }
+    },
     change_template:string,
     trend_template:string,
     report_template:string
@@ -94,7 +113,7 @@ function finite_number_or_undefined(input:string):number|undefined
     }
 }
 
-function get_DEXA_Measurements_from_raw_field(field_value:string|undefined, label:string):DEXA_Measurements
+function get_DEXA_Measurements_from_raw_field(field_value:string|undefined):DEXA_Measurements
 {
     const empty:DEXA_Measurements={
         locked: false,
@@ -623,7 +642,7 @@ export function ingest_data(ingest_data:string):Import_Result
         for(const field of SpineFields)
         {
             let value = field_map.get(field);
-            let meas = get_DEXA_Measurements_from_raw_field(value, field);
+            let meas = get_DEXA_Measurements_from_raw_field(value);
             if(meas!==undefined)
             {
                 spine.set(field,meas);
@@ -643,20 +662,23 @@ export function ingest_data(ingest_data:string):Import_Result
         spine:empty_comparison(),
         left_hip:empty_comparison(),
         right_hip:empty_comparison(),
-        radius:empty_comparison()
+        left_radius:empty_comparison(),
+        right_radius:empty_comparison()
     };
     
     {
         let spine=get_DEXA_Comparison_from_raw_field(field_map.get("spine_trend"));
         let left_hip=get_DEXA_Comparison_from_raw_field(field_map.get("hip_left_trend"));
         let right_hip=get_DEXA_Comparison_from_raw_field(field_map.get("hip_right_trend"));
-        let radius=get_DEXA_Comparison_from_raw_field(field_map.get("radius_trend"));
+        let left_radius=get_DEXA_Comparison_from_raw_field(field_map.get("left_radius_trend"));
+        let right_radius=get_DEXA_Comparison_from_raw_field(field_map.get("right_radius_trend"));
 
-        console.debug(spine,left_hip,right_hip,radius);
+        console.debug(spine,left_hip,right_hip,left_radius,right_radius);
         if(spine!==undefined){trend.spine=spine;}
         if(left_hip!==undefined){trend.left_hip=left_hip;}
         if(right_hip!==undefined){trend.right_hip=right_hip;}
-        if(radius!==undefined){trend.radius=radius;}
+        if(left_radius!==undefined){trend.left_radius=left_radius;}
+        if(right_radius!==undefined){trend.right_radius=right_radius;}
     }
 
     //Should be validated, so cast types for mandatory members.
@@ -672,17 +694,17 @@ export function ingest_data(ingest_data:string):Import_Result
             spine:spine,
             hips:{
                 left:{
-                        total:get_DEXA_Measurements_from_raw_field(field_map.get("hip_left_total"), "Left Total Hip"),
-                        neck:get_DEXA_Measurements_from_raw_field(field_map.get("hip_left_neck"), "Left Femoral Neck"),
+                        total:get_DEXA_Measurements_from_raw_field(field_map.get("hip_left_total")),
+                        neck:get_DEXA_Measurements_from_raw_field(field_map.get("hip_left_neck")),
                     },
                 right:{
-                        total:get_DEXA_Measurements_from_raw_field(field_map.get("hip_right_total"), "Right Total Hip"),
-                        neck:get_DEXA_Measurements_from_raw_field(field_map.get("hip_right_neck"), "Right Femoral Neck"),
+                        total:get_DEXA_Measurements_from_raw_field(field_map.get("hip_right_total")),
+                        neck:get_DEXA_Measurements_from_raw_field(field_map.get("hip_right_neck")),
                     },
             },
             radii:{
-                left:get_DEXA_Measurements_from_raw_field(field_map.get("left_radius"),"Left Radius"),
-                right:get_DEXA_Measurements_from_raw_field(field_map.get("right_radius"), "Right Radius"),
+                left:get_DEXA_Measurements_from_raw_field(field_map.get("left_radius")),
+                right:get_DEXA_Measurements_from_raw_field(field_map.get("right_radius")),
             },
             dexa_system:field_map.get("dexa_system") as string,
             device_serial:field_map.get("device_serial") as string,
@@ -694,6 +716,24 @@ export function ingest_data(ingest_data:string):Import_Result
             technical_comments:{
                 spine_osteophyte_technique_section,
                 spine_osteophyte_result_section
+            },
+            labels:{
+                measurements:{
+                    spine:field_map.get("spine_label") as string,
+                    left_total_hip:field_map.get("left_total_hip_label") as string,
+                    left_femoral_neck:field_map.get("left_femoral_neck_label") as string,
+                    right_total_hip:field_map.get("right_total_hip_label") as string,
+                    right_femoral_neck:field_map.get("right_femoral_neck_label") as string,
+                    left_radius:field_map.get("left_radius_label") as string,
+                    right_radius:field_map.get("right_radius_label") as string
+                },
+                changes:{
+                    spine:field_map.get("spine_change_label") as string,
+                    left_total_hip:field_map.get("left_total_hip_change_label") as string,
+                    right_total_hip:field_map.get("right_total_hip_change_label") as string,
+                    left_radius:field_map.get("left_radius_change_label") as string,
+                    right_radius:field_map.get("right_radius_change_label") as string
+                }
             },
             measurement_template,
             frax_template,

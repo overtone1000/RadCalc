@@ -11,35 +11,49 @@ risk_of_hip_fracture:0
 L1:0.1,0.2,0.3
 L2:0.4,0.5,0.6
 L3:0.7,0.8,0.9
-L4:
+L4:1,1.1,1.11
 L12:4,5,6
 L13:7,8,9
-L14:
+L14:2,2.2,2.22
 L23:0,0,0
-L24:
-L34:
+L24:3,3.3,3.33
+L34:4,4.4,4.44
 L123:0.9,1,1
-L124:
-L134:
-L234:
-L1234:
-hip_left_total:,,
-hip_left_neck:,,
-hip_right_total:,,
-hip_right_neck:,,
-left_radius:,,ingest.frax.risk_of_hip_fracture!==undefined
+L124:5,5.5,5.55
+L134:6,6.6,6.66
+L234:7,7.7,7.77
+L1234:8,8.8,8.88
+hip_left_total:9,9.9,9.99
+hip_left_neck:10,10.10,10.10.10
+hip_right_total:11,11.11,11.1111
+hip_right_neck:12,12.12,12.1212
+left_radius:13,13.13,13.1313
 right_radius:0.9,1,1
 
 spine_trend:1,0.5
 hip_left_trend:0,0
-hip_right_trend:
-radius_trend:
+hip_right_trend:14,14.14
+left_radius_trend:15,15.15
+right_radius_trend:16,16.16
 
 dexa_system:dexa sys
 device_serial:dexa dev serial
 software_version:software version 43q92875
 technologist_id:tech id
 
+spine_label:LUMBAR SPINE
+left_total_hip_label:LEFT TOTAL HIP
+left_femoral_neck_label:LEFT FEMORAL NECK
+right_total_hip_label:RIGHT TOTAL HIP
+right_femoral_neck_label:RIGHT FEMORAL NECK
+left_radius_label:LEFT RADIUS
+right_radius_label:RIGHT RADIUS
+
+spine_change_label:CHANGE IN BMD IN SPINE
+left_total_hip_change_label:CHANGE IN BMD IN LEFT TOTAL HIP
+right_total_hip_change_label:CHANGE IN BMD IN RIGHT TOTAL HIP
+left_radius_change_label:CHANGE IN BMD IN LEFT RADIUS
+right_radius_change_label:CHANGE IN BMD IN RIGHT RADIUS
 
 technical_comment_spine_osteophyte_technique_section_start_b746e6de6b8e0ec8ef096d3e6bb37270
 Spinal bone mineral density is likely overestimated due to degenerative osteophytosis.
@@ -95,14 +109,15 @@ frax_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
 
 
 meas_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270
-$MEASUREMENT_NAME$
-    Bone Mineral Density: $BMD$
-    T-Score: $T_SCORE$, Z-Score: $Z_SCORE$$RESULT_COMMENTS$
+$MEASUREMENT_LABEL$
+Bone Mineral Density: $BMD$ g/cm2
+$MEASUREMENT_LABEL$ T-SCORE: $T_SCORE$
+Z-score: $Z_SCORE$
 
 meas_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
 
 change_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270
-$MEASUREMENT_NAME$: $BMD_CHANGE$, $T_SCORE_CHANGE$%
+$CHANGE_LABEL$: $BMD_ABSOLUTE_CHANGE$ g/cm2, $BMD_PERCENT_CHANGE$% change.
 change_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
 
 trend_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270

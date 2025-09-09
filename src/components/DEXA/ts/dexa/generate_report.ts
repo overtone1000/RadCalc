@@ -18,7 +18,8 @@ const substitutions=
     prior_height:"$PRIOR_HEIGHT$",
     prior_height_value:"$HEIGHT_ON_PRIOR$",
     current_height:"$CURRENT_HEIGHT$",
-    measurement_name:"$MEASUREMENT_NAME$",
+    measurement_label:"$MEASUREMENT_LABEL$",
+    change_label:"$CHANGE_LABEL$",
     bmd:"$BMD$",
     t_score:"$T_SCORE$",
     z_score:"$Z_SCORE$",
@@ -27,8 +28,8 @@ const substitutions=
     system_serial:"$DXA_SERIAL$",
     software_version:"$DXA_SOFTWARE_VERSION$",
     tech_id:"$DXA_TECH_ID$",
-    bmd_change:"$BMD_CHANGE$",
-    tscore_change:"$T_SCORE_CHANGE$",
+    bmd_absolute_change:"$BMD_ABSOLUTE_CHANGE$",
+    bmd_percent_change:"$BMD_PERCENT_CHANGE$",
     trend:"$TRENDS$",
     trend_section:"$TREND_SECTION$",
     outside_disclaimer:"$OUTSIDE_DISCLAIMER$",
@@ -55,9 +56,9 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 {
     let retval=ingest.report_template;
 
-    retval=retval.replace(substitutions.exam,ingest.exam);
-    retval=retval.replace(substitutions.exam_date,ingest.date);
-    retval=retval.replace(substitutions.exam_time,ingest.time);
+    retval=retval.replaceAll(substitutions.exam,ingest.exam);
+    retval=retval.replaceAll(substitutions.exam_date,ingest.date);
+    retval=retval.replaceAll(substitutions.exam_time,ingest.time);
 
     //Comparison
     {
@@ -75,7 +76,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 comp_str=(date.getMonth()+1)+"/"+(date.getDate()+1)+"/"+date.getFullYear();
             }
         }
-        retval=retval.replace("$COMPARISON_DATE_OR_NONE$",comp_str);
+        retval=retval.replaceAll("$COMPARISON_DATE_OR_NONE$",comp_str);
     }
 
     //Diagnosis
@@ -87,7 +88,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
         }
         else
         {
-            retval=retval.replace("$DIAGNOSIS$",diagnosis.selected_diagnosis.name);
+            retval=retval.replaceAll("$DIAGNOSIS$",diagnosis.selected_diagnosis.name);
         }
     }
 
@@ -180,7 +181,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             full_quality_section+=" "+getFRAXExclusionReasonText(manual.reason_for_frax_exclusion);
         }
 
-        retval=retval.replace(substitutions.included_sites,full_quality_section);
+        retval=retval.replaceAll(substitutions.included_sites,full_quality_section);
     }
 
     //Technical Comments
@@ -190,11 +191,11 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
         {
             comment=ingest.technical_comments.spine_osteophyte_technique_section
         }
-        retval=retval.replace(substitutions.technical_comments,comment)
+        retval=retval.replaceAll(substitutions.technical_comments,comment)
     }
 
     //FRAX
-    retval=retval.replace(substitutions.frax,frax(ingest,manual))
+    retval=retval.replaceAll(substitutions.frax,frax(ingest,manual))
 
     //Height
     {
@@ -206,7 +207,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 reported_tallest_height=(manual.reported_tallest_height.feet*12+manual.reported_tallest_height.inches).toString() + " in";
             }
         }
-        retval=retval.replace(substitutions.reported_max_height,reported_tallest_height.toString())
+        retval=retval.replaceAll(substitutions.reported_max_height,reported_tallest_height.toString())
 
         let prior_height:string="";
         if(manual.comparison.exists)
@@ -219,9 +220,9 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                     height = manual.comparison.height_in_inches.height_in_inches.toString() + " in";
                 }
             }
-            prior_height=ingest.height_on_prior_template.replace(substitutions.prior_height,height);
+            prior_height=ingest.height_on_prior_template.replaceAll(substitutions.prior_height,height);
         }
-        retval=retval.replace(substitutions.prior_height_value,prior_height)
+        retval=retval.replaceAll(substitutions.prior_height_value,prior_height)
 
         let current_height:string = "Not recorded.";
         if(manual.height_in_inches.exists)
@@ -231,14 +232,14 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 current_height=manual.height_in_inches.height_in_inches.toString() + " in";
             }
         }
-        retval=retval.replace(substitutions.current_height,current_height)
+        retval=retval.replaceAll(substitutions.current_height,current_height)
     }
 
     //Measurements
     {
         let measurements:string[]=[];
 
-        const trypush=(name:string, meas:DEXA_Measurements|undefined, comment?:string)=>
+        const trypush=(label:string, meas:DEXA_Measurements|undefined, comment?:string)=>
         {
             if(meas!==undefined)
             {
@@ -249,16 +250,16 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 if(bmd!==undefined && tscore !==undefined && zscore !==undefined && bmd!==null && tscore !== null && zscore !== null)
                 {
                     let thismeas=ingest.measurement_template;
-                    thismeas=thismeas.replace(substitutions.measurement_name,name);
-                    thismeas=thismeas.replace(substitutions.bmd,bmd.toFixed(3));
-                    thismeas=thismeas.replace(substitutions.t_score,tscore.toFixed(2));
-                    thismeas=thismeas.replace(substitutions.z_score,zscore.toFixed(2));
+                    thismeas=thismeas.replaceAll(substitutions.measurement_label,label);
+                    thismeas=thismeas.replaceAll(substitutions.bmd,bmd.toFixed(3));
+                    thismeas=thismeas.replaceAll(substitutions.t_score,tscore.toFixed(2));
+                    thismeas=thismeas.replaceAll(substitutions.z_score,zscore.toFixed(2));
 
                     if(comment===undefined)
                     {
                         comment="";
                     }
-                    thismeas=thismeas.replace(substitutions.result_comments,comment);
+                    thismeas=thismeas.replaceAll(substitutions.result_comments,comment);
 
                     measurements.push(thismeas);
                 }
@@ -278,14 +279,14 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             {
                 comment=ingest.technical_comments.spine_osteophyte_result_section
             }
-            trypush("Spine",ingest.spine.get(spinefield),comment);
+            trypush(ingest.labels.measurements.spine,ingest.spine.get(spinefield),comment);
         }
-        if(manual.use_for_analysis.left_hip_total){trypush("Left Total Hip",ingest.hips.left.total);}
-        if(manual.use_for_analysis.left_hip_neck){trypush("Left Femoral Neck",ingest.hips.left.neck);}
-        if(manual.use_for_analysis.right_hip_total){trypush("Right Total Hip",ingest.hips.right.total);}
-        if(manual.use_for_analysis.right_hip_neck){trypush("Right Femoral Neck",ingest.hips.right.neck);}
-        if(manual.use_for_analysis.left_radius){trypush("Left Radius",ingest.radii.left);}
-        if(manual.use_for_analysis.right_radius){trypush("Right Radius",ingest.radii.right);}
+        if(manual.use_for_analysis.left_hip_total){trypush(ingest.labels.measurements.left_total_hip,ingest.hips.left.total);}
+        if(manual.use_for_analysis.left_hip_neck){trypush(ingest.labels.measurements.left_femoral_neck,ingest.hips.left.neck);}
+        if(manual.use_for_analysis.right_hip_total){trypush(ingest.labels.measurements.right_total_hip,ingest.hips.right.total);}
+        if(manual.use_for_analysis.right_hip_neck){trypush(ingest.labels.measurements.right_femoral_neck,ingest.hips.right.neck);}
+        if(manual.use_for_analysis.left_radius){trypush(ingest.labels.measurements.left_radius,ingest.radii.left);}
+        if(manual.use_for_analysis.right_radius){trypush(ingest.labels.measurements.right_radius,ingest.radii.right);}
 
         let allmeasurements:string="";
         for(const measurement of measurements)
@@ -293,15 +294,15 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             allmeasurements+=measurement;
         }
 
-        retval=retval.replace(substitutions.all_measurements,allmeasurements);
+        retval=retval.replaceAll(substitutions.all_measurements,allmeasurements);
     }
 
     //Technical
     {
-        retval=retval.replace(substitutions.system,ingest.dexa_system);
-        retval=retval.replace(substitutions.system_serial,ingest.device_serial);
-        retval=retval.replace(substitutions.software_version,ingest.software_version);
-        retval=retval.replace(substitutions.tech_id,ingest.technologist_id);
+        retval=retval.replaceAll(substitutions.system,ingest.dexa_system);
+        retval=retval.replaceAll(substitutions.system_serial,ingest.device_serial);
+        retval=retval.replaceAll(substitutions.software_version,ingest.software_version);
+        retval=retval.replaceAll(substitutions.tech_id,ingest.technologist_id);
     }
 
     //Trends
@@ -311,24 +312,25 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
         if(!manual.comparison.outside_comparison)
         {
             let trends:string[]=[];
-            const trypush=(name:string,comp:DEXA_Comparison)=>
+            const trypush=(label:string,comp:DEXA_Comparison)=>
             {
                 if(comp.bone_mineral_density_absolute_change !== undefined &&
                     comp.bone_mineral_density_percentage_change !== undefined
                 )
                 {
                     let thismeas=ingest.change_template;
-                    thismeas=thismeas.replace(substitutions.measurement_name,name);
-                    thismeas=thismeas.replace(substitutions.bmd_change,comp.bone_mineral_density_absolute_change.toFixed(3));
-                    thismeas=thismeas.replace(substitutions.tscore_change,comp.bone_mineral_density_percentage_change.toFixed(2));
+                    thismeas=thismeas.replaceAll(substitutions.change_label,label);
+                    thismeas=thismeas.replaceAll(substitutions.bmd_absolute_change,comp.bone_mineral_density_absolute_change.toFixed(3));
+                    thismeas=thismeas.replaceAll(substitutions.bmd_percent_change,comp.bone_mineral_density_percentage_change.toFixed(2));
                     trends.push(thismeas);
                 }
             }
 
-            if(manual.use_for_comparison.spine){trypush("Spine",ingest.trend.spine);}
-            if(manual.use_for_comparison.left_hip){trypush("Left Hip",ingest.trend.left_hip);}
-            if(manual.use_for_comparison.right_hip){trypush("Right Hip",ingest.trend.right_hip);}
-            if(manual.use_for_comparison.radius){trypush("Radius",ingest.trend.radius);}
+            if(manual.use_for_comparison.spine){trypush(ingest.labels.changes.spine,ingest.trend.spine);}
+            if(manual.use_for_comparison.left_hip){trypush(ingest.labels.changes.left_total_hip,ingest.trend.left_hip);}
+            if(manual.use_for_comparison.right_hip){trypush(ingest.labels.changes.right_total_hip,ingest.trend.right_hip);}
+            if(manual.use_for_comparison.left_radius){trypush(ingest.labels.changes.left_radius,ingest.trend.left_radius);}
+            if(manual.use_for_comparison.right_radius){trypush(ingest.labels.changes.right_radius,ingest.trend.right_radius);}
 
             
             if(trends.length>0)
@@ -340,12 +342,12 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 }
 
                 section=ingest.trend_template;
-                section=section.replace(substitutions.trend,allcomps);
+                section=section.replaceAll(substitutions.trend,allcomps);
             }     
 
         }
         
-        retval=retval.replace(substitutions.trend_section,section);
+        retval=retval.replaceAll(substitutions.trend_section,section);
     }
 
     //Outside disclaimer
@@ -357,7 +359,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             str=ingest.outside_comparison_disclaimer;
         }
 
-        retval=retval.replace(substitutions.outside_disclaimer,str);
+        retval=retval.replaceAll(substitutions.outside_disclaimer,str);
     }
 
     //Check for missed substitution
@@ -373,8 +375,9 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 
         if(missed_substitutions.length>0)
         {
-            retval="";
             alert("Report generation failed. The following substitutions could not be made: " + missed_substitutions.toString());
+            console.error("Missed substitution:",retval);
+            retval="";
         }
     }
 
@@ -530,15 +533,15 @@ function frax(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):string
 
     if(frax_risk_factors===""){frax_risk_factors=indent+"None";}
 
-    retval=retval.replace(substitutions.risk_factors,frax_risk_factors);
+    retval=retval.replaceAll(substitutions.risk_factors,frax_risk_factors);
 
     if(ingest.frax.risk_of_osteoporotic_fracture!==undefined 
         && ingest.frax.risk_of_osteoporotic_fracture!==null 
         && ingest.frax.risk_of_hip_fracture!==undefined
         && ingest.frax.risk_of_hip_fracture!==null)
     {
-        retval=retval.replace(substitutions.frax_osteoporotic_fracture,ingest.frax.risk_of_osteoporotic_fracture.toString());
-        retval=retval.replace(substitutions.frax_hip_fracture,ingest.frax.risk_of_hip_fracture.toString());
+        retval=retval.replaceAll(substitutions.frax_osteoporotic_fracture,ingest.frax.risk_of_osteoporotic_fracture.toString());
+        retval=retval.replaceAll(substitutions.frax_hip_fracture,ingest.frax.risk_of_hip_fracture.toString());
     }
 
     return retval;

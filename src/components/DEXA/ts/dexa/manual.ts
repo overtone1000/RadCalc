@@ -70,7 +70,8 @@ export type DEXA_Mandatory_Manual_Data =
         spine:boolean,
         left_hip:boolean,
         right_hip:boolean,
-        radius:boolean,
+        left_radius:boolean,
+        right_radius:boolean
     },
     use_frax:boolean,
     reason_for_frax_exclusion:{
@@ -105,7 +106,8 @@ export function empty_mandatory():DEXA_Mandatory_Manual_Data {
             spine:false,
             left_hip:false,
             right_hip:false,
-            radius:false,
+            left_radius:false,
+            right_radius:false
         },
         reported_tallest_height:{
             exists:true,
@@ -218,14 +220,20 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
             retval.use_for_comparison.right_hip=true;
         }
 
-        if(ingest.trend.radius.bone_mineral_density_absolute_change !== undefined  ||
-            ingest.trend.radius.bone_mineral_density_percentage_change !== undefined 
+        if(ingest.trend.left_radius.bone_mineral_density_absolute_change !== undefined  ||
+            ingest.trend.left_radius.bone_mineral_density_percentage_change !== undefined 
         ){
-            retval.use_for_comparison.radius=true;
+            retval.use_for_comparison.left_radius=true;
+        }
+
+        if(ingest.trend.right_radius.bone_mineral_density_absolute_change !== undefined  ||
+            ingest.trend.right_radius.bone_mineral_density_percentage_change !== undefined 
+        ){
+            retval.use_for_comparison.right_radius=true;
         }
     }
 
-    if(retval.use_for_comparison.spine || retval.use_for_comparison.left_hip || retval.use_for_comparison.right_hip || retval.use_for_comparison.radius)
+    if(retval.use_for_comparison.spine || retval.use_for_comparison.left_hip || retval.use_for_comparison.right_hip || retval.use_for_comparison.left_radius)
     {
         retval.comparison.exists=true;
     }

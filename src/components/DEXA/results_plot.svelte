@@ -15,7 +15,7 @@
 
     let props:Props=$props();
 
-    type Datum = {score:number,x_bin:string,color:string};
+    type Datum = {score:number,x_bin:string,fill:string,stroke:string};
 
     type Calculations = {
         diagnosis?:SelectedDiagnosisResult,
@@ -48,14 +48,17 @@
         if(val!==undefined)
         {
 
-            let color:string="white";
+            let fill:string="white";
+            let stroke:string="black";
             if(used && val===selected_diagnosis.lowest_score)
             {
-                color="red";
+                fill="red";
+                stroke="white";
             }
             return {
                 score:val,
-                color:color,
+                fill:fill,
+                stroke:stroke,
                 x_bin
             }
         }
@@ -111,7 +114,7 @@
         "#004480", //dark blue
     ]
 
-    const width=80;
+    const width=100;
     const domain=[used_xbin,unused_xbin];
     const inset=-(width/domain.length)/4;
 
@@ -166,14 +169,14 @@
                     marginRight:20,
                     marginTop:20,
                     marginBottom:40,
-                    marginLeft:20,
+                    marginLeft:40,
                     //aspectRatio: 1,
                     //color: {legend: true},
                     x: {domain:domain},
                     marks: [
                         Plot.frame(),
                         Plot.rect(bars,{x1:"x1", x2:"x2", y1:"y1", y2:"y2", fill:"color", insetLeft: inset, insetRight: inset}),
-                        Plot.dot(calculations.data, {x:"x_bin", y:"score", stroke:"color", fill:"color"}),
+                        Plot.dot(calculations.data, {x:"x_bin", y:"score", stroke:"stroke", fill:"fill", strokeWidth:1, fillOpacity:0.75}),
                         Plot.axisX({label:"", anchor: "bottom", tickRotate:-45}),
                         Plot.axisY({label:y_axis_label, labelArrow:"none"}),
                         Plot.text("Diagnosis: DEATH")

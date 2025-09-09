@@ -254,8 +254,8 @@
                 if(mandatory.use_for_comparison.right_hip){
                     if(!comparison_ready(ingest.trend.right_hip)){return false;}
                 }
-                if(mandatory.use_for_comparison.radius){
-                    if(!comparison_ready(ingest.trend.radius)){return false;}
+                if(mandatory.use_for_comparison.left_radius){
+                    if(!comparison_ready(ingest.trend.left_radius)){return false;}
                 }
 
                 if(mandatory.use_frax){
@@ -356,21 +356,23 @@
                     <div class="rotated">Results</div>
                     <div class="flexcol flexgrow">
                         <div class="flexcol flexgrow">
-                            <div class="flexrow justify_space_around">
-                                <div class="flexcol align_right">
-                                    <label>L1 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L1}></label>
-                                    <label>L2 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L2}></label>
-                                    <label>L3 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L3}></label>
-                                    <label>L4 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L4}></label>
-                                    <label>Left Radius <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_radius}></label>
-                                </div>
-                                <div class="flexcol align_right">
-                                    <label>Left Hip <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_hip_total}></label>
-                                    <label>Left Femoral Neck <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_hip_neck}></label>
-                                    <label>Right Hip <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_hip_total}></label>
-                                    <label>Right Femoral Neck <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_hip_neck}></label>
-                                    <label>Right Radius <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_radius}></label>
-                                </div>
+                            <div class="measurement_grid">
+                                <label>L1 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L1}></label>
+                                <label>Left Hip <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_hip_total}></label>
+                                <label>Right Hip <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_hip_total}></label>
+
+                                <label>L2 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L2}></label>
+                                <label>Left Femoral Neck <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_hip_neck}></label>
+                                <label>Right Femoral Neck <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_hip_neck}></label>
+
+                                <label>L3 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L3}></label>
+                                <div></div>
+                                <div></div>
+                                
+                                <label>L4 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L4}></label>
+                                <label>Left Radius <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_radius}></label>
+                                <label>Right Radius <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_radius}></label>
+
                             </div>
                         </div>
                     
@@ -405,18 +407,15 @@
                 {#if mandatory.comparison.exists && !mandatory.comparison.outside_comparison}
                     <div class="flexrow full-width bottom_border">
                         <div class="rotated">Trends</div>
-                        <div class="flexcol flexgrow">
-                            <div class="flexrow justify_space_around">
-                                <div class="flexcol align_right">
-                                    <label>Spine <input type="checkbox" bind:checked={mandatory.use_for_comparison.spine}></label>
-                                    <label>Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.radius}></label>
-                                </div>
-                                <div class="flexcol align_right">
-                                    <label>Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
-                                    <label>Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
-                                </div>
+                        <div class="flexcol flex_grow">
+                            <div class="trend_grid">
+                                <label class="trend_full_column">Spine <input type="checkbox" bind:checked={mandatory.use_for_comparison.spine}></label>
+                                <label class="trend_grid_left">Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
+                                <label class="trend_grid_right">Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
+                                <label class="trend_grid_left">Left Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_radius}></label>
+                                <label class="trend_grid_right">Right Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_radius}></label>
                             </div>
-                            {#if mandatory.use_for_comparison.spine || mandatory.use_for_comparison.left_hip || mandatory.use_for_comparison.right_hip || mandatory.use_for_comparison.radius}
+                            {#if mandatory.use_for_comparison.spine || mandatory.use_for_comparison.left_hip || mandatory.use_for_comparison.right_hip || mandatory.use_for_comparison.left_radius}
                             <table>
                                 <thead>
                                     <tr>
@@ -430,7 +429,8 @@
                                     <DexaComparison used={mandatory.use_for_comparison.spine} name="Spine" bind:comparison={ingest.trend.spine}/>
                                     <DexaComparison used={mandatory.use_for_comparison.left_hip} name="Left Hip" bind:comparison={ingest.trend.left_hip}/>
                                     <DexaComparison used={mandatory.use_for_comparison.right_hip} name="Right Hip" bind:comparison={ingest.trend.right_hip}/>
-                                    <DexaComparison used={mandatory.use_for_comparison.radius} name="Radius" bind:comparison={ingest.trend.radius}/>
+                                    <DexaComparison used={mandatory.use_for_comparison.left_radius} name="Left Radius" bind:comparison={ingest.trend.left_radius}/>
+                                    <DexaComparison used={mandatory.use_for_comparison.right_radius} name="Right Radius" bind:comparison={ingest.trend.right_radius}/>
                                 </tbody>
                             </table>
                             {/if}
@@ -479,6 +479,36 @@
 
 <style>
     @import "./dexa.css";
+
+    .measurement_grid{
+        display: grid;
+        grid-template-columns: auto auto auto;
+        justify-items: right;
+        align-items: center;
+        margin-right: 20px;
+        margin-top: 10px;
+    }
+
+    .trend_grid{
+        display: grid;
+        grid-template-columns: auto auto auto;
+        justify-items: right;
+        align-items: center;
+        margin-right: 20px;
+        margin-top: 10px;
+    }
+    .trend_full_column{
+        grid-row-start: 1;
+        grid-row-end: 3;
+    }
+    .trend_grid_left{
+        grid-column-start: 2;
+        grid-column-end: 3;
+    }
+    .trend_grid_right{
+        grid-column-start: 3;
+        grid-column-end: 4;
+    }
 
     table{
         width:90%;
@@ -534,5 +564,8 @@
     .flex_shrink{
         flex-shrink:1;
         overflow-y:auto;
+    }
+    .full_width{
+        width: 100%;
     }
 </style>

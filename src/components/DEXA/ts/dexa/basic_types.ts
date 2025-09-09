@@ -30,6 +30,18 @@ export const mandatory_string_fields = [
     "device_serial",
     "software_version",
     "technologist_id",
+    "spine_label",
+    "left_total_hip_label",
+    "left_femoral_neck_label",
+    "right_total_hip_label",
+    "right_femoral_neck_label",
+    "left_radius_label",
+    "right_radius_label",
+    "spine_change_label",
+    "left_total_hip_change_label",
+    "right_total_hip_change_label",
+    "left_radius_change_label",
+    "right_radius_change_label"
 ];
 
 export const SpineFields:SpineField[] = [
