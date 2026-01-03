@@ -4,6 +4,8 @@ set -e
 
 source .env
 
+SSH_DEST=$QUADLET_USER@$SERVER_IP
+
 #echo Getting container name
 #NGINX_CONTAINER_NAME=$(ssh -T $SSH_DEST "docker container ls --filter \"name=nginx_nginx*\" --format \"{{.Names}}\"")
 
