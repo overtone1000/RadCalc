@@ -547,10 +547,10 @@ function frax(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):string
     return retval;
 }
 
-export function report_to_clipboard(report:string)
+export function copy_to_clipboard(contents:string)
 {
     let blob = new Blob(
-        [report],
+        [contents],
         {
             type: "text/plain"
         }

@@ -1,7 +1,5 @@
 <script lang="ts">
 	import type { DEXA_Comparison } from "./ts/dexa/basic_types";
-    import { mdiLock } from "@mdi/js";
-    import { mdiLockOpenVariant } from "@mdi/js";
     import Lock from "./lock.svelte";
     
     type Props = {
@@ -29,8 +27,8 @@
         <td class="centered">
             <Lock name={name} bind:locked={comparison.locked}/>
         </td>
-        <td class="centered"><input type="number" class="numberbox" disabled={comparison.locked} step=0.001 bind:value={comparison.bone_mineral_density_absolute_change}></td>
-        <td class="centered"><input type="number" class="numberbox" disabled={comparison.locked} step=0.01 bind:value={comparison.bone_mineral_density_percentage_change}></td>
+        <td class="centered"><input type="number" class="numberbox" required inert={comparison.locked} step="any" bind:value={comparison.bone_mineral_density_absolute_change}></td>
+        <td class="centered"><input type="number" class="numberbox" required inert={comparison.locked} step="any" bind:value={comparison.bone_mineral_density_percentage_change}></td>
     </tr>
 {/if}
 

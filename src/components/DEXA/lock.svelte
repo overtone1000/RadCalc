@@ -37,6 +37,8 @@
         height:48px;
         align-self: center;
         margin:2px;
+        border-width: 2px;
+        background-color: var(--alert);
     }
     .iconbutton.locked{
         border-width: 2px;

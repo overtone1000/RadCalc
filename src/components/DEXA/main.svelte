@@ -5,12 +5,13 @@
 	import type { MouseEventHandler } from "svelte/elements";
 	import DexaMeasurements from "./dexa_measurements.svelte";
 	import { getSpineField, type DEXA_Comparison, type DEXA_Measurements, type SpineField } from "./ts/dexa/basic_types";
-	import { generate_report, report_to_clipboard, windows_newline } from "./ts/dexa/generate_report";
+	import { generate_report, copy_to_clipboard, windows_newline } from "./ts/dexa/generate_report";
 	import DexaComparison from "./dexa_comparison.svelte";
 	import Footer from "../@commons/footer.svelte";
     import Lock from "./lock.svelte";
 	import HeightPlot from "./height_plot.svelte";
 	import ResultsPlot from "./results_plot.svelte";
+	import Copy from "./copy.svelte";
     
     let last_raw_ingest:string|undefined=undefined;
 
@@ -154,7 +155,7 @@
         if(ingest!==undefined)
         {
             let report=generate_report(ingest,mandatory);
-            report_to_clipboard(report);
+            copy_to_clipboard(report);
 
             if(debug_mode){html_report=genereate_html_report();}
         }
@@ -293,6 +294,13 @@
         <div class="flexcol leftcol">
             <button onclick={text_ingest}>Ingest text from clipboard</button>
             {#if ingest!==undefined}
+                <div class="flexrow full-width bottom_border" style="padding-bottom:10px">
+                    <div class="flexrow flexgrow">Study Info</div>
+                    <div class="flexrow flexgrow">{ingest.last_name}<Copy value={ingest.last_name}/></div>
+                    <div class="flexrow flexgrow">MRN: {ingest.mrn}<Copy value={ingest.mrn}/></div>
+                    <div class="flexrow flexgrow">Accession: {ingest.accession}<Copy value={ingest.accession}/></div>
+                </div>
+
                 <div class="flexrow full-width bottom_border">
                     <div class="rotated">Comp</div>
                     <div class="flexcol flexgrow">
@@ -300,7 +308,7 @@
                             <label>Comparison available:<input type="checkbox" bind:checked={mandatory.comparison.exists}></label>
                             <div class="flexrow justify_space_around flexgrow">
                                 {#if mandatory.comparison.exists}
-                                    <label>Comparison date:<input type="date" max={yesterday_string} disabled={!mandatory.comparison.exists} bind:value={mandatory.comparison.date}></label>
+                                    <label>Comparison date:<input type="date" max={yesterday_string} required disabled={!mandatory.comparison.exists} bind:value={mandatory.comparison.date}></label>
                                     <label>Outside comparison disclaimer:<input type="checkbox" disabled={!mandatory.comparison.exists} bind:checked={mandatory.comparison.outside_comparison}></label>
                                 {/if}
                             </div>
@@ -315,21 +323,21 @@
                             <div class="flexcol align_items_end align_self_center">
                                 <div class="flexrow">
                                     <label>Reported tallest height: <input type="checkbox" tabindex=-1 bind:checked={mandatory.reported_tallest_height.exists}></label>
-                                    <input type="number" step="1" class="numberbox left_margin" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.feet}>
+                                    <input type="number" step="1" class="numberbox left_margin" required disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.feet}>
                                     <div class="left_margin"> ft </div>
-                                    <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.inches}>
+                                    <input type="number" step="any" class="numberbox left_margin" required disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.inches}>
                                     <div class="left_margin"> in </div>
                                 </div>
                                 {#if mandatory.comparison.exists}
                                     <div class="flexrow">
                                         <label>Height on prior exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.comparison.height_in_inches.exists}></label>
-                                        <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.comparison.height_in_inches.exists} bind:value={mandatory.comparison.height_in_inches.height_in_inches}>
+                                        <input type="number" step="0.1" class="numberbox left_margin" required disabled={!mandatory.comparison.height_in_inches.exists} bind:value={mandatory.comparison.height_in_inches.height_in_inches}>
                                         <div class="left_margin"> in </div>
                                     </div>
                                 {/if}
                                 <div class="flexrow">
                                     <label>Height on current exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.height_in_inches.exists}></label>
-                                    <input type="number" step="0.1" class="numberbox left_margin" disabled={!mandatory.height_in_inches.exists} bind:value={mandatory.height_in_inches.height_in_inches}>
+                                    <input type="number" step="0.1" class="numberbox left_margin" required disabled={!mandatory.height_in_inches.exists} bind:value={mandatory.height_in_inches.height_in_inches}>
                                     <div class="left_margin"> in </div>
                                 </div>
                             </div>
@@ -337,8 +345,8 @@
                         <div class="flexcol flexgrow flexshrink">
                             {Math.trunc(mandatory.age)} year old {sex_to_string()}
                             {#if mandatory.post_menopausal.display}
-                                    <label>Premenopausal <input type="radio" value={"pre"} bind:group={mandatory.post_menopausal.value}></label>
-                                    <label>Postmenopausal <input type="radio" value={"post"} bind:group={mandatory.post_menopausal.value}></label>
+                                    <label>Premenopausal <input type="radio" name="menopause" required value={"pre"} bind:group={mandatory.post_menopausal.value}></label>
+                                    <label>Postmenopausal <input type="radio" name="menopause" required value={"post"} bind:group={mandatory.post_menopausal.value}></label>
                             {/if}
                         </div>
                         <HeightPlot ingest={ingest} mandatory={mandatory}/>
@@ -444,8 +452,8 @@
                         <div class="flexrow justify_space_around flexgrow">
                         {#if mandatory.use_frax }
                             <Lock name="frax" bind:locked={ingest.frax.locked}/>
-                            <label> Risk (hip): <input type="number" bind:value={ingest.frax.risk_of_hip_fracture} class="numberbox" disabled={ingest.frax.locked}/>%</label>
-                            <label> Risk (osteoporotic): <input type="number" bind:value={ingest.frax.risk_of_osteoporotic_fracture} class="numberbox" disabled={ingest.frax.locked}/>%</label>
+                            <label> Risk (hip): <input type="number" bind:value={ingest.frax.risk_of_hip_fracture} class="numberbox" required inert={ingest.frax.locked}/>%</label>
+                            <label> Risk (osteoporotic): <input type="number" bind:value={ingest.frax.risk_of_osteoporotic_fracture} class="numberbox" required inert={ingest.frax.locked}/>%</label>
                         {:else}
                             <div class="flexcol"> 
                                 <div>Reason for FRAX exclusion</div>
@@ -454,7 +462,7 @@
                                 <label>More than 90 years old<input type="radio" name="no_frax_reason" value={FRAXExclusionReason.MoreThan90YearsOld} bind:group={mandatory.reason_for_frax_exclusion.reason}></label>
                                 <div class="flexrow">
                                     <label>Other<input type="radio" name="no_frax_reason" value={FRAXExclusionReason.Other} bind:group={mandatory.reason_for_frax_exclusion.reason}></label>
-                                    <input type="text" bind:value={mandatory.reason_for_frax_exclusion.other_text}/>
+                                    <input type="text mandatory" required disabled={mandatory.reason_for_frax_exclusion.reason!==FRAXExclusionReason.Other} bind:value={mandatory.reason_for_frax_exclusion.other_text}/>
                                 </div>
                             </div>
                         {/if}

@@ -160,6 +160,16 @@
             let y_axis_label:string;
             if(calculations.diagnosis?.using_alternative_diagnosis){y_axis_label="Z-score";}else{y_axis_label = "T-score";}
             
+            let miny=Number.POSITIVE_INFINITY;
+            let maxy=Number.NEGATIVE_INFINITY;
+            for(const datum of calculations.data)
+            {
+                if(datum.score<miny){miny=datum.score;}
+                if(datum.score>maxy){maxy=datum.score;}
+            }
+            if(miny>-3){miny=-3;}
+            if(maxy<3){maxy=3;}
+
             return Plot.plot(
                 {
                     grid: true,
@@ -173,6 +183,7 @@
                     //aspectRatio: 1,
                     //color: {legend: true},
                     x: {domain:domain},
+                    y: {domain:[miny,maxy]},
                     marks: [
                         Plot.frame(),
                         Plot.rect(bars,{x1:"x1", x2:"x2", y1:"y1", y2:"y2", fill:"color", insetLeft: inset, insetRight: inset}),

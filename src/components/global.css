@@ -1,3 +1,10 @@
+:root {
+    --accent:#3c7279;
+    --accent-hover: #67c5d1;
+    --accent-bg: #00e1ff13;
+    --accent-text: #c4f7c2;
+}
+
 .cols
 {
     display: flex;

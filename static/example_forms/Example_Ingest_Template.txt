@@ -1,7 +1,10 @@
 exam:EXAM TYPE
 date:7/4/2025
 time:TIME OF EXAM
-patient_dob:8/20/1990
+last_name:Moore
+mrn:123456
+accession:Acc1259
+patient_dob:8/20/1970
 patient_sex:F
 
 risk_factors:PREV FRAC,PARENT FRAC,SMOKES,STEROIDS,RA,OSTEOPOROSIS,DRINKER

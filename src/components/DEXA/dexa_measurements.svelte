@@ -27,13 +27,14 @@
         <td class="centered">
             <Lock name={name} bind:locked={measurements.locked}/>
         </td>
-        <td class="centered"><input type="number" class="numberbox" disabled={measurements.locked} step=0.001 bind:value={measurements.bone_mineral_density}></td>
-        <td class="centered"><input type="number" class="numberbox" disabled={measurements.locked} step=0.01 bind:value={measurements.t_score}></td>
-        <td class="centered"><input type="number" class="numberbox" disabled={measurements.locked} step=0.01 bind:value={measurements.z_score}></td>
+        <td class="centered"><input type="number" class="numberbox mandatory" required inert={measurements.locked} step="any" bind:value={measurements.bone_mineral_density}></td>
+        <td class="centered"><input type="number" class="numberbox mandatory" required inert={measurements.locked} step="any" bind:value={measurements.t_score}></td>
+        <td class="centered"><input type="number" class="numberbox mandatory" required inert={measurements.locked} step="any" bind:value={measurements.z_score}></td>
     </tr>
 {/if}
 
 <style>
     @import "./dexa.css";
     @import "./measurement.css";
+
 </style>
