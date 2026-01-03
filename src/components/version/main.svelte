@@ -7,6 +7,15 @@
     let versions:Version[]=
     [
         {
+            version: "2.2",
+            features: [
+                '☑ Cooler color scheme',
+                '☑ DEXA warning if FRAX not included for no good reason',
+                '☑ DEXA warning for missing values that stop report generation (heights, measurements, etc)',
+                '☑ Miscellaneous DEXA ergonomics',
+            ]
+        },
+        {
             version: "2.1",
             features: [
                 '☑ Switch to Svelte',
@@ -32,9 +41,7 @@
         '☐ Volume calculator with ellipsoid, prostate, and spleen equations.',
         '☐ Data ingestion and substitution in doubling time',
         '☐ Multiple points for doubling time',
-        '☐ DEXA warning (highlight row?) if FRAX not included for no good reason',
-        '☐ DEXA warning (highlight input?) for missing values that stop report generation (heights, measurements, etc)',
-        '☐ Disable FRAX exclusions for patient age and hips if they are obviously invalid based in ingest and manually input data',
+        '☐ Disable FRAX exclusions for patient age and hips if they are obviously invalid based on ingest and manually input data',
     ];
 
     let considering_roadmap_entries:string[]=
