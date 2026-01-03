@@ -13,7 +13,6 @@
         <button onclick={()=>navigate("/DEXA")}>DEXA Report Generator</button>
     </div>
     <div class="cols centered">
-    <div>Prefer RadCalc v1? It's <a href="http://radcalcv1.overdesigned.org/">here</a>.</div>
     <div>This software is made available under the <a href="license"> MIT License</a>.</div>
         <div>Source code available on <a href="https://github.com/overtone1000/RadCalc"> GitHub</a>.</div>
     </div>
