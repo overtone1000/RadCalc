@@ -331,13 +331,13 @@
                                 {#if mandatory.comparison.exists}
                                     <div class="flexrow">
                                         <label>Height on prior exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.comparison.height_in_inches.exists}></label>
-                                        <input type="number" step="0.1" class="numberbox left_margin" required disabled={!mandatory.comparison.height_in_inches.exists} bind:value={mandatory.comparison.height_in_inches.height_in_inches}>
+                                        <input type="number" step="any" class="numberbox left_margin" required disabled={!mandatory.comparison.height_in_inches.exists} bind:value={mandatory.comparison.height_in_inches.height_in_inches}>
                                         <div class="left_margin"> in </div>
                                     </div>
                                 {/if}
                                 <div class="flexrow">
                                     <label>Height on current exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.height_in_inches.exists}></label>
-                                    <input type="number" step="0.1" class="numberbox left_margin" required disabled={!mandatory.height_in_inches.exists} bind:value={mandatory.height_in_inches.height_in_inches}>
+                                    <input type="number" step="any" class="numberbox left_margin" required disabled={!mandatory.height_in_inches.exists} bind:value={mandatory.height_in_inches.height_in_inches}>
                                     <div class="left_margin"> in </div>
                                 </div>
                             </div>
@@ -452,8 +452,8 @@
                         <div class="flexrow justify_space_around flexgrow">
                         {#if mandatory.use_frax }
                             <Lock name="frax" bind:locked={ingest.frax.locked}/>
-                            <label> Risk (hip): <input type="number" bind:value={ingest.frax.risk_of_hip_fracture} class="numberbox" required inert={ingest.frax.locked}/>%</label>
-                            <label> Risk (osteoporotic): <input type="number" bind:value={ingest.frax.risk_of_osteoporotic_fracture} class="numberbox" required inert={ingest.frax.locked}/>%</label>
+                            <label> Risk (hip): <input type="number" step="any" bind:value={ingest.frax.risk_of_hip_fracture} class="numberbox" required inert={ingest.frax.locked}/>%</label>
+                            <label> Risk (osteoporotic): <input type="number" step="any" bind:value={ingest.frax.risk_of_osteoporotic_fracture} class="numberbox" required inert={ingest.frax.locked}/>%</label>
                         {:else}
                             <div class="flexcol"> 
                                 <div>Reason for FRAX exclusion</div>
