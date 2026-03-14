@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { mdiContentCopy } from "@mdi/js";
 	import { onMount } from "svelte";
 	import type { ChangeEventHandler } from "svelte/elements";
 	import { createText, createTextAD, type Results } from "./AA/text";
 	import { initialize_guesses, iterate_guesses, type Guesses } from "./AA";
 	import Footer from "../@commons/footer.svelte";
+	import { mdiContentCopy } from "@mdi/js";
 
     onMount(
         ()=> {
