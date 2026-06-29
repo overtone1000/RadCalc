@@ -137,33 +137,35 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
         }
 
         {
-            if(manual.use_for_analysis.left_hip_neck && manual.use_for_analysis.left_hip_total)
+            //if(manual.use_for_analysis.left_hip_neck && manual.use_for_analysis.left_hip)
+            if(manual.use_for_analysis.left_hip)
             {
                 site_groups.push("the left hip and femoral neck");
             }
-            else if(manual.use_for_analysis.left_hip_total)
-            {
-                site_groups.push("the left hip");
-            }
-            else if(manual.use_for_analysis.left_hip_neck)
-            {
-                site_groups.push("the left femoral neck");
-            }
+            //else if(manual.use_for_analysis.left_hip)
+            //{
+            //    site_groups.push("the left hip");
+            //}
+            //else if(manual.use_for_analysis.left_hip_neck)
+            //{
+            //    site_groups.push("the left femoral neck");
+            //}
         }
 
         {
-            if(manual.use_for_analysis.right_hip_neck && manual.use_for_analysis.right_hip_total)
+            //if(manual.use_for_analysis.right_hip_neck && manual.use_for_analysis.right_hip)
+            if(manual.use_for_analysis.right_hip)
             {
                 site_groups.push("the right hip and femoral neck");
             }
-            else if(manual.use_for_analysis.right_hip_total)
-            {
-                site_groups.push("the right hip");
-            }
-            else if(manual.use_for_analysis.right_hip_neck)
-            {
-                site_groups.push("the right femoral neck");
-            }
+            //else if(manual.use_for_analysis.right_hip)
+            //{
+            //    site_groups.push("the right hip");
+            //}
+            //else if(manual.use_for_analysis.right_hip_neck)
+            //{
+            //    site_groups.push("the right femoral neck");
+            //}
         }
 
         if(manual.use_for_analysis.left_radius && manual.use_for_analysis.right_radius)
@@ -281,10 +283,16 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             }
             trypush(ingest.labels.measurements.spine,ingest.spine.get(spinefield),comment);
         }
-        if(manual.use_for_analysis.left_hip_total){trypush(ingest.labels.measurements.left_total_hip,ingest.hips.left.total);}
-        if(manual.use_for_analysis.left_hip_neck){trypush(ingest.labels.measurements.left_femoral_neck,ingest.hips.left.neck);}
-        if(manual.use_for_analysis.right_hip_total){trypush(ingest.labels.measurements.right_total_hip,ingest.hips.right.total);}
-        if(manual.use_for_analysis.right_hip_neck){trypush(ingest.labels.measurements.right_femoral_neck,ingest.hips.right.neck);}
+        if(manual.use_for_analysis.left_hip){
+            trypush(ingest.labels.measurements.left_total_hip,ingest.hips.left.total);
+            trypush(ingest.labels.measurements.left_femoral_neck,ingest.hips.left.neck);
+        }
+        //if(manual.use_for_analysis.left_hip_neck){trypush(ingest.labels.measurements.left_femoral_neck,ingest.hips.left.neck);}
+        if(manual.use_for_analysis.right_hip){
+            trypush(ingest.labels.measurements.right_total_hip,ingest.hips.right.total);
+            trypush(ingest.labels.measurements.right_femoral_neck,ingest.hips.right.neck);
+        }
+        //if(manual.use_for_analysis.right_hip_neck){trypush(ingest.labels.measurements.right_femoral_neck,ingest.hips.right.neck);}
         if(manual.use_for_analysis.left_radius){trypush(ingest.labels.measurements.left_radius,ingest.radii.left);}
         if(manual.use_for_analysis.right_radius){trypush(ingest.labels.measurements.right_radius,ingest.radii.right);}
 
@@ -436,11 +444,13 @@ export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_
             }
         }
 
-        process_measurements(manual.use_for_analysis.right_hip_neck, ingest.hips.right.neck);
-        process_measurements(manual.use_for_analysis.right_hip_total, ingest.hips.right.total);
+        //process_measurements(manual.use_for_analysis.right_hip_neck, ingest.hips.right.neck);
+        process_measurements(manual.use_for_analysis.right_hip, ingest.hips.right.neck);
+        process_measurements(manual.use_for_analysis.right_hip, ingest.hips.right.total);
         
-        process_measurements(manual.use_for_analysis.left_hip_neck, ingest.hips.left.neck);
-        process_measurements(manual.use_for_analysis.left_hip_total, ingest.hips.left.total);
+        //process_measurements(manual.use_for_analysis.left_hip_neck, ingest.hips.left.neck);
+        process_measurements(manual.use_for_analysis.left_hip, ingest.hips.left.neck);
+        process_measurements(manual.use_for_analysis.left_hip, ingest.hips.left.total);
 
         process_measurements(manual.use_for_analysis.left_radius, ingest.radii.left);
         process_measurements(manual.use_for_analysis.right_radius, ingest.radii.right);

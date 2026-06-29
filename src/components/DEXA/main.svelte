@@ -214,18 +214,20 @@
                 {
                     if(!measurement_ready(current_spine_measurement)){return false;}
                 }
-                if(mandatory.use_for_analysis.left_hip_total){
+                if(mandatory.use_for_analysis.left_hip){
                     if(!measurement_ready(ingest.hips.left.total)){return false;}
-                }
-                if(mandatory.use_for_analysis.left_hip_neck){
                     if(!measurement_ready(ingest.hips.left.neck)){return false;}
                 }
-                if(mandatory.use_for_analysis.right_hip_total){
+                //if(mandatory.use_for_analysis.left_hip_neck){
+                //    if(!measurement_ready(ingest.hips.left.neck)){return false;}
+                //}
+                if(mandatory.use_for_analysis.right_hip){
                     if(!measurement_ready(ingest.hips.right.total)){return false;}
-                }
-                if(mandatory.use_for_analysis.right_hip_neck){
                     if(!measurement_ready(ingest.hips.right.neck)){return false;}
                 }
+                //if(mandatory.use_for_analysis.right_hip_neck){
+                //    if(!measurement_ready(ingest.hips.right.neck)){return false;}
+                //}
                 if(mandatory.use_for_analysis.left_radius){
                     if(!measurement_ready(ingest.radii.left)){return false;}
                 }
@@ -235,10 +237,10 @@
 
                 if(
                     selected_spinefield === undefined &&
-                    !mandatory.use_for_analysis.left_hip_total &&
-                    !mandatory.use_for_analysis.left_hip_neck &&
-                    !mandatory.use_for_analysis.right_hip_total &&
-                    !mandatory.use_for_analysis.right_hip_neck &&
+                    !mandatory.use_for_analysis.left_hip &&
+                    //!mandatory.use_for_analysis.left_hip_neck &&
+                    !mandatory.use_for_analysis.right_hip &&
+                    //!mandatory.use_for_analysis.right_hip_neck &&
                     !mandatory.use_for_analysis.left_radius &&
                     !mandatory.use_for_analysis.right_radius
                 )
@@ -257,6 +259,9 @@
                 }
                 if(mandatory.use_for_comparison.left_radius){
                     if(!comparison_ready(ingest.trend.left_radius)){return false;}
+                }
+                if(mandatory.use_for_comparison.right_radius){
+                    if(!comparison_ready(ingest.trend.right_radius)){return false;}
                 }
 
                 if(mandatory.use_frax){
@@ -365,21 +370,24 @@
                     <div class="flexcol flexgrow">
                         <div class="flexcol flexgrow">
                             <div class="measurement_grid">
+                                <label>Right Radius <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_radius}></label>
                                 <label>L1 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L1}></label>
-                                <label>Left Hip <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_hip_total}></label>
-                                <label>Right Hip <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_hip_total}></label>
+                                <label>Left Radius <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_radius}></label>
+                                
 
+                                <div></div>
                                 <label>L2 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L2}></label>
-                                <label>Left Femoral Neck <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_hip_neck}></label>
-                                <label>Right Femoral Neck <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_hip_neck}></label>
+                                <div></div>
+                                <!-- <label>Left Femoral Neck <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_hip_neck}></label> -->
+                                <!-- <label>Right Femoral Neck <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_hip_neck}></label> -->
 
+                                <div></div>
                                 <label>L3 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L3}></label>
                                 <div></div>
-                                <div></div>
                                 
+                                <label>Right Hip <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_hip}></label>
                                 <label>L4 <input type="checkbox" bind:checked={mandatory.use_for_analysis.L4}></label>
-                                <label>Left Radius <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_radius}></label>
-                                <label>Right Radius <input type="checkbox" bind:checked={mandatory.use_for_analysis.right_radius}></label>
+                                <label>Left Hip <input type="checkbox" bind:checked={mandatory.use_for_analysis.left_hip}></label>
 
                             </div>
                         </div>
@@ -399,10 +407,10 @@
                                     {#if selected_spinefield!==undefined && current_spine_measurement!==undefined}
                                         <DexaMeasurements used={true} name={selected_spinefield} bind:measurements={current_spine_measurement}/>
                                     {/if}
-                                    <DexaMeasurements used={mandatory.use_for_analysis.left_hip_total} name="Left Hip" bind:measurements={ingest.hips.left.total}/>
-                                    <DexaMeasurements used={mandatory.use_for_analysis.left_hip_neck} name="Left Femoral Neck" bind:measurements={ingest.hips.left.neck}/>
-                                    <DexaMeasurements used={mandatory.use_for_analysis.right_hip_total} name="Right Hip" bind:measurements={ingest.hips.right.total}/>
-                                    <DexaMeasurements used={mandatory.use_for_analysis.right_hip_neck} name="Right Femoral Neck" bind:measurements={ingest.hips.right.neck}/>
+                                    <DexaMeasurements used={mandatory.use_for_analysis.left_hip} name="Left Hip" bind:measurements={ingest.hips.left.total}/>
+                                    <!-- <DexaMeasurements used={mandatory.use_for_analysis.left_hip_neck} name="Left Femoral Neck" bind:measurements={ingest.hips.left.neck}/> -->
+                                    <DexaMeasurements used={mandatory.use_for_analysis.right_hip} name="Right Hip" bind:measurements={ingest.hips.right.total}/>
+                                    <!-- <DexaMeasurements used={mandatory.use_for_analysis.right_hip_neck} name="Right Femoral Neck" bind:measurements={ingest.hips.right.neck}/> -->
                                     <DexaMeasurements used={mandatory.use_for_analysis.left_radius} name="Left Radius" bind:measurements={ingest.radii.left}/>
                                     <DexaMeasurements used={mandatory.use_for_analysis.right_radius} name="Right Radius" bind:measurements={ingest.radii.right}/>
                                 </tbody>
@@ -417,11 +425,11 @@
                         <div class="rotated">Trends</div>
                         <div class="flexcol flex_grow">
                             <div class="trend_grid">
+                                <label class="trend_grid_left">Right Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_radius}></label>
+                                <label class="trend_grid_right">Left Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_radius}></label>
                                 <label class="trend_full_column">Spine <input type="checkbox" bind:checked={mandatory.use_for_comparison.spine}></label>
-                                <label class="trend_grid_left">Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
-                                <label class="trend_grid_right">Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
-                                <label class="trend_grid_left">Left Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_radius}></label>
-                                <label class="trend_grid_right">Right Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_radius}></label>
+                                <label class="trend_grid_left">Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
+                                <label class="trend_grid_right">Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
                             </div>
                             {#if mandatory.use_for_comparison.spine || mandatory.use_for_comparison.left_hip || mandatory.use_for_comparison.right_hip || mandatory.use_for_comparison.left_radius}
                             <table>
@@ -506,12 +514,14 @@
         margin-top: 10px;
     }
     .trend_full_column{
+        grid-column-start: 2;
+        grid-column-end: 3;
         grid-row-start: 1;
         grid-row-end: 3;
     }
     .trend_grid_left{
-        grid-column-start: 2;
-        grid-column-end: 3;
+        grid-column-start: 1;
+        grid-column-end: 2;
     }
     .trend_grid_right{
         grid-column-start: 3;

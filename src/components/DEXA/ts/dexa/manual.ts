@@ -59,10 +59,10 @@ export type DEXA_Mandatory_Manual_Data =
         L2:boolean,
         L3:boolean,
         L4:boolean,
-        left_hip_total:boolean,
-        left_hip_neck:boolean,
-        right_hip_total:boolean,
-        right_hip_neck:boolean,
+        left_hip:boolean,
+        //left_hip_neck:boolean,
+        right_hip:boolean,
+        //right_hip_neck:boolean,
         left_radius:boolean,
         right_radius:boolean,
     },
@@ -95,10 +95,10 @@ export function empty_mandatory():DEXA_Mandatory_Manual_Data {
             L2:false,
             L3:false,
             L4:false,
-            left_hip_total:false,
-            left_hip_neck:false,
-            right_hip_total:false,
-            right_hip_neck:false,
+            left_hip:false,
+            //left_hip_neck:false,
+            right_hip:false,
+            //right_hip_neck:false,
             left_radius:false,
             right_radius:false,
         },
@@ -150,10 +150,10 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
     }
 
     //For hips and radii, initial lock state from ingest determines whether they should be used
-    if(ingest.hips.left.neck.locked){retval.use_for_analysis.left_hip_neck=true;}
-    if(ingest.hips.left.total.locked){retval.use_for_analysis.left_hip_total=true;}
-    if(ingest.hips.right.neck.locked){retval.use_for_analysis.right_hip_neck=true;}
-    if(ingest.hips.right.total.locked){retval.use_for_analysis.right_hip_total=true;}
+    //if(ingest.hips.left.neck.locked){retval.use_for_analysis.left_hip_neck=true;}
+    if(ingest.hips.left.total.locked){retval.use_for_analysis.left_hip=true;}
+    //if(ingest.hips.right.neck.locked){retval.use_for_analysis.right_hip_neck=true;}
+    if(ingest.hips.right.total.locked){retval.use_for_analysis.right_hip=true;}
     if(ingest.radii.right.locked){retval.use_for_analysis.right_radius=true;}
     if(ingest.radii.left.locked){retval.use_for_analysis.left_radius=true;}
 
