@@ -19,6 +19,19 @@
     let ingest:DEXA_Ingest_Data|undefined=$state(undefined);
     let mandatory:DEXA_Mandatory_Manual_Data=$state(empty_mandatory());
 
+    let spine_string:string=$derived.by(()=>{
+        let res=get_spine_string(mandatory);
+
+        if(res===null)
+        {
+            return "Spine";   
+        }
+        else
+        {
+            return res;
+        }
+    });
+    
     const debug_mode:boolean=true && import.meta.env.DEV; //if in development mode, put in debug.
 
     //Only for debugging
@@ -428,7 +441,7 @@
                             <div class="trend_grid">
                                 <label class="trend_grid_left">Right Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_radius}></label>
                                 <label class="trend_grid_right">Left Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_radius}></label>
-                                <label class="trend_full_column">{selected_spinefield} <input type="checkbox" bind:checked={mandatory.use_for_comparison.spine}></label>
+                                <label class="trend_full_column">{spine_string} <input type="checkbox" bind:checked={mandatory.use_for_comparison.spine}></label>
                                 <label class="trend_grid_left">Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
                                 <label class="trend_grid_right">Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
                             </div>
