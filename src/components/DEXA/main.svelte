@@ -407,10 +407,10 @@
                                     {#if selected_spinefield!==undefined && current_spine_measurement!==undefined}
                                         <DexaMeasurements used={true} name={selected_spinefield} bind:measurements={current_spine_measurement}/>
                                     {/if}
-                                    <DexaMeasurements used={mandatory.use_for_analysis.left_hip} name="Left Hip" bind:measurements={ingest.hips.left.total}/>
-                                    <!-- <DexaMeasurements used={mandatory.use_for_analysis.left_hip_neck} name="Left Femoral Neck" bind:measurements={ingest.hips.left.neck}/> -->
-                                    <DexaMeasurements used={mandatory.use_for_analysis.right_hip} name="Right Hip" bind:measurements={ingest.hips.right.total}/>
-                                    <!-- <DexaMeasurements used={mandatory.use_for_analysis.right_hip_neck} name="Right Femoral Neck" bind:measurements={ingest.hips.right.neck}/> -->
+                                    <DexaMeasurements used={mandatory.use_for_analysis.left_hip} name="Left Total Hip" bind:measurements={ingest.hips.left.total}/>
+                                    <DexaMeasurements used={mandatory.use_for_analysis.left_hip} name="Left Femoral Neck" bind:measurements={ingest.hips.left.neck}/>
+                                    <DexaMeasurements used={mandatory.use_for_analysis.right_hip} name="Right Total Hip" bind:measurements={ingest.hips.right.total}/>
+                                    <DexaMeasurements used={mandatory.use_for_analysis.right_hip} name="Right Femoral Neck" bind:measurements={ingest.hips.right.neck}/>
                                     <DexaMeasurements used={mandatory.use_for_analysis.left_radius} name="Left Radius" bind:measurements={ingest.radii.left}/>
                                     <DexaMeasurements used={mandatory.use_for_analysis.right_radius} name="Right Radius" bind:measurements={ingest.radii.right}/>
                                 </tbody>
