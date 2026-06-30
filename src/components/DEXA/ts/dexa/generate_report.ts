@@ -2,6 +2,7 @@ import { newline } from "../../../globals";
 import { getSpineField, type DEXA_Comparison, type DEXA_Measurements, type Diagnosis } from "./basic_types";
 import { all_possible_newlines, type DEXA_Ingest_Data, type DiagnosisWithRange } from "./data_ingest";
 import { getFRAXExclusionReasonText, UseAlternativeDiagnosis, type DEXA_Mandatory_Manual_Data } from "./manual";
+import { array_to_string, get_spine_string } from "./string_manip";
 
 export const windows_newline="\r\n";
 
@@ -36,20 +37,6 @@ const substitutions=
     risk_factors:"$RISK_FACTORS$",
     frax_osteoporotic_fracture:"$FRAX_OSTEOPOROTIC_FRACTURE$",
     frax_hip_fracture:"$FRAX_HIP_FRACTURE$"
-}
-
-function array_to_string(arr:string[]):string{
-    let retval="";
-    if(arr.length===1){retval+=arr[0];}
-    if(arr.length===2){retval+=arr[0] + " and " + arr[1];}
-    if(arr.length>2){
-        for(let n=0;n<arr.length-1;n++)
-        {
-            retval+=arr[n]+", ";
-        }
-        retval+="and " + arr[arr.length-1];
-    }
-    return retval;
 }
 
 export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):string
@@ -98,42 +85,8 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 
         let site_groups:string[]=[];
         {
-            let spine="";
-            if(manual.use_for_analysis.L1 && manual.use_for_analysis.L2 && manual.use_for_analysis.L3 && manual.use_for_analysis.L4)
-            {
-                spine+="L1-4";
-            }
-            else if(manual.use_for_analysis.L1 && manual.use_for_analysis.L2 && manual.use_for_analysis.L3)
-            {
-                spine+="L1-3";
-            }
-            else if(manual.use_for_analysis.L2 && manual.use_for_analysis.L3 && manual.use_for_analysis.L4)
-            {
-                spine+="L2-4";
-            }
-            else if(manual.use_for_analysis.L1 && manual.use_for_analysis.L2 && !manual.use_for_analysis.L3 && !manual.use_for_analysis.L4)
-            {
-                spine+="L1-2";
-            }
-            else if(!manual.use_for_analysis.L1 && manual.use_for_analysis.L2 && manual.use_for_analysis.L3 && !manual.use_for_analysis.L4)
-            {
-                spine+="L2-3";
-            }
-            else if(!manual.use_for_analysis.L1 && !manual.use_for_analysis.L2 && manual.use_for_analysis.L3 && manual.use_for_analysis.L4)
-            {
-                spine+="L3-4";
-            }
-            else
-            {
-                let levels:string[]=[];
-                if(manual.use_for_analysis.L1){levels.push("L1");}
-                if(manual.use_for_analysis.L2){levels.push("L2");}
-                if(manual.use_for_analysis.L3){levels.push("L3");}
-                if(manual.use_for_analysis.L4){levels.push("L4");}
-
-                spine = array_to_string(levels);
-            }
-            if(spine!==""){site_groups.push(spine);}
+            let spine=get_spine_string(manual);
+            if(spine!==null){site_groups.push(spine);}
         }
 
         {
