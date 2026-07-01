@@ -23,15 +23,47 @@ export type HeightInInches = {
     height_in_inches:number|null,
 };
 
-export function UseAlternativeDiagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data)
+export enum DaignosisSet
+{
+    Osteoporosis,
+    AgeMatched,
+    Both
+}
+
+export function DetermineDiagnosisSet(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data)
 {
     if(ingest.patient_sex==="M")
     {
-        return manual.age<ingest.alternative_diagnosis_ranges.male_lower_age_boundary;
+        if(manual.age>=ingest.alternative_diagnosis_ranges.male_lower_age_boundary)
+        {
+            return DaignosisSet.Osteoporosis
+        }
+        else
+        {
+            return DaignosisSet.AgeMatched
+        }
     }
     else
     {
-        return manual.age<ingest.alternative_diagnosis_ranges.female_lower_age_boundary || manual.post_menopausal.value==="pre";
+        if(manual.age<ingest.alternative_diagnosis_ranges.female_lower_age_boundary)
+        {
+            return DaignosisSet.AgeMatched
+        }
+        else
+        {
+            if(manual.post_menopausal.value==="pre")
+            {
+                return DaignosisSet.AgeMatched
+            }
+            else if(manual.post_menopausal.value==="post")
+            {
+                return DaignosisSet.Osteoporosis
+            }
+            else
+            {
+                return DaignosisSet.Both
+            }
+        }
     }
 }
 
@@ -40,7 +72,7 @@ export type DEXA_Mandatory_Manual_Data =
     age:number,
     post_menopausal:{
         display:boolean,
-        value:"pre"|"post"|null
+        value:"pre"|"post"|"both"|null
     }
     reported_tallest_height:{
         exists:boolean,
@@ -183,7 +215,7 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
         retval.reason_for_frax_exclusion={reason:FRAXExclusionReason.HipsNotEvaluated,other_text:""};
     }
 
-    if(ingest.patient_sex=="M")
+    if(ingest.patient_sex=="M" || retval.age<ingest.alternative_diagnosis_ranges.female_lower_age_boundary)
     {
         retval.post_menopausal.display=false;
     }

@@ -1,7 +1,7 @@
 import { newline } from "../../../globals";
 import { getSpineField, type DEXA_Comparison, type DEXA_Measurements, type Diagnosis } from "./basic_types";
 import { all_possible_newlines, type DEXA_Ingest_Data, type DiagnosisWithRange } from "./data_ingest";
-import { getFRAXExclusionReasonText, UseAlternativeDiagnosis, type DEXA_Mandatory_Manual_Data } from "./manual";
+import { getFRAXExclusionReasonText, DetermineDiagnosisSet, type DEXA_Mandatory_Manual_Data, DaignosisSet } from "./manual";
 import { array_to_string, get_spine_string } from "./string_manip";
 
 export const windows_newline="\r\n";
@@ -68,14 +68,35 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 
     //Diagnosis
     {
-        let diagnosis=select_diagnosis(ingest,manual);
-        if(diagnosis===undefined)
+        let diagnosis_set=DetermineDiagnosisSet(ingest,manual);
+        let diag_str:string|undefined=undefined;
+
+        if(diagnosis_set===DaignosisSet.Osteoporosis || diagnosis_set===DaignosisSet.AgeMatched)
         {
-            return "Error: Couldn't select diagnosis.";
+            let diagnosis=get_set_diagnosis(ingest,manual,diagnosis_set);
+            if(diagnosis!==undefined)
+            {
+                diag_str=diagnosis.selected_diagnosis.name;
+            }
         }
         else
         {
-            retval=retval.replaceAll("$DIAGNOSIS$",diagnosis.selected_diagnosis.name);
+            let diagnosis=get_set_diagnosis(ingest,manual,DaignosisSet.Osteoporosis);
+            let age_matched_diagnosis=get_set_diagnosis(ingest,manual,DaignosisSet.AgeMatched);
+            
+            if(diagnosis!==undefined && age_matched_diagnosis!==undefined)
+            {
+                diag_str = "For a pre- or peri-menopausal patient, the diagnosis would be " + age_matched_diagnosis.selected_diagnosis.name + ". For a patient who has been post-menopausal for one year, the diagnosis would be " + diagnosis.selected_diagnosis.name;
+            }
+        }
+        
+        if(diag_str !== undefined)
+        {
+            retval=retval.replaceAll("$DIAGNOSIS$",diag_str);
+        }
+        else
+        {
+            return "Error: Couldn't select diagnosis.";
         }
     }
 
@@ -346,7 +367,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 }
 
 export type SelectedDiagnosisResult={
-    using_alternative_diagnosis:boolean,
+    diagnosis_set:(DaignosisSet.Osteoporosis|DaignosisSet.AgeMatched)
     used_measurements:DEXA_Measurements[],
     unused_measurements:DEXA_Measurements[],
     selected_diagnosis:DiagnosisWithRange,
@@ -354,7 +375,7 @@ export type SelectedDiagnosisResult={
     lowest_score:number
 };
 
-export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):SelectedDiagnosisResult | undefined
+export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data, diagnosis_set:(DaignosisSet.Osteoporosis|DaignosisSet.AgeMatched)):SelectedDiagnosisResult | undefined
 {
     let used_measurements:DEXA_Measurements[]=[];
     let unused_measurements:DEXA_Measurements[]=[];
@@ -410,31 +431,27 @@ export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_
     }
 
     let lowest_score:number=Infinity;
-    let diagnoses:DiagnosisWithRange[];
-    let using_alternative_diagnosis=UseAlternativeDiagnosis(ingest,manual);
-    if(using_alternative_diagnosis)
-    {
-        //console.debug("Using alternative diagnosis.");
-        diagnoses=ingest.alternative_diagnoses;
+    let diagnoses:DiagnosisWithRange[]=[];
 
-        for(const measurement of used_measurements)
-        {
-            if(measurement.z_score!==undefined && lowest_score>measurement.z_score)
-            {
-                lowest_score=measurement.z_score;
-            }
-        }
-    }
-    else
+    if(diagnosis_set===DaignosisSet.Osteoporosis)
     {
-        //console.debug("Using primary diagnosis.");
         diagnoses=ingest.diagnoses;
-
         for(const measurement of used_measurements)
         {
             if(measurement.t_score!==undefined && lowest_score>measurement.t_score)
             {
                 lowest_score=measurement.t_score;
+            }
+        }
+    }
+    else if(diagnosis_set===DaignosisSet.AgeMatched)
+    {
+        diagnoses=ingest.alternative_diagnoses;
+        for(const measurement of used_measurements)
+        {
+            if(measurement.z_score!==undefined && lowest_score>measurement.z_score)
+            {
+                lowest_score=measurement.z_score;
             }
         }
     }
@@ -465,9 +482,9 @@ export function select_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_
         {
             return {
                 selected_diagnosis:diagnosis,
+                diagnosis_set:diagnosis_set,
                 used_measurements,
                 unused_measurements,
-                using_alternative_diagnosis,
                 diagnostic_ranges:diagnoses,
                 lowest_score
             };

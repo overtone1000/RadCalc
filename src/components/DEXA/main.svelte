@@ -366,6 +366,7 @@
                             {#if mandatory.post_menopausal.display}
                                     <label>Premenopausal <input type="radio" name="menopause" required value={"pre"} bind:group={mandatory.post_menopausal.value}></label>
                                     <label>Postmenopausal <input type="radio" name="menopause" required value={"post"} bind:group={mandatory.post_menopausal.value}></label>
+                                    <label>Both <input type="radio" name="menopause" required value={"both"} bind:group={mandatory.post_menopausal.value}></label>
                             {/if}
                         </div>
                         <HeightPlot ingest={ingest} mandatory={mandatory}/>

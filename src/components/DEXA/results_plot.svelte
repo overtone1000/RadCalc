@@ -1,10 +1,10 @@
 <script lang="ts">
 	import * as Plot from "@observablehq/plot";
 	import { ingest_data, type DEXA_Ingest_Data, type DiagnosisWithRange } from "./ts/dexa/data_ingest";
-	import { UseAlternativeDiagnosis, type DEXA_Mandatory_Manual_Data, type HeightInInches } from "./ts/dexa/manual";
+	import { DaignosisSet, type DEXA_Mandatory_Manual_Data, type HeightInInches } from "./ts/dexa/manual";
 	import ManagedPlot from "./managed_plot.svelte";
 	import { mdiRelativeScale } from "@mdi/js";
-	import { select_diagnosis, type SelectedDiagnosisResult } from "./ts/dexa/generate_report";
+	import { get_set_diagnosis, type SelectedDiagnosisResult } from "./ts/dexa/generate_report";
 	import type { DEXA_Measurements, Diagnosis } from "./ts/dexa/basic_types";
 	import DexaMeasurements from "./dexa_measurements.svelte";
 
@@ -28,7 +28,7 @@
 
     const measurements_to_datum = (meas:DEXA_Measurements, selected_diagnosis:SelectedDiagnosisResult, used:boolean) => {
         let val;
-        if(selected_diagnosis.using_alternative_diagnosis)
+        if(selected_diagnosis.diagnosis_set === DaignosisSet.AgeMatched)
         {
             val=meas.z_score;
         }
@@ -70,7 +70,7 @@
     let calculations=$derived.by(
         ()=>{
             //console.debug("Recalculating.");
-            let selected_diagnosis=select_diagnosis(props.ingest,props.mandatory);
+            let selected_diagnosis=get_set_diagnosis(props.ingest,props.mandatory);
 
 
             let retval:Calculations={
