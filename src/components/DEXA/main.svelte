@@ -14,6 +14,8 @@
 	import Copy from "./copy.svelte";
 	import { get_spine_string } from "./ts/dexa/string_manip";
     
+    const result_plot_width=100;
+
     let last_raw_ingest:string|undefined=undefined;
 
     let ingest:DEXA_Ingest_Data|undefined=$state(undefined);
@@ -443,7 +445,7 @@
                             </table>
                         </div>
                     </div>
-                    <ResultsPlot ingest={ingest} mandatory={mandatory} diagnosis_set={diagnosis_set}/>
+                    <ResultsPlot ingest={ingest} mandatory={mandatory} diagnosis_set={diagnosis_set} width={result_plot_width}/>
                 </div>
 
                 {#if mandatory.comparison.exists && !mandatory.comparison.outside_comparison}
@@ -477,6 +479,7 @@
                             </table>
                             {/if}
                         </div>
+                        <div style="width:{result_plot_width}px"></div> <!-- Add empty space to align with results for visual ease -->
                     </div>
                 {/if}
                 <div class="flexrow full-width bottom_border">
