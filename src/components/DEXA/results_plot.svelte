@@ -119,7 +119,7 @@
         }
     );
 
-    const bar_colors=
+    const osteoporosis_bar_colors=
     [
         "#801700", //dark red
         "#804B00", //dark orange
@@ -128,12 +128,35 @@
         "#004480", //dark blue
     ]
 
+    const age_matched_bar_colors=
+    [
+        "#801700", //dark red //below expected range
+        "#558000", //dark green //within expected range
+        "#004480", //dark blue //high for age
+    ]
+
     const width=100;
     const domain=[used_xbin,unused_xbin];
     const inset=-(width/domain.length)/4;
 
     let plot = $derived.by(
         ()=>{
+
+
+            let y_axis_label:string;
+            let bar_colors:string[];
+            if(props.diagnosis_set==DaignosisSet.AgeMatched)
+            {
+                
+                y_axis_label="Z-score";
+                bar_colors=age_matched_bar_colors;
+            }
+            else
+            {
+                y_axis_label = "T-score";
+                bar_colors=osteoporosis_bar_colors;
+            }
+
             //console.debug("Replotting.");
             let bars:{x1:string,x2:string,y1:number,y2:number,color:string}[] = [];
             if(calculations.diagnosis !== undefined)
@@ -147,7 +170,7 @@
                     if(lowest>member.score){lowest=member.score;}
                 }
 
-                for(const member of calculations.diagnosis?.diagnostic_ranges)
+                for(const member of calculations.diagnosis.diagnostic_ranges)
                 {
                     let color_index = bars.length;
 
@@ -171,11 +194,6 @@
 
             console.debug("bars",bars);
 
-            let y_axis_label:string="";
-            if(props.diagnosis_set==DaignosisSet.Osteoporosis)
-            {y_axis_label = "T-score";}
-            else if(props.diagnosis_set==DaignosisSet.AgeMatched)
-            {y_axis_label="Z-score";}
             
             let miny=Number.POSITIVE_INFINITY;
             let maxy=Number.NEGATIVE_INFINITY;
