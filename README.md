@@ -27,9 +27,6 @@ To enable this, `direnv` VSCode extension should installed on the system, and th
 # To Do
 - [x] DEXA trend erroneously considered nonexistant if values are 0
 - [x] FRAX upper age limit
-- [ ] Trend should just input prior BMD and calculate changes
-    - This may be more complication than it's worth. If a change is supplied, then the comparison needs to be aware of the current value to calculate the prior value and the % change. This results in some tricky state dependencies especially if the user does things like change with spine levels are used, change BMD values, or change the absolute BMD value for the prior in this trend.
-    - It may be more reasonable to have alternative inputs. Prepopulated fields can just show the populated values. When the user wants to enter an empty field, the alternative input could just be BMDs. Would probably need a toggle.
 - [x] Quick technique modifiers (i.e. spine osteophyte)
 - [x] Graph heights for quick sanity check
 - [x] Graph T-scores for quick diagnostic overview
