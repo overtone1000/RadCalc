@@ -10,7 +10,8 @@
 
     type Props = {
         ingest:DEXA_Ingest_Data,
-        mandatory:DEXA_Mandatory_Manual_Data
+        mandatory:DEXA_Mandatory_Manual_Data,
+        diagnosis_set:DaignosisSet
     }
 
     let props:Props=$props();
@@ -70,7 +71,20 @@
     let calculations=$derived.by(
         ()=>{
             //console.debug("Recalculating.");
-            let selected_diagnosis=get_set_diagnosis(props.ingest,props.mandatory);
+
+            let active_diagnosis_set:DaignosisSet.AgeMatched|DaignosisSet.Osteoporosis;
+
+            if(props.diagnosis_set==DaignosisSet.Both)
+            {
+                active_diagnosis_set=DaignosisSet.Osteoporosis;
+            }
+            else
+            {
+                active_diagnosis_set=props.diagnosis_set;
+            }
+
+
+            let selected_diagnosis=get_set_diagnosis(props.ingest,props.mandatory,active_diagnosis_set);
 
 
             let retval:Calculations={
@@ -157,8 +171,11 @@
 
             console.debug("bars",bars);
 
-            let y_axis_label:string;
-            if(calculations.diagnosis?.using_alternative_diagnosis){y_axis_label="Z-score";}else{y_axis_label = "T-score";}
+            let y_axis_label:string="";
+            if(props.diagnosis_set==DaignosisSet.Osteoporosis)
+            {y_axis_label = "T-score";}
+            else if(props.diagnosis_set==DaignosisSet.AgeMatched)
+            {y_axis_label="Z-score";}
             
             let miny=Number.POSITIVE_INFINITY;
             let maxy=Number.NEGATIVE_INFINITY;

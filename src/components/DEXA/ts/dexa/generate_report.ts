@@ -1,7 +1,7 @@
 import { newline } from "../../../globals";
 import { getSpineField, type DEXA_Comparison, type DEXA_Measurements, type Diagnosis } from "./basic_types";
 import { all_possible_newlines, type DEXA_Ingest_Data, type DiagnosisWithRange } from "./data_ingest";
-import { getFRAXExclusionReasonText, DetermineDiagnosisSet, type DEXA_Mandatory_Manual_Data, DaignosisSet } from "./manual";
+import { getFRAXExclusionReasonText, DetermineDiagnosisSet, type DEXA_Mandatory_Manual_Data, DaignosisSet as DiagnosisSet } from "./manual";
 import { array_to_string, get_spine_string } from "./string_manip";
 
 export const windows_newline="\r\n";
@@ -39,7 +39,7 @@ const substitutions=
     frax_hip_fracture:"$FRAX_HIP_FRACTURE$"
 }
 
-export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data):string
+export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data, diagnosis_set:DiagnosisSet):string
 {
     let retval=ingest.report_template;
 
@@ -68,10 +68,10 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 
     //Diagnosis
     {
-        let diagnosis_set=DetermineDiagnosisSet(ingest,manual);
+        
         let diag_str:string|undefined=undefined;
 
-        if(diagnosis_set===DaignosisSet.Osteoporosis || diagnosis_set===DaignosisSet.AgeMatched)
+        if(diagnosis_set===DiagnosisSet.Osteoporosis || diagnosis_set===DiagnosisSet.AgeMatched)
         {
             let diagnosis=get_set_diagnosis(ingest,manual,diagnosis_set);
             if(diagnosis!==undefined)
@@ -81,12 +81,12 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
         }
         else
         {
-            let diagnosis=get_set_diagnosis(ingest,manual,DaignosisSet.Osteoporosis);
-            let age_matched_diagnosis=get_set_diagnosis(ingest,manual,DaignosisSet.AgeMatched);
+            let diagnosis=get_set_diagnosis(ingest,manual,DiagnosisSet.Osteoporosis);
+            let age_matched_diagnosis=get_set_diagnosis(ingest,manual,DiagnosisSet.AgeMatched);
             
             if(diagnosis!==undefined && age_matched_diagnosis!==undefined)
             {
-                diag_str = "For a pre- or peri-menopausal patient, the diagnosis would be " + age_matched_diagnosis.selected_diagnosis.name + ". For a patient who has been post-menopausal for one year, the diagnosis would be " + diagnosis.selected_diagnosis.name;
+                diag_str = windows_newline + "For a pre- or peri-menopausal patient, the diagnosis would be \"" + age_matched_diagnosis.selected_diagnosis.name + "\"." + windows_newline + "For a patient who has been post-menopausal for one year, the diagnosis would be \"" + diagnosis.selected_diagnosis.name + "\".";
             }
         }
         
@@ -367,7 +367,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
 }
 
 export type SelectedDiagnosisResult={
-    diagnosis_set:(DaignosisSet.Osteoporosis|DaignosisSet.AgeMatched)
+    diagnosis_set:(DiagnosisSet.Osteoporosis|DiagnosisSet.AgeMatched)
     used_measurements:DEXA_Measurements[],
     unused_measurements:DEXA_Measurements[],
     selected_diagnosis:DiagnosisWithRange,
@@ -375,7 +375,7 @@ export type SelectedDiagnosisResult={
     lowest_score:number
 };
 
-export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data, diagnosis_set:(DaignosisSet.Osteoporosis|DaignosisSet.AgeMatched)):SelectedDiagnosisResult | undefined
+export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data, diagnosis_set:(DiagnosisSet.Osteoporosis|DiagnosisSet.AgeMatched)):SelectedDiagnosisResult | undefined
 {
     let used_measurements:DEXA_Measurements[]=[];
     let unused_measurements:DEXA_Measurements[]=[];
@@ -433,7 +433,7 @@ export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory
     let lowest_score:number=Infinity;
     let diagnoses:DiagnosisWithRange[]=[];
 
-    if(diagnosis_set===DaignosisSet.Osteoporosis)
+    if(diagnosis_set===DiagnosisSet.Osteoporosis)
     {
         diagnoses=ingest.diagnoses;
         for(const measurement of used_measurements)
@@ -444,7 +444,7 @@ export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory
             }
         }
     }
-    else if(diagnosis_set===DaignosisSet.AgeMatched)
+    else if(diagnosis_set===DiagnosisSet.AgeMatched)
     {
         diagnoses=ingest.alternative_diagnoses;
         for(const measurement of used_measurements)

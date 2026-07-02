@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ingest_data, type DEXA_Ingest_Data } from "./ts/dexa/data_ingest";
-	import { empty_mandatory, FRAXExclusionReason, init_mandatory, type DEXA_Mandatory_Manual_Data } from "./ts/dexa/manual";
+	import { DaignosisSet, DetermineDiagnosisSet, empty_mandatory, FRAXExclusionReason, init_mandatory, type DEXA_Mandatory_Manual_Data } from "./ts/dexa/manual";
 	import { onMount } from "svelte";
 	import type { MouseEventHandler } from "svelte/elements";
 	import DexaMeasurements from "./dexa_measurements.svelte";
@@ -31,6 +31,17 @@
             return res;
         }
     });
+
+    let diagnosis_set:DaignosisSet=$derived.by(()=>{
+        if(ingest!==undefined)
+        {
+            return DetermineDiagnosisSet(ingest,mandatory);   
+        }
+        else
+        {
+            return DaignosisSet.Both;
+        }
+    })
     
     const debug_mode:boolean=true && import.meta.env.DEV; //if in development mode, put in debug.
 
@@ -155,7 +166,7 @@
         if(ingest!==undefined)
         {
             console.debug("Generating report.");
-            return windows_newline+generate_report(ingest,mandatory);   //Need newline because of how pre works. Just a formatting thing.
+            return windows_newline+generate_report(ingest,mandatory,diagnosis_set);   //Need newline because of how pre works. Just a formatting thing.
         }
         else
         {
@@ -168,7 +179,7 @@
     let generate_report_button_action = () => {
         if(ingest!==undefined)
         {
-            let report=generate_report(ingest,mandatory);
+            let report=generate_report(ingest,mandatory,diagnosis_set);
             copy_to_clipboard(report);
 
             if(debug_mode){html_report=genereate_html_report();}
@@ -432,7 +443,7 @@
                             </table>
                         </div>
                     </div>
-                    <ResultsPlot ingest={ingest} mandatory={mandatory}/>
+                    <ResultsPlot ingest={ingest} mandatory={mandatory} diagnosis_set={diagnosis_set}/>
                 </div>
 
                 {#if mandatory.comparison.exists && !mandatory.comparison.outside_comparison}
