@@ -212,6 +212,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
     }
 
     //Measurements
+    let spine_is_used_in_analysis=false;
     {
         let measurements:string[]=[];
 
@@ -250,6 +251,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
         );
 
         if(spinefield!==undefined){
+            spine_is_used_in_analysis=true;
             let comment=undefined;
             if(manual.technical_comments.spine_osteophyte)
             {
@@ -308,11 +310,11 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
                 }
             }
 
-            if(manual.use_for_comparison.spine){trypush(ingest.labels.changes.spine,ingest.trend.spine);}
-            if(manual.use_for_comparison.left_hip){trypush(ingest.labels.changes.left_total_hip,ingest.trend.left_hip);}
-            if(manual.use_for_comparison.right_hip){trypush(ingest.labels.changes.right_total_hip,ingest.trend.right_hip);}
-            if(manual.use_for_comparison.left_radius){trypush(ingest.labels.changes.left_radius,ingest.trend.left_radius);}
-            if(manual.use_for_comparison.right_radius){trypush(ingest.labels.changes.right_radius,ingest.trend.right_radius);}
+            if(spine_is_used_in_analysis && manual.use_for_comparison.spine){trypush(ingest.labels.changes.spine,ingest.trend.spine);}
+            if(manual.use_for_analysis.left_hip && manual.use_for_comparison.left_hip){trypush(ingest.labels.changes.left_total_hip,ingest.trend.left_hip);}
+            if(manual.use_for_analysis.right_hip && manual.use_for_comparison.right_hip){trypush(ingest.labels.changes.right_total_hip,ingest.trend.right_hip);}
+            if(manual.use_for_analysis.left_radius && manual.use_for_comparison.left_radius){trypush(ingest.labels.changes.left_radius,ingest.trend.left_radius);}
+            if(manual.use_for_analysis.right_radius && manual.use_for_comparison.right_radius){trypush(ingest.labels.changes.right_radius,ingest.trend.right_radius);}
 
             
             if(trends.length>0)

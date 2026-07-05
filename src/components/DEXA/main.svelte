@@ -165,14 +165,14 @@
     )
 
     let genereate_html_report = () => {
-        if(ingest!==undefined)
+        if(debug_mode && ingest!==undefined && enabled_report_generation)
         {
             console.debug("Generating report.");
             return windows_newline+generate_report(ingest,mandatory,diagnosis_set);   //Need newline because of how pre works. Just a formatting thing.
         }
         else
         {
-            return undefined;   
+            return "                                                                                                                                     ";   //Just an empty string to make formatting stop jittering.
         }
     };
 
@@ -183,8 +183,6 @@
         {
             let report=generate_report(ingest,mandatory,diagnosis_set);
             copy_to_clipboard(report);
-
-            if(debug_mode){html_report=genereate_html_report();}
         }
     };
 
@@ -275,19 +273,19 @@
                     return false;
                 }
 
-                if(mandatory.use_for_comparison.spine){
+                if(selected_spinefield !==undefined && mandatory.use_for_comparison.spine){
                     if(!comparison_ready(ingest.trend.spine)){return false;}
                 }
-                if(mandatory.use_for_comparison.left_hip){
+                if(mandatory.use_for_analysis.left_hip && mandatory.use_for_comparison.left_hip){
                     if(!comparison_ready(ingest.trend.left_hip)){return false;}
                 }
-                if(mandatory.use_for_comparison.right_hip){
+                if(mandatory.use_for_analysis.right_hip && mandatory.use_for_comparison.right_hip){
                     if(!comparison_ready(ingest.trend.right_hip)){return false;}
                 }
-                if(mandatory.use_for_comparison.left_radius){
+                if(mandatory.use_for_analysis.left_radius && mandatory.use_for_comparison.left_radius){
                     if(!comparison_ready(ingest.trend.left_radius)){return false;}
                 }
-                if(mandatory.use_for_comparison.right_radius){
+                if(mandatory.use_for_analysis.right_radius && mandatory.use_for_comparison.right_radius){
                     if(!comparison_ready(ingest.trend.right_radius)){return false;}
                 }
 
@@ -453,11 +451,21 @@
                         <div class="rotated">Trends</div>
                         <div class="flexcol flex_grow">
                             <div class="trend_grid">
-                                <label class="trend_grid_left">Right Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_radius}></label>
-                                <label class="trend_grid_right">Left Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_radius}></label>
-                                <label class="trend_full_column">{spine_string} <input type="checkbox" bind:checked={mandatory.use_for_comparison.spine}></label>
-                                <label class="trend_grid_left">Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
-                                <label class="trend_grid_right">Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
+                                {#if mandatory.use_for_analysis.right_radius}
+                                    <label class="trend_grid_left">Right Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_radius}></label>
+                                {/if}
+                                {#if mandatory.use_for_analysis.left_radius}
+                                    <label class="trend_grid_right">Left Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_radius}></label>
+                                {/if}
+                                {#if selected_spinefield!==undefined && mandatory.use_for_comparison.spine}
+                                    <label class="trend_full_column">{spine_string} <input type="checkbox" bind:checked={mandatory.use_for_comparison.spine}></label>
+                                {/if}
+                                {#if mandatory.use_for_analysis.right_hip}
+                                    <label class="trend_grid_left">Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
+                                {/if}
+                                {#if mandatory.use_for_analysis.left_hip}
+                                    <label class="trend_grid_right">Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
+                                {/if}
                             </div>
                             {#if mandatory.use_for_comparison.spine || mandatory.use_for_comparison.left_hip || mandatory.use_for_comparison.right_hip || mandatory.use_for_comparison.left_radius}
                             <table>
@@ -470,11 +478,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <DexaComparison used={mandatory.use_for_comparison.spine} name="Spine" bind:comparison={ingest.trend.spine}/>
-                                    <DexaComparison used={mandatory.use_for_comparison.left_hip} name="Left Hip" bind:comparison={ingest.trend.left_hip}/>
-                                    <DexaComparison used={mandatory.use_for_comparison.right_hip} name="Right Hip" bind:comparison={ingest.trend.right_hip}/>
-                                    <DexaComparison used={mandatory.use_for_comparison.left_radius} name="Left Radius" bind:comparison={ingest.trend.left_radius}/>
-                                    <DexaComparison used={mandatory.use_for_comparison.right_radius} name="Right Radius" bind:comparison={ingest.trend.right_radius}/>
+                                    <DexaComparison used={selected_spinefield!==undefined && mandatory.use_for_comparison.spine} name="Spine" bind:comparison={ingest.trend.spine}/>
+                                    <DexaComparison used={mandatory.use_for_analysis.left_hip && mandatory.use_for_comparison.left_hip} name="Left Hip" bind:comparison={ingest.trend.left_hip}/>
+                                    <DexaComparison used={mandatory.use_for_analysis.right_hip && mandatory.use_for_comparison.right_hip} name="Right Hip" bind:comparison={ingest.trend.right_hip}/>
+                                    <DexaComparison used={mandatory.use_for_analysis.left_radius && mandatory.use_for_comparison.left_radius} name="Left Radius" bind:comparison={ingest.trend.left_radius}/>
+                                    <DexaComparison used={mandatory.use_for_analysis.right_radius && mandatory.use_for_comparison.right_radius} name="Right Radius" bind:comparison={ingest.trend.right_radius}/>
                                 </tbody>
                             </table>
                             {/if}
@@ -596,6 +604,8 @@
         height:100%;
         max-height:100%;
         overflow-y: auto;
+        min-width: 100%;
+        flex-grow: 1;
     }
     pre{
         margin:0px;
