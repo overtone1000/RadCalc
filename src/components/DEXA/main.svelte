@@ -13,6 +13,7 @@
 	import ResultsPlot from "./results_plot.svelte";
 	import Copy from "./copy.svelte";
 	import { get_spine_string } from "./ts/dexa/string_manip";
+	import { get } from "svelte/store";
     
     const result_plot_width=100;
 
@@ -163,6 +164,32 @@
             }
         }
     )
+
+    function get_style(warn:boolean)
+    {
+        const warn_color="#857803";
+        let retval="border-radius:5px; padding:2px;";
+        if(warn)
+        {
+            retval+=" background:"+warn_color+";";
+        }
+        return retval;
+    }
+    let right_radius_trend_checkbox_style=$derived.by(
+        ()=>{return get_style(mandatory.use_for_analysis.right_radius && !mandatory.use_for_comparison.right_radius);}
+    );
+    let left_radius_trend_checkbox_style=$derived.by(
+        ()=>{return get_style(mandatory.use_for_analysis.left_radius && !mandatory.use_for_comparison.left_radius);}
+    );
+    let right_hip_trend_checkbox_style=$derived.by(
+        ()=>{return get_style(mandatory.use_for_analysis.right_hip && !mandatory.use_for_comparison.right_hip);}
+    );
+    let left_hip_trend_checkbox_style=$derived.by(
+        ()=>{return get_style(mandatory.use_for_analysis.left_hip && !mandatory.use_for_comparison.left_hip);}
+    );
+    let spine_trend_checkbox_style=$derived.by(
+        ()=>{return get_style(selected_spinefield !== undefined && !mandatory.use_for_comparison.spine);}
+    );
 
     let genereate_html_report = () => {
         if(debug_mode && ingest!==undefined && enabled_report_generation)
@@ -452,19 +479,19 @@
                         <div class="flexcol flex_grow">
                             <div class="trend_grid">
                                 {#if mandatory.use_for_analysis.right_radius}
-                                    <label class="trend_grid_left">Right Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_radius}></label>
+                                    <label style={right_radius_trend_checkbox_style} class="trend_grid_left">Right Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_radius}></label>
                                 {/if}
                                 {#if mandatory.use_for_analysis.left_radius}
-                                    <label class="trend_grid_right">Left Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_radius}></label>
+                                    <label style={left_radius_trend_checkbox_style} class="trend_grid_right">Left Radius <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_radius}></label>
                                 {/if}
-                                {#if selected_spinefield!==undefined && mandatory.use_for_comparison.spine}
-                                    <label class="trend_full_column">{spine_string} <input type="checkbox" bind:checked={mandatory.use_for_comparison.spine}></label>
+                                {#if selected_spinefield!==undefined}
+                                    <label style={spine_trend_checkbox_style} class="trend_full_column">{spine_string} <input type="checkbox" bind:checked={mandatory.use_for_comparison.spine}></label>
                                 {/if}
                                 {#if mandatory.use_for_analysis.right_hip}
-                                    <label class="trend_grid_left">Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
+                                    <label style={right_hip_trend_checkbox_style} class="trend_grid_left">Right Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.right_hip}></label>
                                 {/if}
                                 {#if mandatory.use_for_analysis.left_hip}
-                                    <label class="trend_grid_right">Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
+                                    <label style={left_hip_trend_checkbox_style} class="trend_grid_right">Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
                                 {/if}
                             </div>
                             {#if mandatory.use_for_comparison.spine || mandatory.use_for_comparison.left_hip || mandatory.use_for_comparison.right_hip || mandatory.use_for_comparison.left_radius}
