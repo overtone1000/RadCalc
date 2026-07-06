@@ -14,7 +14,7 @@
 	import Copy from "./copy.svelte";
 	import { get_spine_string } from "./ts/dexa/string_manip";
 	    
-    const result_plot_width=100;
+    const result_plot_width=150;
 
     let last_raw_ingest:string|undefined=undefined;
 
@@ -247,7 +247,9 @@
         }
     );
     let right_radius_trend_checkbox_style=$derived.by(
-        ()=>{return get_style(mandatory.use_for_analysis.right_radius && !mandatory.use_for_comparison.right_radius);}
+        ()=>{
+            return get_style(mandatory.use_for_analysis.right_radius && !mandatory.use_for_comparison.right_radius);
+        }
     );
     let left_radius_trend_checkbox_style=$derived.by(
         ()=>{return get_style(mandatory.use_for_analysis.left_radius && !mandatory.use_for_comparison.left_radius);}
@@ -261,7 +263,7 @@
     let spine_trend_checkbox_style=$derived.by(
         ()=>{return get_style(selected_spinefield !== undefined && !mandatory.use_for_comparison.spine);}
     );
-
+    
     let genereate_html_report = () => {
         if(debug_mode && ingest!==undefined && enabled_report_generation)
         {

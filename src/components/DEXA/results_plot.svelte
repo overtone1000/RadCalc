@@ -4,7 +4,7 @@
 	import { DaignosisSet as DiagnosisSet, type DEXA_Mandatory_Manual_Data, type HeightInInches } from "./ts/dexa/manual";
 	import ManagedPlot from "./managed_plot.svelte";
 	import { mdiRelativeScale } from "@mdi/js";
-	import { get_set_diagnosis, type SelectedDiagnosisResult } from "./ts/dexa/generate_report";
+	import { AnatomicSite, get_set_diagnosis, type SelectedDiagnosisResult, type SiteWithMeasurement } from "./ts/dexa/generate_report";
 	import type { DEXA_Measurements, Diagnosis } from "./ts/dexa/basic_types";
 	import DexaMeasurements from "./dexa_measurements.svelte";
 	import DiagnosisSubtitle from "./diagnosis_subtitle.svelte";
@@ -26,38 +26,62 @@
     }
     
 
-    const used_xbin="Used";
-    const unused_xbin="Unused";
+    //const used_xbin="Used";
+    //const unused_xbin="Unused";
+    
+    function site_to_string(site:AnatomicSite)
+    {
+        const left_hip="L Hip";
+        const left_radius="L Rad";
+        const spine="Spine";
+        const right_radius="R Rad";
+        const right_hip="R Hip";
+        switch(site)
+        {
+            case AnatomicSite.Spine:return spine;
+            case AnatomicSite.LeftHip:return left_hip;
+            case AnatomicSite.RightHip:return right_hip;
+            case AnatomicSite.LeftRadius:return left_radius;
+            case AnatomicSite.RightRadius:return right_radius;
+        }
+    }
 
-    const measurements_to_datum = (meas:DEXA_Measurements, selected_diagnosis:SelectedDiagnosisResult, used:boolean) => {
+    const measurements_to_datum = (meas:SiteWithMeasurement, selected_diagnosis:SelectedDiagnosisResult, used:boolean) => {
         let val;
         if(selected_diagnosis.diagnosis_set === DiagnosisSet.AgeMatched)
         {
-            val=meas.z_score;
+            val=meas.measurements.z_score;
         }
         else
         {
-            val=meas.t_score;
+            val=meas.measurements.t_score;
         }
-        let x_bin:string;
+        let x_bin:string=site_to_string(meas.site);
+        
+        let fill:string;
+        let stroke:string;
+
         if(used)
         {
-            x_bin=used_xbin;
-        }
-        else
-        {
-            x_bin=unused_xbin;
-        }
-        if(val!==undefined)
-        {
-
-            let fill:string="white";
-            let stroke:string="black";
-            if(used && val===selected_diagnosis.lowest_score)
+            if(val===selected_diagnosis.lowest_score)
             {
                 fill="red";
                 stroke="white";
             }
+            else
+            {
+                stroke="black";
+                fill="white";
+            }
+        }
+        else
+        {
+            stroke="white";
+            fill="black";
+        }
+       
+        if(val!==undefined)
+        {
             return {
                 score:val,
                 fill:fill,
@@ -84,7 +108,7 @@
         if(selected_diagnosis !== undefined)
         { 
             
-            const process = (member:DEXA_Measurements,used:boolean)=>{
+            const process = (member:SiteWithMeasurement,used:boolean)=>{
                 let datum = measurements_to_datum(member,selected_diagnosis,used);
                 if(datum !== undefined)
                 {
@@ -92,13 +116,14 @@
                 }
             };
 
-            for(const member of selected_diagnosis.used_measurements)
-            {
-                process(member,true);
-            }
             for(const member of selected_diagnosis.unused_measurements)
             {
                 process(member,false);
+            }
+            //Used diagnoses go last so they're drawn over unused ones
+            for(const member of selected_diagnosis.used_measurements)
+            {
+                process(member,true);
             }
         }
 
@@ -123,7 +148,13 @@
         "#004480", //dark blue //high for age
     ]
 
-    const domain=[used_xbin,unused_xbin];
+    const domain=[
+        site_to_string(AnatomicSite.RightHip),
+        site_to_string(AnatomicSite.RightRadius),
+        site_to_string(AnatomicSite.Spine),
+        site_to_string(AnatomicSite.LeftRadius),
+        site_to_string(AnatomicSite.LeftHip),
+    ];
     const inset=$derived(-(props.width/domain.length)/4);
 
     function create_plot(diagnosis_set:DiagnosisSet.AgeMatched|DiagnosisSet.Osteoporosis){
@@ -170,8 +201,8 @@
                 if(y2<lowest){y2=lowest;}
 
                 bars.push({
-                    x1:used_xbin,
-                    x2:unused_xbin,
+                    x1:domain[0],
+                    x2:domain[domain.length-1],
                     y1,
                     y2,
                     color:bar_colors[color_index]

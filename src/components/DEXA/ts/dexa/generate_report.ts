@@ -368,10 +368,25 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
     return retval;   
 }
 
+export enum AnatomicSite
+{
+    Spine,
+    LeftHip,
+    RightHip,
+    LeftRadius,
+    RightRadius
+}
+
+export type SiteWithMeasurement =
+{
+    site:AnatomicSite,
+    measurements:DEXA_Measurements
+}
+
 export type SelectedDiagnosisResult={
     diagnosis_set:(DiagnosisSet.Osteoporosis|DiagnosisSet.AgeMatched)
-    used_measurements:DEXA_Measurements[],
-    unused_measurements:DEXA_Measurements[],
+    used_measurements:SiteWithMeasurement[],
+    unused_measurements:SiteWithMeasurement[],
     selected_diagnosis:DiagnosisWithRange,
     diagnostic_ranges:DiagnosisWithRange[],
     lowest_score:number
@@ -379,8 +394,8 @@ export type SelectedDiagnosisResult={
 
 export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_Manual_Data, diagnosis_set:(DiagnosisSet.Osteoporosis|DiagnosisSet.AgeMatched)):SelectedDiagnosisResult | undefined
 {
-    let used_measurements:DEXA_Measurements[]=[];
-    let unused_measurements:DEXA_Measurements[]=[];
+    let used_measurements:SiteWithMeasurement[]=[];
+    let unused_measurements:SiteWithMeasurement[]=[];
     {
         let spinefield = getSpineField(
             manual.use_for_analysis.L1,
@@ -394,7 +409,7 @@ export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory
             let spine_measurements=ingest.spine.get(spinefield);
             if(spine_measurements!==undefined)
             {
-                used_measurements.push(spine_measurements);
+                used_measurements.push({site:AnatomicSite.Spine, measurements:spine_measurements});
             }        
         }
 
@@ -402,12 +417,12 @@ export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory
             (value,key)=>{
                 if(key !== spinefield)
                 {
-                    unused_measurements.push(value);
+                    unused_measurements.push({site:AnatomicSite.Spine, measurements:value});
                 }
             }
         );
 
-        const process_measurements = (use_for_analysis:boolean, measurement:DEXA_Measurements|undefined) => {
+        const process_measurements = (use_for_analysis:boolean, measurement:SiteWithMeasurement|undefined) => {
             if(measurement!==undefined)
             {
                 if(use_for_analysis){
@@ -421,40 +436,69 @@ export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory
         }
 
         //process_measurements(manual.use_for_analysis.right_hip_neck, ingest.hips.right.neck);
-        process_measurements(manual.use_for_analysis.right_hip, ingest.hips.right.neck);
-        process_measurements(manual.use_for_analysis.right_hip, ingest.hips.right.total);
+        process_measurements(manual.use_for_analysis.right_hip, {site:AnatomicSite.RightHip, measurements:ingest.hips.right.neck});
+        process_measurements(manual.use_for_analysis.right_hip, {site:AnatomicSite.RightHip, measurements:ingest.hips.right.total});
         
         //process_measurements(manual.use_for_analysis.left_hip_neck, ingest.hips.left.neck);
-        process_measurements(manual.use_for_analysis.left_hip, ingest.hips.left.neck);
-        process_measurements(manual.use_for_analysis.left_hip, ingest.hips.left.total);
+        process_measurements(manual.use_for_analysis.left_hip, {site:AnatomicSite.LeftHip, measurements:ingest.hips.left.neck});
+        process_measurements(manual.use_for_analysis.left_hip, {site:AnatomicSite.LeftHip, measurements:ingest.hips.left.total});
 
-        process_measurements(manual.use_for_analysis.left_radius, ingest.radii.left);
-        process_measurements(manual.use_for_analysis.right_radius, ingest.radii.right);
+        process_measurements(manual.use_for_analysis.left_radius, {site:AnatomicSite.LeftRadius, measurements:ingest.radii.left});
+        process_measurements(manual.use_for_analysis.right_radius, {site:AnatomicSite.RightRadius, measurements:ingest.radii.right});
     }
 
     let lowest_score:number=Infinity;
     let diagnoses:DiagnosisWithRange[]=[];
 
+    // Sort by t or z score in DECREASING order so that the last member of the array is the lowest.
+    // This way the results graph will draw the last datum last (and it will be drawn over any other data)
+    function t_score_sort(a:SiteWithMeasurement,b:SiteWithMeasurement)
+    {
+        if(a.measurements.t_score!==undefined && b.measurements.t_score!==undefined)
+        {
+            return b.measurements.t_score-a.measurements.t_score;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    function z_score_sort(a:SiteWithMeasurement,b:SiteWithMeasurement)
+    {
+        if(a.measurements.z_score!==undefined && b.measurements.z_score!==undefined)
+        {
+            return b.measurements.z_score-a.measurements.z_score;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     if(diagnosis_set===DiagnosisSet.Osteoporosis)
     {
         diagnoses=ingest.diagnoses;
-        for(const measurement of used_measurements)
+        used_measurements.sort(t_score_sort);
+        unused_measurements.sort(t_score_sort);
+
+        //Are sorted in decreasing order, so just need to check the last member of the array
+        let lowest_in_this_set=used_measurements[used_measurements.length-1];
+        if(lowest_in_this_set.measurements.t_score!==undefined && lowest_score>lowest_in_this_set.measurements.t_score)
         {
-            if(measurement.t_score!==undefined && lowest_score>measurement.t_score)
-            {
-                lowest_score=measurement.t_score;
-            }
+            lowest_score=lowest_in_this_set.measurements.t_score;
         }
     }
     else if(diagnosis_set===DiagnosisSet.AgeMatched)
     {
         diagnoses=ingest.alternative_diagnoses;
-        for(const measurement of used_measurements)
+        used_measurements.sort(z_score_sort);
+        unused_measurements.sort(z_score_sort);
+
+        //Are sorted in decreasing order, so just need to check the last member of the array
+        let lowest_in_this_set=used_measurements[used_measurements.length-1];
+        if(lowest_in_this_set.measurements.z_score!==undefined && lowest_score>lowest_in_this_set.measurements.z_score)
         {
-            if(measurement.z_score!==undefined && lowest_score>measurement.z_score)
-            {
-                lowest_score=measurement.z_score;
-            }
+            lowest_score=lowest_in_this_set.measurements.z_score;
         }
     }
 
