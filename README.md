@@ -35,8 +35,8 @@ To enable this, `direnv` VSCode extension should installed on the system, and th
 - [ ] Spread out result box based on anatomic location.
 - [ ] Warn+acknowledge region for things like odd heights, odd values in results, and large standard deviations in results
     - [x] Trends not set when results are
-    - [ ] Unusual heights
-    - [ ] Unusual comparison dates
+    - [x] Unusual heights
+    - [x] Unusual comparison dates
     - [ ] Unexpected trend results
 - [ ] Customizable technique input (type box, select locations) - make a list of technique modifications and where they show up in the report.
 - [ ] Calculator feature for BMD change that can just input previous and current BMD

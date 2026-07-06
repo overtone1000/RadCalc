@@ -13,8 +13,7 @@
 	import ResultsPlot from "./results_plot.svelte";
 	import Copy from "./copy.svelte";
 	import { get_spine_string } from "./ts/dexa/string_manip";
-	import { get } from "svelte/store";
-    
+	    
     const result_plot_width=100;
 
     let last_raw_ingest:string|undefined=undefined;
@@ -165,16 +164,88 @@
         }
     )
 
+    // Change input styles if values are unusual
     function get_style(warn:boolean)
     {
         const warn_color="#857803";
-        let retval="border-radius:5px; padding:2px;";
+        let retval="border-radius:5px; padding:1px;";
         if(warn)
         {
             retval+=" background:"+warn_color+";";
         }
         return retval;
     }
+
+    function height_is_uncommon(height:number)
+    {
+        const minimum_warn_height=4*12;
+        const maximum_warn_height=7*12;
+        return height<=minimum_warn_height || height >=maximum_warn_height;
+    }
+    function growth_is_uncommon()
+    {
+        const maximum_warn_increase=1; //Warn if they grew an inch!
+        return (
+            mandatory.height_in_inches.exists && 
+            mandatory.height_in_inches.height_in_inches !== null &&
+            mandatory.comparison.height_in_inches.exists &&
+            mandatory.comparison.height_in_inches.height_in_inches !== null &&
+            mandatory.height_in_inches.height_in_inches-mandatory.comparison.height_in_inches.height_in_inches>=maximum_warn_increase
+        );
+    }
+    let reported_tallest_height_style=$derived.by(
+        ()=>{
+            let warn=false;
+            if(mandatory.reported_tallest_height.exists)
+            {
+                if(mandatory.reported_tallest_height.inches !== null && mandatory.reported_tallest_height.feet !== null)
+                {
+                    if(mandatory.reported_tallest_height.feet > 0 && mandatory.reported_tallest_height.inches >= 12)
+                    {
+                        warn=true; //Feet provided, but inches is > 12!
+                    }
+                    else
+                    {
+                        let height=mandatory.reported_tallest_height.feet*12+mandatory.reported_tallest_height.inches;
+                        
+                        if(height_is_uncommon(height))
+                        {
+                            warn=true; //Unusual height   
+                        }
+                    }
+                }
+            }
+            return get_style(warn);
+        }
+    );
+    let current_height_style=$derived.by(
+        ()=>{
+            let warn=false;
+            if(mandatory.height_in_inches.exists && mandatory.height_in_inches.height_in_inches!==null && height_is_uncommon(mandatory.height_in_inches.height_in_inches))
+            {
+                warn=true;   
+            }
+            else if(growth_is_uncommon())
+            {
+                warn=true;
+            }
+            return get_style(warn);
+        }
+    );
+    let previous_height_style=$derived.by(
+        ()=>{
+            let warn=false;
+            if(mandatory.comparison.height_in_inches.exists && mandatory.comparison.height_in_inches.height_in_inches!==null && height_is_uncommon(mandatory.comparison.height_in_inches.height_in_inches))
+            {
+                warn=true;
+            }
+            else if(growth_is_uncommon())
+            {
+                warn=true;
+            }
+            return get_style(warn);
+        }
+    );
     let right_radius_trend_checkbox_style=$derived.by(
         ()=>{return get_style(mandatory.use_for_analysis.right_radius && !mandatory.use_for_comparison.right_radius);}
     );
@@ -203,6 +274,8 @@
         }
     };
 
+
+    //Report Generation
     let html_report=$derived(genereate_html_report());
 
     let generate_report_button_action = () => {
@@ -213,16 +286,35 @@
         }
     };
 
+    function date_to_string(date:Date)
+    {
+        let month = (date.getMonth()+1).toString(); //zero indexed
+        if(month.length<2){month="0"+month;}
+        let day = date.getDate().toString();
+        if(day.length<2){day="0"+day;}
+        return date.getFullYear()+"-"+month+"-"+day;
+    }
+
     let today = $state((new Date()));
     let yesterday_string = $derived.by(
         ()=>{
             let yesterday=new Date(today);
             yesterday.setDate(yesterday.getDate()-1);
-            let month = (yesterday.getMonth()+1).toString(); //zero indexed
-            if(month.length<2){month="0"+month;}
-            let day = yesterday.getDate().toString();
-            if(day.length<2){day="0"+day;}
-            return yesterday.getFullYear()+"-"+month+"-"+day;
+            return date_to_string(yesterday);
+        }
+    );
+
+    let patient_dob_string = $derived.by(
+        ()=>{
+            if(ingest!==undefined)
+            {
+                let date = new Date(ingest.patient_dob);
+                return date_to_string(date);
+            }
+            else
+            {
+                return undefined;
+            }
         }
     );
 
@@ -365,7 +457,7 @@
                             <label>Comparison available:<input type="checkbox" bind:checked={mandatory.comparison.exists}></label>
                             <div class="flexrow justify_space_around flexgrow">
                                 {#if mandatory.comparison.exists}
-                                    <label>Comparison date:<input type="date" max={yesterday_string} required disabled={!mandatory.comparison.exists} bind:value={mandatory.comparison.date}></label>
+                                    <label>Comparison date:<input type="date" max={yesterday_string} min={patient_dob_string} required disabled={!mandatory.comparison.exists} bind:value={mandatory.comparison.date}></label>
                                     <label>Outside comparison disclaimer:<input type="checkbox" disabled={!mandatory.comparison.exists} bind:checked={mandatory.comparison.outside_comparison}></label>
                                 {/if}
                             </div>
@@ -378,23 +470,23 @@
                     <div class="flexrow full-width">
                         <div class="flexcol flexgrow">
                             <div class="flexcol align_items_end align_self_center">
-                                <div class="flexrow">
+                                <div class="flexrow" style={reported_tallest_height_style}>
                                     <label>Reported tallest height: <input type="checkbox" tabindex=-1 bind:checked={mandatory.reported_tallest_height.exists}></label>
-                                    <input type="number" step="1" class="numberbox left_margin" required disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.feet}>
+                                    <input type="number" step="1" class="numberbox left_margin" required min="0" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.feet}>
                                     <div class="left_margin"> ft </div>
-                                    <input type="number" step="any" class="numberbox left_margin" required disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.inches}>
+                                    <input type="number" step="any" class="numberbox left_margin" required min="0" disabled={!mandatory.reported_tallest_height.exists} bind:value={mandatory.reported_tallest_height.inches}>
                                     <div class="left_margin"> in </div>
                                 </div>
                                 {#if mandatory.comparison.exists}
-                                    <div class="flexrow">
+                                    <div class="flexrow" style={previous_height_style}>
                                         <label>Height on prior exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.comparison.height_in_inches.exists}></label>
-                                        <input type="number" step="any" class="numberbox left_margin" required disabled={!mandatory.comparison.height_in_inches.exists} bind:value={mandatory.comparison.height_in_inches.height_in_inches}>
+                                        <input type="number" step="any" class="numberbox left_margin" required min="0" disabled={!mandatory.comparison.height_in_inches.exists} bind:value={mandatory.comparison.height_in_inches.height_in_inches}>
                                         <div class="left_margin"> in </div>
                                     </div>
                                 {/if}
-                                <div class="flexrow">
+                                <div class="flexrow" style={current_height_style}>
                                     <label>Height on current exam: <input type="checkbox" tabindex=-1 bind:checked={mandatory.height_in_inches.exists}></label>
-                                    <input type="number" step="any" class="numberbox left_margin" required disabled={!mandatory.height_in_inches.exists} bind:value={mandatory.height_in_inches.height_in_inches}>
+                                    <input type="number" step="any" class="numberbox left_margin" required min="0" disabled={!mandatory.height_in_inches.exists} bind:value={mandatory.height_in_inches.height_in_inches}>
                                     <div class="left_margin"> in </div>
                                 </div>
                             </div>
@@ -505,11 +597,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <DexaComparison used={selected_spinefield!==undefined && mandatory.use_for_comparison.spine} name="Spine" bind:comparison={ingest.trend.spine}/>
-                                    <DexaComparison used={mandatory.use_for_analysis.left_hip && mandatory.use_for_comparison.left_hip} name="Left Hip" bind:comparison={ingest.trend.left_hip}/>
-                                    <DexaComparison used={mandatory.use_for_analysis.right_hip && mandatory.use_for_comparison.right_hip} name="Right Hip" bind:comparison={ingest.trend.right_hip}/>
-                                    <DexaComparison used={mandatory.use_for_analysis.left_radius && mandatory.use_for_comparison.left_radius} name="Left Radius" bind:comparison={ingest.trend.left_radius}/>
-                                    <DexaComparison used={mandatory.use_for_analysis.right_radius && mandatory.use_for_comparison.right_radius} name="Right Radius" bind:comparison={ingest.trend.right_radius}/>
+                                    <DexaComparison used={selected_spinefield!==undefined && mandatory.use_for_comparison.spine} name="Spine" current={current_spine_measurement} bind:comparison={ingest.trend.spine}/>
+                                    <DexaComparison used={mandatory.use_for_analysis.left_hip && mandatory.use_for_comparison.left_hip} name="Left Total Hip" current={ingest.hips.left.total} bind:comparison={ingest.trend.left_hip}/>
+                                    <DexaComparison used={mandatory.use_for_analysis.right_hip && mandatory.use_for_comparison.right_hip} name="Right Total Hip" current={ingest.hips.right.total} bind:comparison={ingest.trend.right_hip}/>
+                                    <DexaComparison used={mandatory.use_for_analysis.left_radius && mandatory.use_for_comparison.left_radius} name="Left Radius" current={ingest.radii.left} bind:comparison={ingest.trend.left_radius}/>
+                                    <DexaComparison used={mandatory.use_for_analysis.right_radius && mandatory.use_for_comparison.right_radius} name="Right Radius" current={ingest.radii.right} bind:comparison={ingest.trend.right_radius}/>
                                 </tbody>
                             </table>
                             {/if}

@@ -35,9 +35,9 @@ right_radius:0.9,1,1
 
 spine_trend:1,0.5
 hip_left_trend:0,0
-hip_right_trend:14,14.14
-left_radius_trend:15,15.15
-right_radius_trend:16,16.16
+hip_right_trend:4,14.14
+left_radius_trend:5,15.15
+right_radius_trend:0.09,16.16
 
 dexa_system:dexa sys
 device_serial:dexa dev serial
