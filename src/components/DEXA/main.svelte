@@ -13,6 +13,7 @@
 	import ResultsPlot from "./results_plot.svelte";
 	import Copy from "./copy.svelte";
 	import { get_spine_string } from "./ts/dexa/string_manip";
+	import { get_warn_style } from "./ts/dexa/styles";
 	    
     const result_plot_width=150;
 
@@ -164,18 +165,6 @@
         }
     )
 
-    // Change input styles if values are unusual
-    function get_style(warn:boolean)
-    {
-        const warn_color="#857803";
-        let retval="border-radius:5px; padding:1px;";
-        if(warn)
-        {
-            retval+=" background:"+warn_color+";";
-        }
-        return retval;
-    }
-
     function height_is_uncommon(height:number)
     {
         const minimum_warn_height=4*12;
@@ -215,7 +204,7 @@
                     }
                 }
             }
-            return get_style(warn);
+            return get_warn_style(warn);
         }
     );
     let current_height_style=$derived.by(
@@ -229,7 +218,7 @@
             {
                 warn=true;
             }
-            return get_style(warn);
+            return get_warn_style(warn);
         }
     );
     let previous_height_style=$derived.by(
@@ -243,27 +232,27 @@
             {
                 warn=true;
             }
-            return get_style(warn);
+            return get_warn_style(warn);
         }
     );
     let right_radius_trend_checkbox_style=$derived.by(
         ()=>{
-            return get_style(mandatory.use_for_analysis.right_radius && !mandatory.use_for_comparison.right_radius);
+            return get_warn_style(mandatory.use_for_analysis.right_radius && !mandatory.use_for_comparison.right_radius);
         }
     );
     let left_radius_trend_checkbox_style=$derived.by(
-        ()=>{return get_style(mandatory.use_for_analysis.left_radius && !mandatory.use_for_comparison.left_radius);}
+        ()=>{return get_warn_style(mandatory.use_for_analysis.left_radius && !mandatory.use_for_comparison.left_radius);}
     );
     let right_hip_trend_checkbox_style=$derived.by(
-        ()=>{return get_style(mandatory.use_for_analysis.right_hip && !mandatory.use_for_comparison.right_hip);}
+        ()=>{return get_warn_style(mandatory.use_for_analysis.right_hip && !mandatory.use_for_comparison.right_hip);}
     );
     let left_hip_trend_checkbox_style=$derived.by(
-        ()=>{return get_style(mandatory.use_for_analysis.left_hip && !mandatory.use_for_comparison.left_hip);}
+        ()=>{return get_warn_style(mandatory.use_for_analysis.left_hip && !mandatory.use_for_comparison.left_hip);}
     );
     let spine_trend_checkbox_style=$derived.by(
-        ()=>{return get_style(selected_spinefield !== undefined && !mandatory.use_for_comparison.spine);}
+        ()=>{return get_warn_style(selected_spinefield !== undefined && !mandatory.use_for_comparison.spine);}
     );
-    
+
     let genereate_html_report = () => {
         if(debug_mode && ingest!==undefined && enabled_report_generation)
         {
@@ -596,6 +585,8 @@
                                         <th class="fixedwidth secondary">Locked</th>
                                         <th class="secondary">Absolute Δ BMD</th>
                                         <th class="secondary">%Δ BMD</th>
+                                        <th class="secondary">Calculated</th>
+                                        <th class="secondary">Previous BMD</th>
                                     </tr>
                                 </thead>
                                 <tbody>
