@@ -482,10 +482,13 @@ export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory
         unused_measurements.sort(t_score_sort);
 
         //Are sorted in decreasing order, so just need to check the last member of the array
-        let lowest_in_this_set=used_measurements[used_measurements.length-1];
-        if(lowest_in_this_set.measurements.t_score!==undefined && lowest_score>lowest_in_this_set.measurements.t_score)
+        if(used_measurements.length>0)
         {
-            lowest_score=lowest_in_this_set.measurements.t_score;
+            let lowest_in_this_set=used_measurements[used_measurements.length-1];
+            if(lowest_in_this_set.measurements.t_score!==undefined && lowest_score>lowest_in_this_set.measurements.t_score)
+            {
+                lowest_score=lowest_in_this_set.measurements.t_score;
+            }   
         }
     }
     else if(diagnosis_set===DiagnosisSet.AgeMatched)
@@ -495,10 +498,13 @@ export function get_set_diagnosis(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory
         unused_measurements.sort(z_score_sort);
 
         //Are sorted in decreasing order, so just need to check the last member of the array
-        let lowest_in_this_set=used_measurements[used_measurements.length-1];
-        if(lowest_in_this_set.measurements.z_score!==undefined && lowest_score>lowest_in_this_set.measurements.z_score)
+        if(used_measurements.length>0)
         {
-            lowest_score=lowest_in_this_set.measurements.z_score;
+            let lowest_in_this_set=used_measurements[used_measurements.length-1];
+            if(lowest_in_this_set.measurements.z_score!==undefined && lowest_score>lowest_in_this_set.measurements.z_score)
+            {
+                lowest_score=lowest_in_this_set.measurements.z_score;
+            }
         }
     }
 

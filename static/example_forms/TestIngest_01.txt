@@ -1,0 +1,187 @@
+exam:EXAM TYPE
+date:7/4/2025
+time:TIME OF EXAM
+last_name:Moore
+mrn:123456
+accession:Acc1259
+patient_dob:8/20/1985
+patient_sex:F
+
+risk_factors:
+risk_of_osteoporotic_fracture:
+risk_of_hip_fracture:
+
+L1:,,
+L2:,,
+L3:,,
+L4:,,
+L12:,,
+L13:,,
+L14:,,
+L23:,,
+L24:,,
+L34:,,
+L123:
+L124:,,
+L134:,,
+L234:,,
+L1234:,,
+hip_left_total:,,
+hip_left_neck:,,
+hip_right_total:,,
+hip_right_neck:,,
+left_radius:,,
+right_radius:,,
+
+spine_trend:,,
+hip_left_trend:,,
+hip_right_trend:,,
+left_radius_trend:,,
+right_radius_trend:,,
+
+dexa_system:dexa sys
+device_serial:dexa dev serial
+software_version:software version 43q92875
+technologist_id:tech id
+
+spine_label:LUMBAR SPINE
+left_total_hip_label:LEFT TOTAL HIP
+left_femoral_neck_label:LEFT FEMORAL NECK
+right_total_hip_label:RIGHT TOTAL HIP
+right_femoral_neck_label:RIGHT FEMORAL NECK
+left_radius_label:LEFT RADIUS
+right_radius_label:RIGHT RADIUS
+
+spine_change_label:CHANGE IN BMD IN SPINE
+left_total_hip_change_label:CHANGE IN BMD IN LEFT TOTAL HIP
+right_total_hip_change_label:CHANGE IN BMD IN RIGHT TOTAL HIP
+left_radius_change_label:CHANGE IN BMD IN LEFT RADIUS
+right_radius_change_label:CHANGE IN BMD IN RIGHT RADIUS
+
+technical_comment_spine_osteophyte_technique_section_start_b746e6de6b8e0ec8ef096d3e6bb37270
+Spinal bone mineral density is likely overestimated due to degenerative osteophytosis.
+technical_comment_spine_osteophyte_technique_section_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+technical_comment_spine_osteophyte_result_section_start_b746e6de6b8e0ec8ef096d3e6bb37270
+
+    These results are likely elevated due to degenerative osteophytosis.
+technical_comment_spine_osteophyte_result_section_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+
+diagnoses_start_b746e6de6b8e0ec8ef096d3e6bb37270
+High bone mass:(2,Infinity]
+Normal bone mass:[-1,2]
+Low normal bone mass:[-2,-1)
+Low bone mass:(-2.5,-2)
+Osteoporosis:[-Infinity,-2.5]
+diagnoses_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+alternative_diagnosis_ranges_start_b746e6de6b8e0ec8ef096d3e6bb37270
+male_lower_age_boundary:50
+female_lower_age_boundary:18
+female_premenopausal_assumption_age:40
+female_postmenopausal_assumption_age:65
+alternative_diagnosis_ranges_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+alternative_diagnoses_start_b746e6de6b8e0ec8ef096d3e6bb37270
+High bone mass:(2,Infinity]
+Bone mineral density within expected range for age:(-2,2]
+Bone mineral density below the expected range for age:[-Infinity,-2]
+alternative_diagnose_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+height_on_prior_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270
+Height measured on most recent prior DEXA: $PRIOR_HEIGHT$
+height_on_prior_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+outside_comp_disc_start_b746e6de6b8e0ec8ef096d3e6bb37270
+Disclaimer: Quantitative comparison with scans from an outside institution, including Oregon Osteoporosis Center, cannot be made due to statistical variations among testing locations.
+
+outside_comp_disc_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+frax_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270
+Prognosticated Fracture Risk (FRAX):
+
+Pertinent risk factors:
+$RISK_FACTORS$
+
+10 Year Fracture Probability
+     Major osteoporotic fracture: $FRAX_OSTEOPOROTIC_FRACTURE$%
+     Hip fracture: $FRAX_HIP_FRACTURE$%
+
+frax_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+
+meas_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270
+$MEASUREMENT_LABEL$
+Bone Mineral Density: $BMD$ g/cm2
+$MEASUREMENT_LABEL$ T-SCORE: $T_SCORE$
+Z-score: $Z_SCORE$
+
+meas_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+change_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270
+$CHANGE_LABEL$: $BMD_ABSOLUTE_CHANGE$ g/cm2, $BMD_PERCENT_CHANGE$% change.
+change_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+trend_temp_start_b746e6de6b8e0ec8ef096d3e6bb37270
+CHANGE FROM PRIOR KAISER BONE MINERAL DENSITY STUDY: 
+$TRENDS$
+The changes reported are the apparent changes in bone mineral density (BMD) from the previous DXA scan to the current DXA scan.  Though we cannot state whether this represents a significant change between scans because the least significant change (LSC) for each specific Northwest Kaiser Permanente location cannot be calculated, CHANGES GREATER THAN OR EQUAL TO 5% ARE GENERALLY CONSIDERED SIGNIFICANT.
+
+trend_temp_end_b746e6de6b8e0ec8ef096d3e6bb37270
+
+report_start_b746e6de6b8e0ec8ef096d3e6bb37270
+$EXAM$
+Date of Exam: $EXAM_DATE$
+Time of Exam: $EXAM_TIME$
+
+Comparison: $COMPARISON_DATE_OR_NONE$
+
+Clinical Concern: Bone Mineral Density
+
+DIAGNOSIS: $DIAGNOSIS$
+
+Quality of scan: $INCLUDED_SITES$
+$TECHNICAL_COMMENTS$
+
+$FRAX$RECOMMENDATIONS FOR WHEN TO TREAT:
+The National Osteoporosis Foundation recommends that FDA- approved medical therapies be considered in postmenopausal women and men age >=50 years with a: 
+
+*Hip or vertebral (clinical or morphometric) fracture
+*T-score of <= -2.5 at the spine or hip
+*T-score of -1 to -2.49 at the spine or hip and ten-year fracture probability by FRAX equal to or greater than 20% for major osteoporotic fracture or equal to or greater than 3% for hip fracture. 
+
+
+All treatment decisions require clinical judgement and consideration of individual patient factors.  Refer to the KP clinical library on osteoporosis for further information.
+
+RESULTS:
+
+Tallest height patient has ever been (patient reported): $REPORTED_MAX_HEIGHT$
+$HEIGHT_ON_PRIOR$Current height: $CURRENT_HEIGHT$
+
+$MEASUREMENTS$
+High bone mass = T-score > + 2 
+Normal bone mass = T-score -1 to + 2
+Low normal bone mass = T-score <-1 to -2
+Low bone mass = T-score <-2 to -2.49
+Osteoporosis = T-score <or = -2.5
+
+------------------------
+
+DXA System: $DXA_SYSTEM$, Device Serial: $DXA_SERIAL$, Software version: $DXA_SOFTWARE_VERSION$
+
+Technologist: $DXA_TECH_ID$
+
+------------------------
+
+$TREND_SECTION$$OUTSIDE_DISCLAIMER$GUIDELINES FOR WHEN TO REPEAT BONE DENSITY:
+For women over 65 years and men over 70 who are NOT receiving prescription osteoporosis medications, rescreening interval is determined by T-score: 
+
+* Equal to or greater than -1.4: 10 years
+*-1.5 to -1.9: 5 years
+*-2.0 to -2.4:2 years
+
+
+CONSIDERATION FOR FURTHER IMAGING:
+Per ISCD recommendations, indications for vertebral fracture assessment (VFA) with lateral thoracic and lumbar spine x-rays are a T-score between -1 to -2.49 if female patient has historical height loss of  > 4cm (1.6 inches) or a male patient has a historical height loss of >6cm (2.4 inches), and if documentation of a vertebral fracture will alter clinical management.
+report_end_b746e6de6b8e0ec8ef096d3e6bb37270
