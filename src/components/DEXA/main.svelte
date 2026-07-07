@@ -88,6 +88,9 @@
 
     let text_ingest: MouseEventHandler<HTMLButtonElement>=(e)=>{
         console.debug(e);
+        //ALWAYS clear the existing ingest to avoid contamination in case of an ingest failure.
+        ingest=undefined;
+
         //Powerscribe copy-paste only contains text/plain, so no point in using the more powerful "read" function
         navigator.clipboard.read().then(
             (clipboard_contents)=>{
