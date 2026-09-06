@@ -8,6 +8,48 @@
 
     onMount(
         ()=> {
+            const params = new URLSearchParams(window.location.search);
+
+            params.forEach(
+                (value,key,parent)=>{
+                    switch(key)
+                    {
+                        case "input_mode":{
+                            const castval=parseInt(value);
+                            if(castval>=0 && castval<=2)
+                            {
+                                input_mode=castval;
+                            }
+                            break;
+                        }
+                        case "age":{
+                            age=parseInt(value);
+                            break;
+                        }
+                        case "height":{
+                            raw_height=parseInt(value);
+                            break;
+                        }
+                        case "weight":{
+                            raw_weight=parseInt(value);
+                            break;
+                        }
+                        case "height_units":{
+                            if(value==="in"||value==="cm"){height_units=value;}
+                            break;
+                        }
+                        case "weight_units":{
+                            if(value==="kg" || value==="lb"){weight_units=value;}
+                            break;
+                        }
+                        case "sex":{
+                            if(value==="M"){sex="man";}
+                            else if(value==="F"){sex="woman";}
+                        }
+                    }
+                }
+            );
+
             Update();
         }
     )
