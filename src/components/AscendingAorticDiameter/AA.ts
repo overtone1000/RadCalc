@@ -1,5 +1,12 @@
 import { CalculateAAo } from "./AA/AAo";
 
+export enum InputMode{
+	AgeBSA,
+	AgeHeightWeight,
+	AgeAAoDiameter
+};
+
+
 type Guess = {
 	BSA:number,
 	AA95th:number

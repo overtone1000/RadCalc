@@ -1,9 +1,9 @@
 <script lang="ts">
     import type { MouseEventHandler } from "svelte/elements";
-    import { json } from '@sveltejs/kit';
-	import { onMount } from "svelte";
+    import { onMount } from "svelte";
     import { agent_endpoint } from "../@commons/secrets";
 	import { derived } from "svelte/store";
+    import * as z from "zod";
 
     const test_report=`
         Findings:
@@ -13,7 +13,9 @@
         Normal Exam
     `;
 
-    const test_content=`[{"start": 0,"end": 20,"correction": "The **Findings** section lacks detail about incidental or clinically relevant abnormalities that should be included for completeness. For example: - **Incidental nodules/masses**: The report does not mention any incidental pulmonary nodules, mediastinal lymphadenopathy, or other minor findings that may require follow-up. - **Bone survey**: While no fractures are identified, a brief mention of the bony thoracic spine (e.g., No acute bony abnormalities ) would improve thoroughness. - **Soft tissues**: No comment on soft tissue structures (e.g., subcutaneous tissues, pleura) is provided, which could be relevant in some cases. **Suggested revision**: * Mediastinal contours are unremarkable. Lungs are clear without evidence of nodules or masses. No acute fractures or bony abnormalities are identified. Soft tissues and pleural spaces appear unremarkable. *"},{"start": 21,"end": 35,"correction": "The **Impression** section ( Normal Exam ) is overly simplistic and does not reflect the level of detail expected in a radiology report. While the findings are unremarkable, the impression should: - **Echo key negative findings** (e.g., no nodules, no fractures) to avoid ambiguity. - **Acknowledge limitations** (e.g., within the limitations of this study ). **Suggested revision**: * Normal chest radiograph. No evidence of fractures, pulmonary nodules, or mediastinal abnormalities. Lungs are clear, and soft tissues/pleural spaces are unremarkable within the limitations of this study. *"},{"start": 0,"end": 35,"correction": "**Grammatical/Syntactical Note**: - The phrase * No fracture identified * is awkward phrasing. **Correction**: * No fractures are identified * or * No acute fractures are seen. *"}]`;
+    const test_content=`
+        [{"original_text":"Findings: Mediastinal contours are unremarkable. Lungs are clear. No fracture identified.","explanation":"The 'Findings' section mentions 'No fracture identified,' but this is not a typical radiologic finding to include in a standard chest X-ray report unless specifically requested or clinically relevant. If fractures were not the focus of the study, this statement is unnecessary and should be omitted or clarified."},{"original_text":"Findings: Lungs are clear.","explanation":"The 'Findings' section states 'Lungs are clear,' but the 'Impression' section states 'Normal Exam,' which is a more general conclusion. While 'Lungs are clear' is a valid finding, incidental or subtle abnormalities (e.g., small nodules, minor pleural changes) are not explicitly excluded. The discrepancy in specificity between the two sections may lead to missed incidental findings that require follow-up."},{"original_text":"Impression: Normal Exam","explanation":"The 'Impression' section does not explicitly address the 'Mediastinal contours are unremarkable' or 'Lungs are clear' findings from the 'Findings' section. While 'Normal Exam' is a valid conclusion, it should ideally reflect or summarize key findings from the 'Findings' section to ensure consistency and completeness."}]
+    `;
     
     const test_result={
         "id": "cmpl-1788805430",
@@ -48,9 +50,8 @@
     };
 
     type Correction={
-        start:number,
-        end:number,
-        correction:string
+        original_text:string
+        explanation:string
     };
 
     type ResponseSchema=[Correction];
@@ -120,9 +121,45 @@
         }
 
         const content=response.choices[0].message.content;
-        console.debug(content);
+        
+        const empty_array_outer=["[]",""];
+        const markdown_outer=["```json","```"];
 
-        query_result=JSON.parse(content);
+        const cleans=[
+            empty_array_outer,
+            markdown_outer
+        ];
+
+        let cleaned_content=content.trim();
+
+        let keep_cleaning=true;
+        while(keep_cleaning)
+        {
+            keep_cleaning=false;
+            for(const clean of cleans)
+            {
+                console.debug(clean);
+                while(cleaned_content.startsWith(clean[0]) && cleaned_content.endsWith(clean[1]))
+                {
+                    console.debug("Cleaned.");
+                    cleaned_content=cleaned_content.substring(clean[0].length,cleaned_content.length-clean[1].length);
+                    console.debug("Cleaned.",cleaned_content);
+                    keep_cleaning=true;
+                }   
+            }
+        }
+
+        try
+        {
+            query_result=JSON.parse(cleaned_content);
+            console.debug("Stringified corrections for testing:",JSON.stringify(query_result));
+        }
+        catch(e)
+        {
+            console.debug("Couldn't parse.");
+            console.debug(cleaned_content);
+            console.error(e);
+        }
     }
 
     let query_result:ResponseSchema|undefined=$state(undefined);
@@ -218,19 +255,18 @@
             let formatted_report="";
             if(report!==undefined)
             {
-                if(highlighted_correction===undefined){formatted_report=report;}
-                else
+                formatted_report=report;
+                if(highlighted_correction!==undefined)
                 {
-                    formatted_report=report.substring(0,highlighted_correction.start);
-                    formatted_report+="<strong>";
-                    formatted_report+=report.substring(highlighted_correction.start,highlighted_correction.end);
-                    formatted_report+="</strong>";
-                    formatted_report+=report.substring(highlighted_correction.end,report.length-1);
+                    formatted_report=report;
+                    console.debug("Pre",formatted_report);
+                    formatted_report=formatted_report.replaceAll(highlighted_correction.original_text,"<strong>" + highlighted_correction.original_text + "</strong>");
+                    console.debug("Post",formatted_report);
                 }   
             }
 
-            formatted_report.replaceAll("\n","<br>");
-            console.debug("Doesn't seem to work?!");
+            formatted_report=formatted_report.replaceAll("\n","<br>");
+
             return formatted_report;
         }
     );
@@ -251,7 +287,9 @@
                 {#if query_result}
                     {#each query_result as correction}
                         <div tabindex="0" role="button" aria-label="correction" onmouseover={()=>{highlighted_correction=correction}} onfocus={()=>{}}>
-                            {correction.correction}
+                            {correction.explanation}
+                            |
+                            {correction.original_text}
                         </div>
                     {/each}
                 {/if}

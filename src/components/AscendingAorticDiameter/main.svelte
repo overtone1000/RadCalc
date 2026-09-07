@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import type { ChangeEventHandler } from "svelte/elements";
 	import { createText, createTextAD, type Results } from "./AA/text";
-	import { initialize_guesses, iterate_guesses, type Guesses } from "./AA";
+	import { initialize_guesses, InputMode, iterate_guesses, type Guesses } from "./AA";
 	import Footer from "../@commons/footer.svelte";
 	import { mdiContentCopy } from "@mdi/js";
 
@@ -54,13 +54,7 @@
         }
     )
 
-    enum Input{
-        AgeBSA,
-        AgeHeightWeight,
-        AgeAAoDiameter
-    };
-
-    let input_mode:Input = $state(Input.AgeHeightWeight);
+    let input_mode:InputMode = $state(InputMode.AgeHeightWeight);
     let age:number|undefined = $state(undefined);
     let BSA:number|undefined = $state(undefined);
     let raw_height:number|undefined = $state(undefined);
@@ -73,7 +67,7 @@
     let result:Results|undefined = $state(undefined);
         
     let SelectForm:ChangeEventHandler<HTMLInputElement>=(new_input_mode:Event & { currentTarget: EventTarget & HTMLInputElement; })=>{
-        input_mode = parseInt(new_input_mode.currentTarget.value) as Input;
+        input_mode = parseInt(new_input_mode.currentTarget.value) as InputMode;
         Update();
     }
 
@@ -83,9 +77,9 @@
 
         switch(input_mode)
         {
-            case Input.AgeBSA:{CalculateABSA();break;}
-            case Input.AgeHeightWeight:{CalculateAHW();break;}
-            case Input.AgeAAoDiameter:{CalculateAD();break;}
+            case InputMode.AgeBSA:{CalculateABSA();break;}
+            case InputMode.AgeHeightWeight:{CalculateAHW();break;}
+            case InputMode.AgeAAoDiameter:{CalculateAD();break;}
         }
     }
 
@@ -175,9 +169,9 @@
             <div class="cols">
                 <h4>Input Type</h4>
                 <form id="input_type">
-                    <input id="AgeBSARadio" name="input_type_radio_group" type="radio" value={Input.AgeBSA} class="radio_style" onchange={SelectForm}><label for="AgeBSARadio">Age and BSA</label><br>
-                    <input id="AgeHeightWeightRadio" checked name="input_type_radio_group" type="radio" value={Input.AgeHeightWeight} class="radio_style" onchange={SelectForm}><label for="AgeHeightWeightRadio">Age, Height, and Weight</label><br> 
-                    <input id="AgeDiameterRadio" name="input_type_radio_group" type="radio" value={Input.AgeAAoDiameter} class="radio_style" onchange={SelectForm}><label for="AgeDiameterRadio">Age and Aortic Diameter</label><br> 
+                    <input id="AgeBSARadio" name="input_type_radio_group" type="radio" value={InputMode.AgeBSA} class="radio_style" onchange={SelectForm}><label for="AgeBSARadio">Age and BSA</label><br>
+                    <input id="AgeHeightWeightRadio" checked name="input_type_radio_group" type="radio" value={InputMode.AgeHeightWeight} class="radio_style" onchange={SelectForm}><label for="AgeHeightWeightRadio">Age, Height, and Weight</label><br> 
+                    <input id="AgeDiameterRadio" name="input_type_radio_group" type="radio" value={InputMode.AgeAAoDiameter} class="radio_style" onchange={SelectForm}><label for="AgeDiameterRadio">Age and Aortic Diameter</label><br> 
                 </form>
 
                 <div class="cols flex_grow space_evenly">
@@ -191,7 +185,7 @@
                         </form>
                         </div>
                         
-                        {#if input_mode===Input.AgeBSA}
+                        {#if input_mode===InputMode.AgeBSA}
                             <div id="div_absa">
                             <form id="form_absa" onchange={Update}>
                             Body surface area:
@@ -199,7 +193,7 @@
                             <input type="submit" disabled={true} style="display:none">
                             </form>
                             </div>
-                        {:else if input_mode===Input.AgeHeightWeight}
+                        {:else if input_mode===InputMode.AgeHeightWeight}
                             <div id="div_ahw">
                             <form id="form_ahw" onchange={Update}>
                             Height:
@@ -220,7 +214,7 @@
                             <input type="submit" disabled={true} style="display:none">
                             </form>
                             </div>
-                        {:else if input_mode===Input.AgeAAoDiameter}
+                        {:else if input_mode===InputMode.AgeAAoDiameter}
                             <div id="div_ad">
                             <form id="form_ad" onchange={Update}>
                             Ascending aortic diameter:
