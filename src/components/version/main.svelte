@@ -7,6 +7,14 @@
     let versions:Version[]=
     [
         {
+            version: "2.3",
+            features: [
+                '☑ DEXA UI improvements',
+                '☑ Experimental Report Checker',
+                '☑ Experimental OCR',
+            ]
+        },
+        {
             version: "2.2",
             features: [
                 '☑ Cooler color scheme',
@@ -41,7 +49,6 @@
         '☐ Volume calculator with ellipsoid, prostate, and spleen equations.',
         '☐ Data ingestion and substitution in doubling time',
         '☐ Multiple points for doubling time',
-        '☐ Disable FRAX exclusions for patient age and hips if they are obviously invalid based on ingest and manually input data',
     ];
 
     let considering_roadmap_entries:string[]=
