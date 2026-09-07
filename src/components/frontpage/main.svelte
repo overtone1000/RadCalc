@@ -11,6 +11,7 @@
         <button onclick={()=>navigate("/Thymus_CSS_SII")}>Thymic CSS/SII</button>
         <button onclick={()=>navigate("/DoublingTime")}>Doubling Time</button>
         <button onclick={()=>navigate("/DEXA")}>DEXA Report Generator</button>
+        <button onclick={()=>navigate("/ReportCheck")}>Report Checker</button>
     </div>
     <div class="cols centered">
     <div>This software is made available under the <a href="license"> MIT License</a>.</div>
