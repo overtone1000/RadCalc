@@ -1,3 +1,9 @@
+CT Head:
+
+Comparison: 5/25/24
+
+Technique: Non-contrast CT of the head was acquired.
+
 Findings:
 
 No intra or extra-axial mass lesions or collections are identified. The ventricles and sulcal spaces are within normal limits and there is no midline shift. The midline structures are normal.

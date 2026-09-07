@@ -49,12 +49,15 @@
         }
     };
 
-    type Correction={
-        original_text:string
-        explanation:string
-    };
+    const ZodCorrection=z.object({
+        original_text:z.string(),
+        explanation:z.string()
+    });
 
-    type ResponseSchema=[Correction];
+    const ZodResponseSchema=z.array(ZodCorrection);
+
+    type Correction=z.infer<typeof ZodCorrection>;
+    type ResponseSchema=z.infer<typeof ZodResponseSchema>;
 
     type MinistrelResponseBody=
     {
@@ -120,45 +123,21 @@
             console.debug(response.choices);
         }
 
-        const content=response.choices[0].message.content;
-        
-        const empty_array_outer=["[]",""];
-        const markdown_outer=["```json","```"];
-
-        const cleans=[
-            empty_array_outer,
-            markdown_outer
-        ];
-
-        let cleaned_content=content.trim();
-
         let keep_cleaning=true;
-        while(keep_cleaning)
-        {
-            keep_cleaning=false;
-            for(const clean of cleans)
-            {
-                console.debug(clean);
-                while(cleaned_content.startsWith(clean[0]) && cleaned_content.endsWith(clean[1]))
-                {
-                    console.debug("Cleaned.");
-                    cleaned_content=cleaned_content.substring(clean[0].length,cleaned_content.length-clean[1].length);
-                    console.debug("Cleaned.",cleaned_content);
-                    keep_cleaning=true;
-                }   
-            }
-        }
 
-        try
-        {
-            query_result=JSON.parse(cleaned_content);
-            console.debug("Stringified corrections for testing:",JSON.stringify(query_result));
+        try{
+            const content=response.choices[0].message.content;
+            console.debug(content);
+            query_result=ZodResponseSchema.parse(content);
+            console.debug(query_result);
+
         }
         catch(e)
         {
-            console.debug("Couldn't parse.");
-            console.debug(cleaned_content);
-            console.error(e);
+            if(e instanceof z.ZodError)
+            {
+                console.error(e.issues);
+            }
         }
     }
 
