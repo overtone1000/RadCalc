@@ -1,0 +1,1 @@
+export const syntax_grammar="Correct syntactical and grammatical errors. Do not provide corrections regarding style, word choice, or clarity."
