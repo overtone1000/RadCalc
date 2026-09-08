@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import { agent_endpoint } from "../@commons/secrets";
 	import { derived } from "svelte/store";
-    import { ZodCorrection, ZodResponseSchema, type Correction, type MinistrelResponseBody, type ResponseSchema } from "./schema";
+    import { ZodCorrection, ZodResponseSchema, type Correction, type ResponseBody, type ResponseSchema } from "./schema";
 	import z from "zod";
 
 
@@ -29,12 +29,12 @@
                 report=test_report;
                 const test_content=test_result.choices[0].message.content;
                 console.debug(test_content);
-                getResultFromResponse(test_result as MinistrelResponseBody);
+                getResultFromResponse(test_result as ResponseBody);
             }
         }
     )
 
-    function getResultFromResponse(response:MinistrelResponseBody)
+    function getResultFromResponse(response:ResponseBody)
     {
         if(response.choices.length>1)
         {
@@ -111,7 +111,7 @@
                 result.text().then(
                     (result)=>{
                         console.debug("Raw result",result);
-                        const parsed_result:MinistrelResponseBody=JSON.parse(result);
+                        const parsed_result:ResponseBody=JSON.parse(result);
                         getResultFromResponse(parsed_result);
                     }
                 );
