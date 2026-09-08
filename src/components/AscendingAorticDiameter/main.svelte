@@ -23,15 +23,15 @@
                             break;
                         }
                         case "age":{
-                            age=parseInt(value);
+                            age=parseFloat(value);
                             break;
                         }
                         case "height":{
-                            raw_height=parseInt(value);
+                            raw_height=parseFloat(value);
                             break;
                         }
                         case "weight":{
-                            raw_weight=parseInt(value);
+                            raw_weight=parseFloat(value);
                             break;
                         }
                         case "height_units":{
