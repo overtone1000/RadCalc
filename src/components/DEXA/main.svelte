@@ -432,6 +432,9 @@
     )
 </script>
 
+<svelte:head>
+    <title>RadCalc-DEXA</title>
+</svelte:head>
 <div id="body_container" class="main fill_vertical fill_horizontal flexcol centered">
     <div class="flexrow align-self-centered flex_grow flex_shrink">
         <div class="flexcol leftcol">

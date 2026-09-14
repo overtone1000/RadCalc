@@ -163,6 +163,9 @@
 
 </script>
 
+<svelte:head>
+    <title>RadCalc-AAo</title>
+</svelte:head>
 <div id="body_container" class="main fill_vertical fill_horizontal cols centered">
     <div class="rows flex_grow fill_horizontal space_evenly">
         <div class="cols half_width">
