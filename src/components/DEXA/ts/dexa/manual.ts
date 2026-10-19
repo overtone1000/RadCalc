@@ -198,7 +198,7 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
         retval.use_frax=false;
     }
 
-    retval.age=((new Date(ingest.date)).getTime()-(new Date(ingest.patient_dob)).getTime())/millis_per_year;
+    retval.age=((new Date(ingest.current_exam_date)).getTime()-(new Date(ingest.patient_dob)).getTime())/millis_per_year;
     console.debug("Calculated age is " + retval.age + " years.");
     if(retval.age<40)
     {
@@ -265,7 +265,17 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
         }
     }
 
-    if(retval.use_for_comparison.spine || retval.use_for_comparison.left_hip || retval.use_for_comparison.right_hip || retval.use_for_comparison.left_radius)
+    if(ingest.comparison_exam_date !== undefined)
+    {
+        retval.comparison.exists=true;
+        const date=new Date(ingest.comparison_exam_date);
+        let month = (date.getMonth()+1).toString();
+        while(month.length<2){month="0"+month;}
+        let day = (date.getDay()+1).toString();
+        while(day.length<2){day="0"+day;}
+        retval.comparison.date=date.getFullYear() + "-" + month + "-" + day;
+    }
+    else if(retval.use_for_comparison.spine || retval.use_for_comparison.left_hip || retval.use_for_comparison.right_hip || retval.use_for_comparison.left_radius)
     {
         retval.comparison.exists=true;
     }

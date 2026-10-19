@@ -33,7 +33,7 @@
     let data:Datum[]=$derived.by(
         ()=>{
             let tries =[
-                try_get_datum(props.mandatory.height_in_inches, props.ingest.date, "green"),
+                try_get_datum(props.mandatory.height_in_inches, props.ingest.current_exam_date, "green"),
                 try_get_datum(props.mandatory.comparison.height_in_inches, props.mandatory.comparison.date, "blue")
             ];
             

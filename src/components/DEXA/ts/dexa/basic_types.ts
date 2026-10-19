@@ -22,7 +22,7 @@ export function empty_comparison():DEXA_Comparison{
 
 export const mandatory_string_fields = [
     "exam",
-    "date",
+    "current_exam_date",
     "time",
     "last_name",
     "mrn",

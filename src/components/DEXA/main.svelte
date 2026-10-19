@@ -56,7 +56,7 @@
                 result.text().then(
                     (result)=>{
                         handle_raw_ingest(result);
-                        mandatory.comparison.date="1999-06-10";
+                        //mandatory.comparison.date="1999-06-10";
                         mandatory.comparison.height_in_inches.height_in_inches=63;
                         mandatory.height_in_inches.height_in_inches=62;
                         mandatory.reported_tallest_height.feet=5;
@@ -583,7 +583,7 @@
                                     <label style={left_hip_trend_checkbox_style} class="trend_grid_right">Left Hip <input type="checkbox" bind:checked={mandatory.use_for_comparison.left_hip}></label>
                                 {/if}
                             </div>
-                            {#if mandatory.use_for_comparison.spine || mandatory.use_for_comparison.left_hip || mandatory.use_for_comparison.right_hip || mandatory.use_for_comparison.left_radius}
+                            {#if mandatory.use_for_comparison.spine || mandatory.use_for_comparison.left_hip || mandatory.use_for_comparison.right_hip || mandatory.use_for_comparison.left_radius || mandatory.use_for_comparison.right_radius}
                             <table>
                                 <thead>
                                     <tr>

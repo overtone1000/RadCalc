@@ -22,7 +22,8 @@ export type AlternativeDiagnosisRanges={
 export type DEXA_Ingest_Data =
 {
     exam:string,
-    date:string,
+    current_exam_date:string,
+    comparison_exam_date?:string, //not mandatory!
     time:string,
     last_name:string,
     mrn:string,
@@ -689,7 +690,8 @@ export function ingest_data(ingest_data:string):Import_Result
         error:false,
         result:{
             exam:field_map.get("exam") as string,
-            date:field_map.get("date") as string,
+            current_exam_date:field_map.get("current_exam_date") as string,
+            comparison_exam_date:field_map.get("comparison_exam_date"),
             time:field_map.get("time") as string,
             last_name:field_map.get("last_name") as string,
             mrn:field_map.get("mrn") as string,

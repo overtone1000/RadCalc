@@ -44,7 +44,7 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
     let retval=ingest.report_template;
 
     retval=retval.replaceAll(substitutions.exam,ingest.exam);
-    retval=retval.replaceAll(substitutions.exam_date,ingest.date);
+    retval=retval.replaceAll(substitutions.exam_date,ingest.current_exam_date);
     retval=retval.replaceAll(substitutions.exam_time,ingest.time);
 
     //Comparison
