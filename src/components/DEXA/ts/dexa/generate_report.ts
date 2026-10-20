@@ -59,7 +59,9 @@ export function generate_report(ingest:DEXA_Ingest_Data, manual:DEXA_Mandatory_M
             {
                 //console.debug(manual.comparison.date);
                 let date = new Date(manual.comparison.date);
-                //console.debug(date);
+                console.debug("COMPARISON DATE TO STRING",date);
+                //The date plus one seems to be a consequence of time zone errors. Could be more rigorous.
+                //The month plus one seems to be a consequence of zero based indexing and is likely correct.
                 comp_str=(date.getMonth()+1)+"/"+(date.getDate()+1)+"/"+date.getFullYear();
             }
         }

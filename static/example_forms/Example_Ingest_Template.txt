@@ -1,6 +1,6 @@
-comparison_exam_date:6/10/1999
+comparison_exam_date:1/2/2015
 exam:EXAM TYPE
-current_exam_date:7/4/2025
+current_exam_date:2025-07-04
 time:TIME OF EXAM
 last_name:Moore
 mrn:123456

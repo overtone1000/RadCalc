@@ -271,9 +271,10 @@ export function init_mandatory(ingest:DEXA_Ingest_Data):DEXA_Mandatory_Manual_Da
         const date=new Date(ingest.comparison_exam_date);
         let month = (date.getMonth()+1).toString();
         while(month.length<2){month="0"+month;}
-        let day = (date.getDay()+1).toString();
+        let day = (date.getDate()).toString();
         while(day.length<2){day="0"+day;}
         retval.comparison.date=date.getFullYear() + "-" + month + "-" + day;
+        console.debug("DATE INGESTION",ingest.comparison_exam_date, date,day,month,retval.comparison.date)
     }
     else if(retval.use_for_comparison.spine || retval.use_for_comparison.left_hip || retval.use_for_comparison.right_hip || retval.use_for_comparison.left_radius)
     {
